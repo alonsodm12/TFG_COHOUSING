@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [AuthService, LibraryService, UserService, APIGateway]  # Añade todos tus microservicios aquí
+        service: [GestionUsuarios]  # Añade todos tus microservicios aquí
 
     steps:
     # Paso 1: Clonar el repositorio
