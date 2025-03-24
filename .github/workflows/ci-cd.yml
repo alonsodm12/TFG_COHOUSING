@@ -12,9 +12,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        service: [GestionUsuarios]  # Añade todos tus microservicios aquí
+    services:
+      docker:
+        image: docker:20.10.7
+        options: --privileged
 
     steps:
     # Paso 1: Clonar el repositorio
@@ -26,9 +27,8 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: 21
-        distribution: temurin
 
-    # Paso 3: Cache Maven packages
+    # Paso 3: Configurar Maven Cache (opcional, pero acelera las builds)
     - name: Cache Maven packages
       uses: actions/cache@v3
       with:
@@ -37,25 +37,42 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
-    # Paso 4: Build & Test
-    - name: Build and Test
+    # Paso 4: Compilar la aplicación y ejecutar pruebas por microservicio
+    - name: Build and Test all services
       run: |
-        cd ${{ matrix.service }}
-        ./mvnw clean package
+        # Ejecutar pruebas para cada microservicio y generar reporte de cobertura
+        cd ./services/demo/  # Cambia 'demo' por el nombre de tu microservicio
+        ./mvnw clean package jacoco:prepare-agent test jacoco:report
 
-    # Paso 5: Build & Push Docker Image
-    - name: Build and Push Docker Image
+        # Si tienes más microservicios, repite el proceso para cada uno
+        cd ../otro-servicio/  # Reemplaza 'otro-servicio' por el nombre del siguiente microservicio
+        ./mvnw clean package jacoco:prepare-agent test jacoco:report
+
+    # Paso 5: Construir y subir la imagen Docker para cada microservicio
+    - name: Build and Push Docker Image for each microservice
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        cd ${{ matrix.service }}
+        # Construir y subir Docker para el microservicio demo
+        cd ./services/demo/  # Reemplaza 'demo' por el nombre del microservicio
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        docker build -t $DOCKER_USERNAME/${{ matrix.service }}:0.0.1-SNAPSHOT .
-        docker push $DOCKER_USERNAME/${{ matrix.service }}:0.0.1-SNAPSHOT
+        docker build -t $DOCKER_USERNAME/spring-cohousing-demo:0.0.1-SNAPSHOT .
+        docker push $DOCKER_USERNAME/spring-cohousing-demo:0.0.1-SNAPSHOT
 
-    # Paso 6: Subir cobertura a Codecov (opcional)
-    - name: Upload to Codecov
-      run: bash <(curl -s https://codecov.io/bash)
+        # Si tienes otros microservicios, repite el proceso para cada uno
+        # cd ./services/otro-servicio/
+        # docker build -t $DOCKER_USERNAME/spring-cohousing-otro-servicio:0.0.1-SNAPSHOT .
+        # docker push $DOCKER_USERNAME/spring-cohousing-otro-servicio:0.0.1-SNAPSHOT
+
+    # Paso 6: Subir cobertura de código a Codecov para cada microservicio
+    - name: Upload Coverage to Codecov
+      run: |
+        # Subir cobertura de Codecov para el microservicio demo
+        bash <(curl -s https://codecov.io/bash) -f services/demo/target/site/jacoco/jacoco.xml
+        # Reemplaza 'demo' con el nombre del microservicio si tienes varios
+        # Si tienes más microservicios, repite este paso para cada uno
+        bash <(curl -s https://codecov.io/bash) -f services/otro-servicio/target/site/jacoco/jacoco.xml
+
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
