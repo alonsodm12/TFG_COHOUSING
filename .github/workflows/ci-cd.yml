@@ -19,11 +19,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Paso 2: Configurar JDK (Java 21)
-    - name: Set up JDK 21
+    # Paso 2: Configurar JDK (Java 17)
+    - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
-        java-version: 21
+        distribution: 'temurin'
+        java-version: 17
 
     # Paso 3: Configurar Maven Cache (opcional, pero acelera las builds)
     - name: Cache Maven packages
@@ -38,12 +39,12 @@ jobs:
     - name: Build and Test all services
       run: |
         # Ejecutar pruebas para cada microservicio y generar reporte de cobertura
-        cd ./services/demo/  # Cambia 'demo' por el nombre de tu microservicio
+        cd ./microservicios/GestionUsuarios/  # Cambia 'demo' por el nombre de tu microservicio
         ./mvnw clean package jacoco:prepare-agent test jacoco:report
 
         # Si tienes más microservicios, repite el proceso para cada uno
-        cd ../otro-servicio/  # Reemplaza 'otro-servicio' por el nombre del siguiente microservicio
-        ./mvnw clean package jacoco:prepare-agent test jacoco:report
+        #cd ../otro-servicio/  # Reemplaza 'otro-servicio' por el nombre del siguiente microservicio
+        #./mvnw clean package jacoco:prepare-agent test jacoco:report
 
     # Paso 5: Construir y subir la imagen Docker para cada microservicio
     - name: Build and Push Docker Image for each microservice
