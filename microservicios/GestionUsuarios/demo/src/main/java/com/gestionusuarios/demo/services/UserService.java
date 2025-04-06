@@ -6,10 +6,12 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.gestionusuarios.demo.models.User;
 import com.gestionusuarios.demo.repository.UserRepository;
 
+@Service
 public class UserService {
     
     private final UserRepository userRepository;
@@ -24,9 +26,7 @@ public class UserService {
         if(userRepository.findByUsername(username).isPresent())
             throw new IllegalArgumentException("El usuario ya existe");
     
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
-        String codedPassword = bCryptPasswordEncoder.encode(password);
+        String codedPassword = passwordEncoder.encode(password);
         List<String> rolesUser = Arrays.asList(role);
 
         User usuario = new User(username,email,codedPassword,true,rolesUser);
@@ -40,9 +40,7 @@ public class UserService {
         if(userOptional.isPresent()){
             String passwordCoded = userOptional.get().getPassword();
 
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
-            Boolean coincidencia = bCryptPasswordEncoder.matches(password, passwordCoded);
+            Boolean coincidencia = passwordEncoder.matches(password, passwordCoded);
         
             if(coincidencia)
                 return userOptional;
@@ -51,5 +49,16 @@ public class UserService {
         }    
         else
             return Optional.empty();
+    }
+
+    public Optional<List<User>> getUsers(){
+        List<User> usuarios = userRepository.findAll();
+
+        if(usuarios.size()==0){
+            return Optional.empty();
+        }
+        else{
+            return Optional.of(usuarios);
+        }
     }
 }

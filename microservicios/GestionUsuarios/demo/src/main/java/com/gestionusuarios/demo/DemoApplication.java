@@ -11,3 +11,8 @@ public class DemoApplication {
 	}
 
 }
+
+
+//Me pasaba lo siguiente defino un bean con SecurityPasswrod en Security config
+//Ese bean lo usaba en CustomAuthProvider como lo necesitaba por constructor no
+//iba tuve que meterle a el el bean en esa clase

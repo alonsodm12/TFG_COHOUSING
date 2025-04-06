@@ -40,7 +40,7 @@ jobs:
       run: |
         # Ejecutar pruebas para cada microservicio y generar reporte de cobertura
         cd ./microservicios/GestionUsuarios/  # Cambia 'demo' por el nombre de tu microservicio
-        ./mvnw clean package jacoco:prepare-agent test jacoco:report
+        mvn clean package jacoco:prepare-agent test jacoco:report
 
         # Si tienes más microservicios, repite el proceso para cada uno
         #cd ../otro-servicio/  # Reemplaza 'otro-servicio' por el nombre del siguiente microservicio

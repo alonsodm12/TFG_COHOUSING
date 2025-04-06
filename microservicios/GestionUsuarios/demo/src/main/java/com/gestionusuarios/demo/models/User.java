@@ -1,5 +1,6 @@
 package com.gestionusuarios.demo.models;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -21,16 +23,19 @@ import jakarta.persistence.Table;
 
 @Table(name = "users")
 @Entity
-public class User implements UserDetails {
+public class User implements UserDetails{
 
+    @Schema(description = "ID del usuario")
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Schema(description = "Nombre del usuario")
     @Column(nullable = false)
     private String username;
 
+    @Schema(description = "Email del usuario")
     @Column(unique = true, length = 100, nullable = false)
     private String email;
 
@@ -51,6 +56,13 @@ public class User implements UserDetails {
         this.password = password;
         this.enabled = enabled;
         this.roles = roles;
+    }
+
+    public User(String username,String password,String role){
+        this.username = username;
+        this.password = password;
+        this.roles = new ArrayList<>();
+        roles.add(role);
     }
 
     public User() {
