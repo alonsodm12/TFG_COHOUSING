@@ -39,7 +39,7 @@ jobs:
     - name: Build and Test all services
       run: |
         # Ejecutar pruebas para cada microservicio y generar reporte de cobertura
-        cd ./microservicios/GestionUsuarios/  # Cambia 'demo' por el nombre de tu microservicio
+        cd ./microservicios/GestionUsuarios/demo  # Cambia 'demo' por el nombre de tu microservicio
         mvn clean package jacoco:prepare-agent test jacoco:report
 
         # Si tienes más microservicios, repite el proceso para cada uno
