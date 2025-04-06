@@ -61,7 +61,6 @@ jobs:
         # Construir y subir Docker para el microservicio demo
         cd microservicios/GestionUsuarios/demo  # Reemplaza 'demo' por el nombre del microservicio
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        cd microservicios/GestionUsuarios/demo
         docker build --build-arg JAR_FILE=target/demo-0.0.1-SNAPSHOT.jar -t $DOCKER_USERNAME/spring-cohousing-demo:0.0.1-SNAPSHOT .
         docker push $DOCKER_USERNAME/spring-cohousing-demo:0.0.1-SNAPSHOT
 
