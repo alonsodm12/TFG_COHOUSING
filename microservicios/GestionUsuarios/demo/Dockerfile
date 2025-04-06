@@ -6,7 +6,7 @@ VOLUME /tmp
 
 EXPOSE 8080
 
-ARG JAR_FILE=demo/target/demo-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=microservicios/GestionUsuarios/demo/target/demo-0.0.1-SNAPSHOT.jar
 
 ADD ${JAR_FILE} websocket-demo.jar
 
