@@ -50,7 +50,7 @@ jobs:
 
 
     - name: Verificar el contenido de target
-    run: ls -lah microservicios/GestionUsuarios/demo/target
+      run: ls -lah microservicios/GestionUsuarios/demo/target
 
     # Paso 5: Construir y subir la imagen Docker para cada microservicio
     - name: Build and Push Docker Image for each microservice
