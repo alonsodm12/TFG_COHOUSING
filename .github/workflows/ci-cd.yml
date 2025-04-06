@@ -9,6 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    environment: TFG-COHOUSING
+
     services:
       docker:
         image: docker:20.10.7
