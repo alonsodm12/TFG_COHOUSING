@@ -80,13 +80,3 @@ jobs:
 
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-    # Paso 7: Subir la documentación generada como un commit al PR
-    - name: Generate Swagger Docs
-      run: mvn springdoc-openapi:generate
-
-    # Paso 8: Copy Swagger JSON to docs folder
-    - name: Copy Swagger JSON to docs folder
-      run: |
-        mkdir -p docs
-        cp target/openapi.json docs/swagger.json
