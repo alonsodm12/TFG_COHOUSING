@@ -48,6 +48,10 @@ jobs:
         #cd ../otro-servicio/  # Reemplaza 'otro-servicio' por el nombre del siguiente microservicio
         #./mvnw clean package jacoco:prepare-agent test jacoco:report
 
+
+    - name: Verificar el contenido de target
+    run: ls -lah microservicios/GestionUsuarios/demo/target
+
     # Paso 5: Construir y subir la imagen Docker para cada microservicio
     - name: Build and Push Docker Image for each microservice
       env:
@@ -55,7 +59,7 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         # Construir y subir Docker para el microservicio demo
-        cd ./microservicios/GestionUsuarios/demo  # Reemplaza 'demo' por el nombre del microservicio
+        cd microservicios/GestionUsuarios/demo  # Reemplaza 'demo' por el nombre del microservicio
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         docker build -t $DOCKER_USERNAME/spring-cohousing-demo:0.0.1-SNAPSHOT .
         docker push $DOCKER_USERNAME/spring-cohousing-demo:0.0.1-SNAPSHOT
