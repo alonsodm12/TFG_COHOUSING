@@ -5,4 +5,4 @@
 [![CI/CD Front-End](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml/badge.svg?branch=front-end)](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml)
 [![CI/CD Pipeline](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml/badge.svg?branch=ci-cd)](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml)
 
-[![Coverage (Codecov)](https://codecov.io/gh/alonsodm12/TFG_COHOUSING/graph/badge.svg?token=0JLM1WJ866)](https://codecov.io/gh/alonsodm12/TFG_COHOUSING)
+[![codecov](https://codecov.io/gh/alonsodm12/TFG_COHOUSING/graph/badge.svg?token=BEeK9qXuVn)](https://codecov.io/gh/alonsodm12/TFG_COHOUSING)
