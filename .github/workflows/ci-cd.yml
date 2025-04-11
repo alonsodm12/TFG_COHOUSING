@@ -70,13 +70,12 @@ jobs:
         # docker push $DOCKER_USERNAME/spring-cohousing-otro-servicio:0.0.1-SNAPSHOT
 
     # Paso 6: Subir cobertura de código a Codecov para cada microservicio
-    - name: Upload Coverage to Codecov
-      run: |
-        # Subir cobertura de Codecov para el microservicio demo
-        bash <(curl -s https://codecov.io/bash) -f services/demo/target/site/jacoco/jacoco.xml
-        # Reemplaza 'demo' con el nombre del microservicio si tienes varios
-        # Si tienes más microservicios, repite este paso para cada uno
-        bash <(curl -s https://codecov.io/bash) -f services/otro-servicio/target/site/jacoco/jacoco.xml
+    - name: Upload coverage reports to Codecov
+    uses: codecov/codecov-action@v5
+    with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: alonsodm12/TFG_COHOUSING
+        files: |
+        services/demo/target/site/jacoco/jacoco.xml
+        services/otro-servicio/target/site/jacoco/jacoco.xml
 
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
