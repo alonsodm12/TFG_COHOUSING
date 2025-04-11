@@ -71,11 +71,11 @@ jobs:
 
     # Paso 6: Subir cobertura de código a Codecov para cada microservicio
     - name: Upload coverage reports to Codecov
-    uses: codecov/codecov-action@v5
-    with:
+      uses: codecov/codecov-action@v5
+      with:
         token: ${{ secrets.CODECOV_TOKEN }}
         slug: alonsodm12/TFG_COHOUSING
         files: |
-        services/demo/target/site/jacoco/jacoco.xml
-        services/otro-servicio/target/site/jacoco/jacoco.xml
+          services/demo/target/site/jacoco/jacoco.xml
+          services/otro-servicio/target/site/jacoco/jacoco.xml
 
