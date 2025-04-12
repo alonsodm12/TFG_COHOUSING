@@ -3,7 +3,7 @@ name: CI - Microservicio GestionUsuarios
 on:
   push:
     branches:
-      - GestionUsuarios
+      - ci-cd
 
 jobs:
   gestion-usuarios:
