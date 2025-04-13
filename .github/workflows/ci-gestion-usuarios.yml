@@ -1,0 +1,14 @@
+name: CI - Microservicio GestionUsuarios
+
+on:
+  push:
+    branches:
+      - GestionUsuarios
+
+jobs:
+  gestion-usuarios:
+    uses: ./.github/workflows/microservice-template.yml
+    with:
+      micro_path: microservicios/GestionUsuarios/demo
+      micro_name: demo
+    secrets: inherit
