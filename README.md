@@ -1,6 +1,6 @@
 # 🏡 TFG_COHOUSING – Plataforma de Co-Housing
 
-**Repositorio oficial del Trabajo de Fin de Grado de Alonso Domínguez Martín – Universidad de Granada.**  
+**Repositorio oficial del Trabajo de Fin de Grado de Alonso Doña Martínez – Universidad de Granada.**  
 Este proyecto consiste en el desarrollo de una plataforma de gestión para comunidades de co-housing mediante arquitectura de microservicios, integración continua, automatización y tecnologías modernas.
 
 ---
