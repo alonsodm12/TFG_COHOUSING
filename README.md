@@ -4,6 +4,19 @@
 Este proyecto consiste en el desarrollo de una plataforma de gestión para comunidades de co-housing mediante arquitectura de microservicios, integración continua, automatización y tecnologías modernas.
 
 ---
+## Flujo a seguir
+main             ← producción estable
+develop          ← integración y pruebas
+feature/frontend ← desarrollo del frontend
+feature/usuarios ← desarrollo del microservicio "usuarios"
+
+Crea ramas feature/* para trabajar cosas aisladas (uno por microservicio o pantalla).
+
+Cuando termines una parte, haz PR a develop.
+
+En develop se hacen pruebas e integración de los servicios.
+
+Si todo va bien, mergeas develop a main para desplegar a producción.
 
 ## 🚧 Estado de Workflows y Cobertura
 
