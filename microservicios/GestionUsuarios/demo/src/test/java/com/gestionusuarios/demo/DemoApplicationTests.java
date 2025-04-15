@@ -1,4 +1,4 @@
-package test.java.com.gestionusuarios.demo;
+package com.gestionusuarios.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
