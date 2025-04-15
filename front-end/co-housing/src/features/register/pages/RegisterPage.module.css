@@ -1,0 +1,138 @@
+.page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #e4dbe6, #d4d4d4);
+    color: #333;
+    padding: 0px; /* Agregado para evitar que el contenido se quede pegado al borde */
+  }
+  
+  .page h1 {
+    font-size: 36px; /* Aumentado el tamaño de la fuente */
+    color: rgb(0, 0, 0);
+    margin-bottom: 10px; /* Mayor separación entre el título y el formulario */
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  
+  .card {
+    margin-top: 30px;
+    background: #fff;
+    border-radius: 15px; /* Bordes más suaves */
+    padding: 40px;
+    width: 350px; /* Ampliada un poco la tarjeta */
+    text-align: left;
+    box-shadow: 0 45px 45px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
+    transition: all 0.3s ease; /* Transición más suave */
+    font-size: 22px;
+    border-color:#000000;
+    border: 10px;
+    border-width: 10;
+    border-style:double;
+  }
+  
+  .card h2 {
+    color: #000000;   
+   }
+
+  .card:hover {
+    box-shadow: 0 35px 50px rgba(0, 0, 0, 0.2); /* Sombra más fuerte cuando se pasa el ratón */
+  }
+  
+  .step {
+    margin-bottom: 25px; /* Más espacio entre los pasos */
+    animation: fadeIn 0.5s ease;
+  }
+  
+  input {
+    margin-top: 15px;
+    font-size: 18px;
+    padding: 12px;
+    width: 100%;
+    border: 2px solid #e0e0e0; /* Agregado borde más sutil */
+    border-radius: 12px; /* Bordes más redondeados */
+    outline: none;
+    background: #f9f9f9; /* Fondo ligeramente más claro */
+    color: #333;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  
+  input:focus {
+    background: #fff;
+    border-color: #a18cd1; /* Color más destacable en el borde */
+    box-shadow: 0 0 8px #a18cd1; /* Sombra más pronunciada al hacer foco */
+  }
+  
+  button {
+    padding: 2px 2px;
+    font-size: 20px;
+    background: #ffa15e;
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+  }
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255, 106, 0, 0.5);
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+  
+  .progressDots {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 0 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dot.active {
+    background-color: #a18cd1;
+  }
+  
+  .roles {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Espaciado entre los roles */
+  }
+  
+  .roleBox {
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    background: #f3f3f3;
+    transition: all 0.3s ease;
+  }
+  
+  .roleBox:hover {
+    background-color: #a18cd1;
+    color: white;
+  }
+  
+  .roleBox.selected {
+    background-color: #a18cd1;
+    color: white;
+  }
+  

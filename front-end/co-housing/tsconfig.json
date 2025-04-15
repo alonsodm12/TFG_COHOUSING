@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",                           // Usa la versión más moderna de JavaScript
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],     // Asegura compatibilidad con el DOM y últimas características de JS
+    "module": "ESNext",                           // Usa módulos ES (import/export)
+    "moduleResolution": "bundler",                // Utiliza la resolución de módulos como Vite
+    "allowJs": true,                              // Permite archivos JavaScript si es necesario
+    "jsx": "react-jsx",                           // Usa el nuevo transformador JSX de React 17+
+    "strict": true,                               // Activa comprobaciones estrictas
+    "noUnusedLocals": true,                       // Marca las variables no usadas
+    "noUnusedParameters": true,                   // Marca los parámetros no usados
+    "esModuleInterop": true,                      // Permite la interoperabilidad con módulos CommonJS
+    "skipLibCheck": true,                         // Omite la comprobación de tipos de las bibliotecas
+    "forceConsistentCasingInFileNames": true,     // Asegura que las importaciones respeten el caso de los nombres de archivo
+    "resolveJsonModule": true,                    // Permite importar archivos JSON como módulos
+    "isolatedModules": true,                      // Asegura que cada archivo pueda ser compilado independientemente
+    "noEmit": true,                               // No generes código JavaScript, solo verifica tipos
+    "baseUrl": ".",                               // La raíz de los imports (puedes cambiarla si usas alias)
+    "paths": {
+      "@/*": ["src/*"]                            // Alias para importar archivos dentro de la carpeta src
+    }
+  },
+  "include": [
+    "src"                                         // Incluye todos los archivos dentro de la carpeta src
+  ],
+  "exclude": [
+    "node_modules",                               // Excluye node_modules
+    "vite.config.ts"                              // Excluye el archivo de configuración de Vite
+  ]
+}
+
+
+/* {
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+ */
