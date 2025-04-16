@@ -31,10 +31,10 @@ jobs:
           for dir in microservicios/*/; do
             echo "Compilando $dir"
             cd "$dir/demo"
-            if [ -f ./mvnw ]; then
+            if [ -f pom.xml ]; then
                 mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
             else
-                echo "No se encontró ./mvnw en $dir, saltando..."
+                echo "No se encontró pom.xml en $dir/demo, saltando..."
             fi
             cd - > /dev/null
           done
