@@ -30,7 +30,7 @@ jobs:
         run: |
           for dir in microservicios/*/; do
             echo "Compilando $dir"
-            cd "$dir"
+            cd "$dir/demo"
             if [ -f ./mvnw ]; then
                 mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
             else
