@@ -55,7 +55,6 @@ jobs:
         run: |
             for dir in microservicios/*/demo; do
             if [ -f "$dir/target/site/jacoco/jacoco.xml" ]; then
-                cd "target/site/jacoco/"
                 echo "Subiendo cobertura desde $dir"
                 ./codecov -t ${{ secrets.CODECOV_TOKEN }} \
                 --git-service github \
@@ -63,5 +62,6 @@ jobs:
                 --file "$dir/target/site/jacoco/jacoco.xml"
             else
                 echo "No se encontró el informe de cobertura en $dir"
+                ls "$dir/target/site/jacoco"
             fi
             done
