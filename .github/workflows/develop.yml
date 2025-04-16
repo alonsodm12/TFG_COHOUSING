@@ -39,13 +39,6 @@ jobs:
             cd - > /dev/null
           done
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: alonsodm12/TFG_COHOUSING
-          files: |
-            microservicios/*/demo/target/site/jacoco/jacoco.xml
       - name: Descargar Codecov Uploader
         run: |
             curl -Os https://uploader.codecov.io/latest/linux/codecov
