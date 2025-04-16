@@ -45,18 +45,18 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        working-directory: frontend
+        working-directory: front-end/co-housing
         run: npm install
 
       - name: Build project
-        working-directory: frontend
+        working-directory: front-end/co-housing
         run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
-          publish_dir: frontend/dist
+          publish_dir: front-end/co-housing/dist
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2

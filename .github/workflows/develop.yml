@@ -46,3 +46,21 @@ jobs:
           slug: alonsodm12/TFG_COHOUSING
           files: |
             microservicios/*/demo/target/site/jacoco/jacoco.xml
+      - name: Descargar Codecov Uploader
+        run: |
+            curl -Os https://uploader.codecov.io/latest/linux/codecov
+            chmod +x codecov
+
+      - name: Subir cobertura a Codecov
+        run: |
+            for dir in microservicios/*/demo; do
+            if [ -f "$dir/target/site/jacoco/jacoco.xml" ]; then
+                echo "Subiendo cobertura desde $dir"
+                ./codecov -t ${{ secrets.CODECOV_TOKEN }} \
+                --git-service github \
+                --slug alonsodm12/TFG_COHOUSING \
+                --file "$dir/target/site/jacoco/jacoco.xml"
+            else
+                echo "No se encontró el informe de cobertura en $dir"
+            fi
+            done
