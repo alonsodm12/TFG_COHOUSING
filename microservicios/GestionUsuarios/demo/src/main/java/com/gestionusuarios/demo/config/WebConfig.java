@@ -14,7 +14,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://alonsodm12.github.io") // ⚠️ Aquí va tu GitHub Pages
+                        .allowedOrigins("https://alonsodm12.github.io","http://localhost:5173") // ⚠️ Aquí va tu GitHub Pages
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

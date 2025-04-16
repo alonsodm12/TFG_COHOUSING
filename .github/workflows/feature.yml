@@ -1,0 +1,63 @@
+# .github/workflows/feature.yml
+
+#Se va a ejecutar en la rama feature
+#Tiene como objetivo facilitar el desarrollo local de HUs
+
+name: Preparar entorno local en rama feature
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  preparar-local:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Cache de dependencias Maven
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Compilar micros a JAR
+        run: |
+          for dir in microservicios/*/; do
+            echo "Compilando $dir"
+            cd "$dir"
+            if [ -f ./mvnw ]; then
+                ./mvnw clean package -DskipTests || exit 1
+            else
+                echo "No se encontró ./mvnw en $dir, saltando..."
+            fi
+            cd - > /dev/null
+          done
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+

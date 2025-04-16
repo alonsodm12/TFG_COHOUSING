@@ -1,0 +1,48 @@
+# .github/workflows/develop.yml
+name: CI para Develop
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  testear:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache de dependencias Maven
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Compilar micros a JAR
+        run: |
+          for dir in microservicios/*/; do
+            echo "Compilando $dir"
+            cd "$dir"
+            if [ -f ./mvnw ]; then
+                mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
+            else
+                echo "No se encontró ./mvnw en $dir, saltando..."
+            fi
+            cd - > /dev/null
+          done
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: alonsodm12/TFG_COHOUSING
+          files: |
+            microservicios/*/demo/target/site/jacoco/jacoco.xml

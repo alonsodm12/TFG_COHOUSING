@@ -23,7 +23,7 @@ export const RegisterCard = () => {
       setStep(step + 1);
     } else {
       // Enviar datos a la API
-      fetch('http://localhost:8080/auth/register', {
+      fetch('http://localhost:8081/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
