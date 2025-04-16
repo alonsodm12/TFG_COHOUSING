@@ -62,7 +62,7 @@ jobs:
                 --file "$dir/target/site/jacoco/jacoco.xml"
             else
 
-                cd "microservicios/GestionUsuarios/demo"
+                cd "microservicios/GestionUsuarios/demo/target"
                 ls
                 echo "No se encontró el informe de cobertura en $dir"
                 ls "$dir/target/site/jacoco"
