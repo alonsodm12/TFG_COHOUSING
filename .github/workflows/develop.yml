@@ -54,7 +54,8 @@ jobs:
       - name: Subir cobertura a Codecov
         run: |
             for dir in microservicios/*/demo; do
-            if [ -f "$dir/demo/target/site/jacoco/jacoco.xml" ]; then
+            if [ -f "$dir/target/site/jacoco/jacoco.xml" ]; then
+                cd "target/site/jacoco/"
                 echo "Subiendo cobertura desde $dir"
                 ./codecov -t ${{ secrets.CODECOV_TOKEN }} \
                 --git-service github \
