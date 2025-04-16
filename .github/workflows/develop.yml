@@ -32,7 +32,7 @@ jobs:
             echo "Compilando $dir"
             cd "$dir/demo"
             if [ -f pom.xml ]; then
-                mvn clean package jacoco:prepare-agent test jacoco:report -DskipTests || exit 1
+                mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
             else
                 echo "No se encontró pom.xml en $dir/demo, saltando..."
             fi
