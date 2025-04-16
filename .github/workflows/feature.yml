@@ -54,10 +54,10 @@ jobs:
           node-version: '18'
 
       - name: Install frontend dependencies
-        working-directory: frontend
+        working-directory: front-end/co-housing
         run: npm install
 
       - name: Build frontend
-        working-directory: frontend
+        working-directory: front-end/co-housing
         run: npm run build
 
