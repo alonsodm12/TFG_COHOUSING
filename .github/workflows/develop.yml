@@ -61,6 +61,7 @@ jobs:
                 --slug alonsodm12/TFG_COHOUSING \
                 --file "$dir/target/site/jacoco/jacoco.xml"
             else
+                ls
                 echo "No se encontró el informe de cobertura en $dir"
                 ls "$dir/target/site/jacoco"
             fi
