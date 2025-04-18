@@ -4,7 +4,7 @@
   justify-content: start;
   align-items: center;
   min-height: 100vh;
-  background: url('https://images.unsplash.com/photo-1687042268541-5cc60ad9d3de?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW9zJTIwd2FsbHBhcGVyfGVufDB8fDB8fHww') center;
+  background: url('../../../../public/images/fondo-landing.jpg') center;
   background-size: cover;
   color: #ffffff;
   text-align: center;

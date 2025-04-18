@@ -2,6 +2,7 @@ package com.gestionusuarios.demo.controllers;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import com.gestionusuarios.demo.DTOs.AuthRequest;
@@ -24,6 +26,7 @@ import com.gestionusuarios.demo.utils.JwtUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 
 /*
  * Controlador del microservicio Gestion de Usuarios
@@ -35,7 +38,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
  */
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -53,24 +56,28 @@ public class UserController {
     @ApiResponse(responseCode = "401", description = "Error al registrar un usuario")
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserDTO request) {
-        String username = request.username();
-        String password = request.password();
-        String role = request.role();
-        String email = request.email();
+    public ResponseEntity<?> register(@Valid @RequestBody UserDTO request) {
 
         try {
-            User newUser = userService.registerUser(username, email, password, role);
-            return ResponseEntity.ok(newUser.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error en la creación del usuario");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+            User newUser = userService.registerUser(request);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of("Usuario registrado correctamente: ", newUser.getUsername()));
+
+        } catch (IllegalArgumentException e) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("Error durante el registro: ", e.getMessage()));
+
         }
     }
 
+    @Operation(summary = "Inicio de sesión de un usuario registrado", description = "Este endpoint permite a un usuario iniciar sesión en la aplicacion")
+    @ApiResponse(responseCode = "200", description = "Inicio de sesión exitoso")
+    @ApiResponse(responseCode = "401", description = "Error al iniciar sesión")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody AuthRequest authRequest) {
         try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()));
@@ -81,7 +88,6 @@ public class UserController {
 
             Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
             for (GrantedAuthority authority : authorities) {
-                // Deberías tener algo como "ROLE_USER" o "ROLE_ADMIN"
                 if (authority.getAuthority().startsWith("ROLE_")) {
                     rol = authority.getAuthority(); // Devuelve el rol
                 }
@@ -89,9 +95,10 @@ public class UserController {
 
             String jwt = jwtUtil.generateToken(user.getUsername(), rol);
 
-            return ResponseEntity.ok(new AuthResponse(jwt));
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("Login correcto: ", (new AuthResponse(jwt))));
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("Error durante el login: ", "Credenciales inválidas"));
         }
     }
 
@@ -99,21 +106,23 @@ public class UserController {
     public ResponseEntity<String> getUsuarios() {
         Optional<List<User>> usuarios = userService.getUsers();
         return usuarios.map(users -> {
-            // Utilizamos Stream para extraer los nombres de todos los usuarios y unirlos en
-            // una cadena
             String allUsernames = users.stream()
-                    .map(User::getUsername) // Extrae el nombre de cada usuario
-                    .collect(Collectors.joining(", ")); // Los nombres se unen con una coma
+                    .map(User::getUsername)
+                    .collect(Collectors.joining(", "));
             return ResponseEntity.ok(allUsernames);
         })
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay usuarios."));
     }
 
     @PostMapping("/delete")
-    public boolean deleteUsuario(@RequestBody String username) {
+    public ResponseEntity<?> deleteUsuario(@RequestBody String username) {
+        try {
+            userService.deleteUser(username);
+            return ResponseEntity.noContent().build();
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al eliminar el usuario"));
+        }
 
-        boolean exito = userService.deleteUser(username);
-
-        return exito;
     }
 }

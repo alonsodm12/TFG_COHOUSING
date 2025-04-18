@@ -1,16 +1,19 @@
 .page {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: linear-gradient(135deg, #e4dbe6, #d4d4d4);
-    color: #333;
-    padding: 0px; /* Agregado para evitar que el contenido se quede pegado al borde */
-  }
+  min-height: 100vh; /* Permite scroll si es necesario */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: url('../../../../public/images/fondo-register.png') center;
+  background-size: cover;
+  color: #333;
+  padding: 20px; /* Espaciado general */
+  overflow-y: auto;
+}
   
   .page h1 {
     font-size: 36px; /* Aumentado el tamaño de la fuente */
-    color: rgb(0, 0, 0);
+    color: #ffffff;
     margin-bottom: 10px; /* Mayor separación entre el título y el formulario */
     text-align: center;
     font-weight: 600;
@@ -18,8 +21,9 @@
   }
   
   .card {
+    color: #fff;
     margin-top: 30px;
-    background: #fff;
+    background: #2c2c2c;
     border-radius: 15px; /* Bordes más suaves */
     padding: 40px;
     width: 350px; /* Ampliada un poco la tarjeta */
@@ -27,14 +31,15 @@
     box-shadow: 0 45px 45px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
     transition: all 0.3s ease; /* Transición más suave */
     font-size: 22px;
-    border-color:#000000;
+    border-color:#ffffff;
     border: 10px;
     border-width: 10;
-    border-style:double;
+    border-style:inset;
+
   }
   
   .card h2 {
-    color: #000000;   
+    color: #ffffff;   
    }
 
   .card:hover {
@@ -118,6 +123,7 @@
   }
   
   .roleBox {
+    color: #333;
     padding: 12px 20px;
     font-size: 18px;
     border-radius: 12px;
@@ -135,4 +141,20 @@
     background-color: #a18cd1;
     color: white;
   }
+  .error {
+    color: #e74c3c;
+    background-color: #fcecec;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }
   
+  .success {
+    color: #2ecc71;
+    background-color: #e8f9f1;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }

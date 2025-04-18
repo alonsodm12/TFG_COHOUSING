@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.gestionusuarios.demo.DTOs.UserDTO;
 import com.gestionusuarios.demo.models.User;
 import com.gestionusuarios.demo.repository.UserRepository;
 
@@ -21,13 +22,17 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(String username, String email, String password, String role) {
-        if (userRepository.findByUsername(username).isPresent())
+    public User registerUser(UserDTO userDTO) {
+        if (userRepository.findByEmail(userDTO.email()).isPresent())
             throw new IllegalArgumentException("El usuario ya existe");
 
-        String codedPassword = passwordEncoder.encode(password);
+        if (!userDTO.role().equals("buscador") && !userDTO.role().equals("ofertante"))
+            throw new IllegalArgumentException("Rol inválido");
 
-        User usuario = new User(username, email, codedPassword, true, role);
+        String codedPassword = passwordEncoder.encode(userDTO.password());
+
+        User usuario = new User(userDTO.username(), userDTO.email(), codedPassword, true, userDTO.role(), userDTO.sociabilidad(), userDTO.tranquilidad(),
+                userDTO.compartirEspacios(), userDTO.limpieza(), userDTO.actividad());
 
         return userRepository.save(usuario);
     }
@@ -58,18 +63,20 @@ public class UserService {
         }
     }
 
-    public boolean deleteUser(String username) {
+    public void deleteUser(String username) {
 
         Optional<User> userOptional = userRepository.findByUsername(username);
 
-        if(userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             userRepository.delete(userOptional.get());
-            return true;
-        }
-        else{
+        } else {
             throw new UsernameNotFoundException("Usuario no existe");
         }
+    }
 
-            
+    public Optional<User> findByUsername(String username) {
+
+        return userRepository.findByUsername(username);
+
     }
 }
