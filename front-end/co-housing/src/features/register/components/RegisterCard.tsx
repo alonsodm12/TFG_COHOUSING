@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from '../pages/RegisterPage.module.css';
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterCard = () => {
   const [step, setStep] = useState(0);
@@ -47,7 +47,7 @@ export const RegisterCard = () => {
           }
           return res.json()
         })
-        .then(data => {
+        .then(() => {
           setSuccess('Registro completado correctamente');
           setTimeout(() => {
             navigate('/home');

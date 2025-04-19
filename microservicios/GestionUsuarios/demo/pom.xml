@@ -33,6 +33,13 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>9.0.0.CR1</version>
+		</dependency>
+
+
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>42.7.5</version>

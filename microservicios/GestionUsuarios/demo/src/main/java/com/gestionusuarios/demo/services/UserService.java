@@ -2,6 +2,8 @@ package com.gestionusuarios.demo.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,15 +26,17 @@ public class UserService {
 
     public User registerUser(UserDTO userDTO) {
         if (userRepository.findByEmail(userDTO.email()).isPresent())
-            throw new IllegalArgumentException("El usuario ya existe");
+            throw new IllegalArgumentException("El email ya ha sido registrado");
 
         if (!userDTO.role().equals("buscador") && !userDTO.role().equals("ofertante"))
             throw new IllegalArgumentException("Rol inválido");
 
         String codedPassword = passwordEncoder.encode(userDTO.password());
 
-        User usuario = new User(userDTO.username(), userDTO.email(), codedPassword, true, userDTO.role(), userDTO.sociabilidad(), userDTO.tranquilidad(),
-                userDTO.compartirEspacios(), userDTO.limpieza(), userDTO.actividad());
+        User usuario = new User(userDTO.username(), userDTO.email(), codedPassword, true, userDTO.role(),
+                userDTO.lifestyleDTO().sociabilidad(), userDTO.lifestyleDTO().tranquilidad(),
+                userDTO.lifestyleDTO().compartirEspacios(), userDTO.lifestyleDTO().limpieza(),
+                userDTO.lifestyleDTO().actividad());
 
         return userRepository.save(usuario);
     }
@@ -53,13 +57,13 @@ public class UserService {
             return Optional.empty();
     }
 
-    public Optional<List<User>> getUsers() {
+    public Optional<List<String>> getUsers() {
         List<User> usuarios = userRepository.findAll();
-
+        List<String> respuesta = usuarios.stream().map(User::toString).collect(Collectors.toList());
         if (usuarios.size() == 0) {
             return Optional.empty();
         } else {
-            return Optional.of(usuarios);
+            return Optional.of(respuesta);
         }
     }
 

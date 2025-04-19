@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -103,15 +104,14 @@ public class UserController {
     }
 
     @GetMapping("/usuarios")
-    public ResponseEntity<String> getUsuarios() {
-        Optional<List<User>> usuarios = userService.getUsers();
-        return usuarios.map(users -> {
-            String allUsernames = users.stream()
-                    .map(User::getUsername)
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.ok(allUsernames);
-        })
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay usuarios."));
+    public ResponseEntity<Map<String, List<String>>> getUsuarios() {
+        Optional<List<String>> usuarios = userService.getUsers();
+    
+        if (usuarios.isPresent()) {
+            return ResponseEntity.ok(Map.of("Usuarios", usuarios.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("Usuarios", List.of()));
+        }
     }
 
     @PostMapping("/delete")

@@ -7,18 +7,11 @@
   background: url('../../../../public/images/fondo-register.png') center;
   background-size: cover;
   color: #333;
-  padding: 20px; /* Espaciado general */
+  padding: 100px; /* Espaciado general */
   overflow-y: auto;
 }
   
-  .page h1 {
-    font-size: 36px; /* Aumentado el tamaño de la fuente */
-    color: #ffffff;
-    margin-bottom: 10px; /* Mayor separación entre el título y el formulario */
-    text-align: center;
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
+
   
   .card {
     color: #fff;

@@ -169,4 +169,12 @@ public class User implements UserDetails {
         this.actividad = actividad;
     }
 
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
+                + ", enabled=" + enabled + ", role=" + role + ", sociabilidad=" + sociabilidad + ", tranquilidad="
+                + tranquilidad + ", compartirEspacios=" + compartirEspacios + ", limpieza=" + limpieza + ", actividad="
+                + actividad + "]";
+    }
+
 }

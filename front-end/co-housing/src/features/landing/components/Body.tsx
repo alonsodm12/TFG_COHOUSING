@@ -16,8 +16,8 @@ export const Body: React.FC = () => {
   return (
     <section className={styles.container}>
       <div className={styles.headerText}>
-        <h1 className={styles.typingH1}>Bienvenido a ShareSpace</h1>
-        <p className={styles.typingP}>Tu espacio para crear y gestionar tu nueva vida compartida</p>
+        <h1 className={styles.typingH1}>BIENVENIDO A SHARE-SPACE</h1>
+        <p className={styles.typingP}>TU ESPACIO PARA CREAR Y GESTIONAR TU NUEVA VIDA COMPARTIDA</p>
       </div>
 
       <img
@@ -27,7 +27,7 @@ export const Body: React.FC = () => {
       />
 
       <button className={styles.button} onClick={handleStartClick}>
-        Empezar
+        EMPEZAR
       </button>
       <div className={styles.container}>
         {/* Usamos el componente Card con emoji y texto adicional */}
