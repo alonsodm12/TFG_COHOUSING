@@ -8,15 +8,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
 @Table(name = "users")
@@ -34,10 +31,11 @@ public class User implements UserDetails {
     private String username;
 
     @Schema(description = "Email del usuario")
-    @Column(unique = true, length = 100, nullable = false)
+
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(unique = false)
+    @Column(unique = false, nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -46,15 +44,36 @@ public class User implements UserDetails {
     @Column(name = "role")
     String role;
 
-    public User(String username, String email, String password, boolean enabled, String role) {
+    @Column(name = "sociabilidad")
+    int sociabilidad;
+
+    @Column(name = "tranquilidad")
+    int tranquilidad;
+
+    @Column(name = "compartirEspacios")
+    int compartirEspacios;
+
+    @Column(name = "limpieza")
+    int limpieza;
+
+    @Column(name = "actividad")
+    int actividad;
+
+    public User() {
+    }
+
+    public User(String username, String email, String password, boolean enabled, String role, int sociabilidad,
+            int tranquilidad, int compartirEspacios, int limpieza, int actividad) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.enabled = enabled;
         this.role = role;
-    }
-
-    public User() {
+        this.actividad = actividad;
+        this.compartirEspacios = compartirEspacios;
+        this.limpieza = limpieza;
+        this.tranquilidad = tranquilidad;
+        this.sociabilidad = sociabilidad;
     }
 
     @Override
@@ -62,44 +81,100 @@ public class User implements UserDetails {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public Long getId() {
+        return id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public String getRole() {
-        return this.role;
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public int getSociabilidad() {
+        return sociabilidad;
+    }
+
+    public void setSociabilidad(int sociabilidad) {
+        this.sociabilidad = sociabilidad;
+    }
+
+    public int getTranquilidad() {
+        return tranquilidad;
+    }
+
+    public void setTranquilidad(int tranquilidad) {
+        this.tranquilidad = tranquilidad;
+    }
+
+    public int getCompartirEspacios() {
+        return compartirEspacios;
+    }
+
+    public void setCompartirEspacios(int compartirEspacios) {
+        this.compartirEspacios = compartirEspacios;
+    }
+
+    public int getLimpieza() {
+        return limpieza;
+    }
+
+    public void setLimpieza(int limpieza) {
+        this.limpieza = limpieza;
+    }
+
+    public int getActividad() {
+        return actividad;
+    }
+
+    public void setActividad(int actividad) {
+        this.actividad = actividad;
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
+                + ", enabled=" + enabled + ", role=" + role + ", sociabilidad=" + sociabilidad + ", tranquilidad="
+                + tranquilidad + ", compartirEspacios=" + compartirEspacios + ", limpieza=" + limpieza + ", actividad="
+                + actividad + "]";
     }
 
 }

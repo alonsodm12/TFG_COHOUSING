@@ -26,15 +26,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build JAR
+      - name: Compilar micros a JAR
         run: |
           for dir in microservicios/*/; do
             echo "Compilando $dir"
-            cd "$dir"
-            if [ -f ./mvnw ]; then
-                mvn clean package || exit 1
+            cd "$dir/demo"
+            if [ -f pom.xml ]; then
+              mvn clean package || exit 1
             else
-                echo "No se encontró ./mvnw en $dir, saltando..."
+              echo "No se encontró pom.xml en $dir/demo, saltando..."
             fi
             cd - > /dev/null
           done
@@ -66,7 +66,7 @@ jobs:
 
       - name: Build and Push Docker images
         run: |
-          for dir in microservicios/*/; do
+          for dir in microservicios/*/demo; do
             nombre_micro=$(basename "$dir")
             echo "Procesando microservicio: $nombre_micro"
             cd "$dir"

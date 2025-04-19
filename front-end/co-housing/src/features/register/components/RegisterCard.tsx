@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from '../pages/RegisterPage.module.css';
+import { useNavigate } from "react-router-dom";
 
 export const RegisterCard = () => {
   const [step, setStep] = useState(0);
@@ -8,7 +9,18 @@ export const RegisterCard = () => {
     email: '',
     password: '',
     role: '',
+    lifestyle: {
+      sociable: 3,
+      tranquilo: 3,
+      compartir: 3,
+      orden: 3,
+      actividad: 3,
+    },
   });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,18 +31,30 @@ export const RegisterCard = () => {
   };
 
   const nextStep = () => {
-    if (step < 3) {
+    if (step < 4) {
       setStep(step + 1);
     } else {
       // Enviar datos a la API
-      fetch('http://localhost:8081/auth/register', {
+      fetch('http://localhost:8081/user/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       })
-        .then(res => res.json())
-        .then(data => {
-          console.log('Registro completado:', data);
+        .then(async (res) => {
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || "Error al registrar");
+          }
+          return res.json()
+        })
+        .then(() => {
+          setSuccess('Registro completado correctamente');
+          setTimeout(() => {
+            navigate('/home');
+          }, 2000); // pequeño delay para ver el mensaje
+        })
+        .catch(err => {
+          setError(err.message);
         });
     }
   };
@@ -42,9 +66,11 @@ export const RegisterCard = () => {
   return (
     <div>
       <div className={styles.card}>
-        {/* Progreso */}
+        {error && <div className={styles.error}>{error}</div>}
+        {success && <div className={styles.success}>{success}</div>}
+
         <div className={styles.progressDots}>
-          {[0, 1, 2, 3].map((_, index) => (
+          {[0, 1, 2, 3, 4].map((_, index) => (
             <span
               key={index}
               className={`${styles.dot} ${step === index ? styles.active : ''}`}
@@ -99,7 +125,7 @@ export const RegisterCard = () => {
         {step === 3 && (
           <div className={styles.step}>
             <h2>Elige tu rol</h2>
-            <p>¡Último paso!<br></br>¿Qué buscas ahora mismo?<br></br>Buscador : Buscas una nueva comunidad<br></br>Ofertante : Buscas gente para tu comunidad</p>
+            <p>¿Qué buscas ahora mismo?<br></br>Buscador : Buscas una nueva comunidad<br></br>Ofertante : Buscas gente para tu comunidad</p>
             <div className={styles.roles}>
               <div
                 className={`${styles.roleBox} ${formData.role === 'buscador' ? styles.selected : ''}`}
@@ -117,6 +143,43 @@ export const RegisterCard = () => {
           </div>
         )}
 
+        {step === 4 && (
+          <div className={styles.step}>
+            <h2>Conócete un poco más</h2>
+            <p>Ayúdanos a entender mejor tu estilo de vida.</p>
+            {[
+              { name: "sociable", label: "¿Qué tan sociable eres?" },
+              { name: "tranquilo", label: "¿Qué tan importante es para ti la tranquilidad?" },
+              { name: "compartir", label: "¿Qué tanto te gusta compartir espacios?" },
+              { name: "orden", label: "¿Cuánto valoras la limpieza y el orden?" },
+              { name: "actividad", label: "¿Prefieres una comunidad activa o más relajada?" },
+            ].map((q) => (
+              <div key={q.name} className={styles.question}>
+                <label>{q.label}</label>
+                <input
+                  type="range"
+                  min="1"
+                  max="5"
+                  value={formData.lifestyle[q.name as keyof typeof formData.lifestyle]}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      lifestyle: {
+                        ...formData.lifestyle,
+                        [q.name]: parseInt(e.target.value),
+                      },
+                    })
+                  }
+                />
+                <div className={styles.rangeLabels}>
+                  <span>1</span>
+                  <span>-5</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* BOTONES DE NAVEGACIÓN */}
         <div className={styles.navigation}>
           {step > 0 && (
@@ -125,7 +188,7 @@ export const RegisterCard = () => {
             </button>
           )}
           <button onClick={nextStep} className={styles.secondaryButton}>
-            {step < 3 ? '▶️' : 'Registrarse'}
+            {step < 4 ? '▶️' : 'Registrarse'}
           </button>
         </div>
       </div>

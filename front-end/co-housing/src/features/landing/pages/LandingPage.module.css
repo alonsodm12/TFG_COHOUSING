@@ -4,16 +4,21 @@
   justify-content: start;
   align-items: center;
   min-height: 100vh;
-  background: url('https://images.unsplash.com/photo-1687042268541-5cc60ad9d3de?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW9zJTIwd2FsbHBhcGVyfGVufDB8fDB8fHww') center;
+  background: url('../../../../public/images/fondo-landing.jpg') center;
   background-size: cover;
   color: #ffffff;
   text-align: center;
   font-size: 1.5rem;
   gap: 0px;
-  padding: 2rem; /* Asegura que los hijos respeten márgenes */
+  padding: 4rem; /* Asegura que los hijos respeten márgenes */
   box-sizing: border-box;
 }
-
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Asegura que el body ocupe toda la altura de la página */
+  background-color: #000; /* Si quieres un fondo negro para la página */
+}
 .container {
   display: flex;
   flex-direction: column;
@@ -34,7 +39,7 @@
   color: white;
   padding: 0.75rem 1.5rem;
   font-size: 1.5rem;
-  border: none;
+  border: 7px inset rgba(255, 255, 255, 0.596);
   border-radius: 10px;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
@@ -90,6 +95,11 @@
   text-align: center;
   transition: border-color 0.4s ease, box-shadow 0.4s ease;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  font-family: 'Lilita One', sans-serif;
+}
+
+.headerText p {
+  font-family: 'Lilita One', sans-serif;
 }
 
 .headerText h1,
@@ -131,7 +141,7 @@
 
 
 .cardsWrapper {
-  background-color: #3e423a;
+  background-color: #464646;
   border-radius: 16px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
   margin: 40px;
@@ -144,6 +154,7 @@
 .headerTitle {
   font-size: 30px;
   margin: 0;
+  font-family: 'Lilita One', sans-serif;
 }
 
 .loginButton {
@@ -160,19 +171,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: transparent;
-  color: white;
+  background-color: #ffffff; /* Gris oscuro */
+  color: rgb(0, 0, 0);
   padding: 20px;
   font-size: 14px;
-  width: 80%; /* Asegura que se expanda horizontalmente */
+  width: 100%; /* Ocupa toda la anchura de la página */
   box-sizing: border-box;
+  position: fixed; /* Fija el header en la parte superior */
   top: 0;
   left: 0;
-  z-index: 1000;
-}
-.headerLine {
-  width: 100vw; /* 100% del ancho de la ventana */
-  height: 2px;
-  background-color: rgb(0, 0, 0); /* O cualquier color que prefieras */
-  margin: 0;
+  z-index: 1000; /* Asegura que el header esté sobre otros elementos */
 }

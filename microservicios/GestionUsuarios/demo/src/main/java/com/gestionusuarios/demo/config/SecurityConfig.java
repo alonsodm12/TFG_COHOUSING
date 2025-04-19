@@ -40,10 +40,10 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/auth/login", "/auth/register", "/swagger-ui/**", "/v3/api-docs/**",
-                                "/swagger-ui.html")
+                        .requestMatchers("/user/login", "/user/register", "/swagger-ui/**", "/v3/api-docs/**",
+                                "/swagger-ui.html", "/user/delete")
                         .permitAll()
-                        .requestMatchers("/auth/usuarios").hasRole("buscador")
+                        .requestMatchers("/user/usuarios").hasRole("buscador")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
