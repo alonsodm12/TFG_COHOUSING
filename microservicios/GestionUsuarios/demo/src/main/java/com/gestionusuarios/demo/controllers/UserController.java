@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import com.gestionusuarios.demo.DTOs.AuthRequest;
 import com.gestionusuarios.demo.DTOs.AuthResponse;
 import com.gestionusuarios.demo.DTOs.UserDTO;
+import com.gestionusuarios.demo.DTOs.UserUpdateDTO;
 import com.gestionusuarios.demo.models.User;
 import com.gestionusuarios.demo.services.UserService;
 import com.gestionusuarios.demo.utils.JwtUtil;
@@ -124,5 +125,14 @@ public class UserController {
                     .body(Map.of("error", "Error al eliminar el usuario"));
         }
 
+    }
+
+    @PatchMapping("/usuario/{email}")
+    public ResponseEntity<?> modificarUsuario(@PathVariable String email, @RequestBody UserUpdateDTO usuario){
+        
+        User actualizado = userService.modificarUser(email,usuario).orElseThrow(() -> new RuntimeException("Error durante la modificacion del usuario"));
+
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("Usuario Modificado correctamente",actualizado.toString()));
+        
     }
 }

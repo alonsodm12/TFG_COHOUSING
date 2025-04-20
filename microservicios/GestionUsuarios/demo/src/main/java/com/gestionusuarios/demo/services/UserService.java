@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gestionusuarios.demo.DTOs.UserDTO;
+import com.gestionusuarios.demo.DTOs.UserUpdateDTO;
 import com.gestionusuarios.demo.models.User;
 import com.gestionusuarios.demo.repository.UserRepository;
 
@@ -76,6 +77,27 @@ public class UserService {
         } else {
             throw new UsernameNotFoundException("Usuario no existe");
         }
+    }
+
+    public Optional<User> modificarUser(String email, UserUpdateDTO user) {
+        User usuario = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    
+        if (user.username() != null) usuario.setUsername(user.username());
+        if (user.email() != null) usuario.setEmail(user.email());
+        if (user.password() != null) usuario.setPassword(user.password());
+        if (user.role() != null) usuario.setRole(user.role());
+    
+        if (user.lifestyleDTO() != null) {
+            if (user.lifestyleDTO().actividad() != 0) usuario.setActividad(user.lifestyleDTO().actividad());
+            if (user.lifestyleDTO().compartirEspacios() != 0) usuario.setCompartirEspacios(user.lifestyleDTO().compartirEspacios());
+            if (user.lifestyleDTO().limpieza() != 0) usuario.setLimpieza(user.lifestyleDTO().limpieza());
+            if (user.lifestyleDTO().sociabilidad() != 0) usuario.setSociabilidad(user.lifestyleDTO().sociabilidad());
+            if (user.lifestyleDTO().tranquilidad() != 0) usuario.setTranquilidad(user.lifestyleDTO().tranquilidad());
+        }
+    
+        User usuarioUpdate = userRepository.save(usuario);
+        return Optional.of(usuarioUpdate);
     }
 
     public Optional<User> findByUsername(String username) {

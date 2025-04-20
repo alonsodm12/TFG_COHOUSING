@@ -4,7 +4,7 @@
   justify-content: start;
   align-items: center;
   min-height: 100vh;
-  background: url('../../../../public/images/fondo-landing.jpg') center;
+  background: url('/images/fondo-landing.jpg') center;
   background-size: cover;
   color: #ffffff;
   text-align: center;
