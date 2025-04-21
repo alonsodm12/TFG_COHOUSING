@@ -1,21 +1,29 @@
 .header {
-    width: 100%;
-    max-width: 1200px; /* Añadimos esto */
-    margin: 0 auto;    /* Centramos el contenido */
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    z-index: 1000;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff; /* Gris oscuro */
+  color: rgb(0, 0, 0);
+  padding: 20px;
   
+  width: 100%; /* Ocupa toda la anchura de la página */
+  box-sizing: border-box;
+  position: fixed; /* Fija el header en la parte superior */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Asegura que el header esté sobre otros elementos */
+}
+.h1{
+  color: #ffffff;
+  font-size: larger;
+}
   .logo {
+    font-size: 30px;
+    margin: 0;
+    font-family: 'Lilita One', sans-serif;
     font-size: 1.8rem;
     font-weight: bold;
-    color: #2563eb; /* Azul tipo Tailwind blue-600 */
+    color: #000000; /* Azul tipo Tailwind blue-600 */
   }
   
   .nav {
@@ -24,6 +32,7 @@
     transform: translateX(-50%);
     display: flex;
     gap: 2rem;
+    font-size: 24px;
   }
   
   .nav a {

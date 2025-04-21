@@ -1,0 +1,152 @@
+.page {
+    min-height: 100vh; /* Permite scroll si es necesario */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: url('/public/images/fondo-register.png') center;
+    background-size: cover;
+    color: #333;
+    padding: 100px; /* Espaciado general */
+    overflow-y: auto;
+  }
+    
+  
+    
+    .card {
+      color: #fff;
+      margin-top: 30px;
+      background: #2c2c2c;
+      border-radius: 15px; /* Bordes más suaves */
+      padding: 40px;
+      width: 350px; /* Ampliada un poco la tarjeta */
+      text-align: left;
+      box-shadow: 0 45px 45px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
+      transition: all 0.3s ease; /* Transición más suave */
+      font-size: 22px;
+      border-color:#ffffff;
+      border: 10px;
+      border-width: 10;
+      border-style:inset;
+  
+    }
+    
+    .card h2 {
+      color: #ffffff;   
+     }
+  
+    .card:hover {
+      box-shadow: 0 35px 50px rgba(0, 0, 0, 0.2); /* Sombra más fuerte cuando se pasa el ratón */
+    }
+    
+    .step {
+      margin-bottom: 25px; /* Más espacio entre los pasos */
+      animation: fadeIn 0.5s ease;
+    }
+    
+    input {
+      margin-top: 15px;
+      font-size: 18px;
+      padding: 12px;
+      width: 100%;
+      border: 2px solid #e0e0e0; /* Agregado borde más sutil */
+      border-radius: 12px; /* Bordes más redondeados */
+      outline: none;
+      background: #f9f9f9; /* Fondo ligeramente más claro */
+      color: #333;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    
+    input:focus {
+      background: #fff;
+      border-color: #a18cd1; /* Color más destacable en el borde */
+      box-shadow: 0 0 8px #a18cd1; /* Sombra más pronunciada al hacer foco */
+    }
+    
+    button {
+      padding: 5px 5px ;
+      font-size: 20px;
+      background: #ffa15e;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 106, 0, 0.5);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    
+    .progressDots {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    .dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: #ccc;
+      margin: 0 5px;
+      transition: background-color 0.3s ease;
+    }
+    
+    .dot.active {
+      background-color: #a18cd1;
+    }
+    
+    .roles {
+      display: flex;
+      justify-content: center;
+      gap: 20px; /* Espaciado entre los roles */
+    }
+    
+    .roleBox {
+      color: #333;
+      padding: 12px 20px;
+      font-size: 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #f3f3f3;
+      transition: all 0.3s ease;
+    }
+    
+    .roleBox:hover {
+      background-color: #a18cd1;
+      color: white;
+    }
+    
+    .roleBox.selected {
+      background-color: #a18cd1;
+      color: white;
+    }
+    .error {
+      color: #e74c3c;
+      background-color: #fcecec;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .success {
+      color: #2ecc71;
+      background-color: #e8f9f1;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }

@@ -4,10 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -107,7 +106,7 @@ public class UserController {
     @GetMapping("/usuarios")
     public ResponseEntity<Map<String, List<String>>> getUsuarios() {
         Optional<List<String>> usuarios = userService.getUsers();
-    
+
         if (usuarios.isPresent()) {
             return ResponseEntity.ok(Map.of("Usuarios", usuarios.get()));
         } else {
@@ -115,8 +114,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<?> deleteUsuario(@RequestBody String username) {
+    @PostMapping("/delete/{username}")
+    public ResponseEntity<?> deleteUsuario(@PathVariable String username) {
         try {
             userService.deleteUser(username);
             return ResponseEntity.noContent().build();
@@ -128,11 +127,13 @@ public class UserController {
     }
 
     @PatchMapping("/usuario/{email}")
-    public ResponseEntity<?> modificarUsuario(@PathVariable String email, @RequestBody UserUpdateDTO usuario){
-        
-        User actualizado = userService.modificarUser(email,usuario).orElseThrow(() -> new RuntimeException("Error durante la modificacion del usuario"));
+    public ResponseEntity<?> modificarUsuario(@PathVariable String email, @RequestBody UserUpdateDTO usuario) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of("Usuario Modificado correctamente",actualizado.toString()));
-        
+        User actualizado = userService.modificarUser(email, usuario)
+                .orElseThrow(() -> new RuntimeException("Error durante la modificacion del usuario"));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Map.of("Usuario Modificado correctamente", actualizado.toString()));
+
     }
 }
