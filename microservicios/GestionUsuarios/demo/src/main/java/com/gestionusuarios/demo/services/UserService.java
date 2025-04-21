@@ -79,9 +79,8 @@ public class UserService {
         }
     }
 
-    public Optional<User> modificarUser(String email, UserUpdateDTO user) {
-        User usuario = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public Optional<User> modificarUser(String username, UserUpdateDTO user) {
+        User usuario = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     
         if (user.username() != null) usuario.setUsername(user.username());
         if (user.email() != null) usuario.setEmail(user.email());

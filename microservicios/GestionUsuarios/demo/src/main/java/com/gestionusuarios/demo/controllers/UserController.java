@@ -126,10 +126,10 @@ public class UserController {
 
     }
 
-    @PatchMapping("/usuario/{email}")
-    public ResponseEntity<?> modificarUsuario(@PathVariable String email, @RequestBody UserUpdateDTO usuario) {
+    @PatchMapping("/usuario/{username}")
+    public ResponseEntity<?> modificarUsuario(@PathVariable String username, @RequestBody UserUpdateDTO usuario) {
 
-        User actualizado = userService.modificarUser(email, usuario)
+        User actualizado = userService.modificarUser(username, usuario)
                 .orElseThrow(() -> new RuntimeException("Error durante la modificacion del usuario"));
 
         return ResponseEntity.status(HttpStatus.OK)

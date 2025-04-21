@@ -1,10 +1,13 @@
 import React from 'react';
 import styles from "../pages/PerfilPage.module.css";
+import { getUsernameFromToken } from '../../authUtils';
 
 const Body: React.FC = () => {
+
+    const username = getUsernameFromToken();
     const handleDeleteUser = async () => {
         try {
-          const response = await fetch('http://localhost:8080/api/usuarios/1', {
+          const response = await fetch('http://localhost:8081/user/delete/'+username, {
             method: 'DELETE',
           });
     
@@ -21,7 +24,7 @@ const Body: React.FC = () => {
     
       const handleEditUser = async () => {
         try {
-          const response = await fetch('http://localhost:8080/api/usuarios/1', {
+          const response = await fetch('http://localhost:8081/api/usuarios/1', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

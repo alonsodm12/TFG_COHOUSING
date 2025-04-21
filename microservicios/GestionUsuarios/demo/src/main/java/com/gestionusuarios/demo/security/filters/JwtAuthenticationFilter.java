@@ -60,9 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String username = jwtUtil.getUsernameFromToken(token);
 
                     String role = jwtUtil.getRoleFromToken(token);
-
-                    System.out.print("MARIOOO: " + role);
-
                     
                     UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
