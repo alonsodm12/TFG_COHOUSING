@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background: url('../../../../public/images/fondo-register.png') center;
+  background: url('/public/images/fondo-register.png') center;
   background-size: cover;
   color: #333;
   padding: 100px; /* Espaciado general */

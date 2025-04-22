@@ -9,12 +9,12 @@ export const RegisterCard = () => {
     email: '',
     password: '',
     role: '',
-    lifestyle: {
-      sociable: 3,
+    lifestyleDTO: {
       tranquilo: 3,
-      compartir: 3,
-      orden: 3,
       actividad: 3,
+      limpieza: 3,
+      compartirEspacios: 3,
+      sociabilidad: 3,
     },
   });
 
@@ -50,7 +50,7 @@ export const RegisterCard = () => {
         .then(() => {
           setSuccess('Registro completado correctamente');
           setTimeout(() => {
-            navigate('/home');
+            navigate('/TFG_COHOUSING/home');
           }, 2000); // pequeño delay para ver el mensaje
         })
         .catch(err => {
@@ -148,11 +148,11 @@ export const RegisterCard = () => {
             <h2>Conócete un poco más</h2>
             <p>Ayúdanos a entender mejor tu estilo de vida.</p>
             {[
-              { name: "sociable", label: "¿Qué tan sociable eres?" },
               { name: "tranquilo", label: "¿Qué tan importante es para ti la tranquilidad?" },
-              { name: "compartir", label: "¿Qué tanto te gusta compartir espacios?" },
-              { name: "orden", label: "¿Cuánto valoras la limpieza y el orden?" },
               { name: "actividad", label: "¿Prefieres una comunidad activa o más relajada?" },
+              { name: "limpieza", label: "¿Cuánto valoras la limpieza y el orden?" },
+              { name: "compartirEspacios", label: "¿Qué tanto te gusta compartir espacios?" },
+              { name: "sociabilidad", label: "¿Qué tan sociable eres?" },
             ].map((q) => (
               <div key={q.name} className={styles.question}>
                 <label>{q.label}</label>
@@ -160,12 +160,12 @@ export const RegisterCard = () => {
                   type="range"
                   min="1"
                   max="5"
-                  value={formData.lifestyle[q.name as keyof typeof formData.lifestyle]}
+                  value={formData.lifestyleDTO[q.name as keyof typeof formData.lifestyleDTO]}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      lifestyle: {
-                        ...formData.lifestyle,
+                      lifestyleDTO: {
+                        ...formData.lifestyleDTO,
                         [q.name]: parseInt(e.target.value),
                       },
                     })

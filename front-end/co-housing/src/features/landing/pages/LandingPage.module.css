@@ -4,13 +4,13 @@
   justify-content: start;
   align-items: center;
   min-height: 100vh;
-  background: url('../../../../public/images/fondo-landing.jpg') center;
+   background: url('/images/prueba2.jpg') center; 
+  
   background-size: cover;
-  color: #ffffff;
+  color: #000000;
   text-align: center;
   font-size: 1.5rem;
   gap: 0px;
-  padding: 4rem; /* Asegura que los hijos respeten márgenes */
   box-sizing: border-box;
 }
 html, body {
@@ -25,7 +25,8 @@ html, body {
   align-items: center; /* Esto centra horizontalmente */
   justify-content: center;
   text-align: center;
-  margin-top: 51px;
+
+  
 }
 
 .logo {
@@ -38,9 +39,9 @@ html, body {
   background-color: #27a847;;
   color: white;
   padding: 0.75rem 1.5rem;
-  font-size: 1.5rem;
-  border: 7px inset rgba(255, 255, 255, 0.596);
-  border-radius: 10px;
+  font-size: 1.2rem;
+  border: 2px inset rgba(255, 255, 255, 0.596);
+  border-radius: 30px;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
@@ -54,27 +55,29 @@ html, body {
 /* Contenedor de las tarjetas */
 .cardsContainer {
   display: flex;
-  flex-wrap: wrap; /* Importante para que se distribuyan en varias filas si es necesario */
   gap: 20px;
   justify-content: center;
   margin-top: 40px;
+  background-color: #ebe9fd; /* o cualquier otro color */
+  padding: 2rem 0;
 }
 
 /* Estilos para cada tarjeta */
 .card {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
+  color: #000;
   padding: 20px;
   border-radius: 8px;
   width: 250px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(206, 133, 255, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   margin-bottom: 20px;
 }
 
 .card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 16px rgba(119, 0, 255, 0.3);
 }
 
 .card h2 {
@@ -84,27 +87,34 @@ html, body {
 
 .card p {
   font-size: 1rem;
-  color: #bbb;
+  color: #000000;
 }
 
 .headerText {
-  border: 7px solid rgba(255, 255, 255, 0.596);
-  padding: 20px 40px;
+  border: 37px  rgba(216, 0, 0, 0.596);
+  padding: 20px 20px;
   border-radius: 50px;
   display: inline-block;
   text-align: center;
   transition: border-color 0.4s ease, box-shadow 0.4s ease;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(243, 243, 243, 0.2);
   font-family: 'Lilita One', sans-serif;
+  margin-top: 140px;
+  margin-bottom: 50px;
 }
 
 .headerText p {
-  font-family: 'Lilita One', sans-serif;
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+}
+
+.headerText h1 {
+  font-size: 55px;
 }
 
 .headerText h1,
 .headerText p {
-  color: white;
+  color: rgb(0, 0, 0);
   position: relative;
   transition: color 0.3s ease;
 }
@@ -115,7 +125,7 @@ html, body {
   position: absolute;
   width: 100%;
   height: 2px;
-  background: white;
+  background: rgb(255, 0, 0);
   bottom: -5px;
   left: 0;
   transform: scaleX(0);
@@ -124,30 +134,30 @@ html, body {
 }
 
 .headerText:hover {
-  border-color: #ff5e5e; /* Cambia el color del óvalo */
-  box-shadow: 0 0 20px rgba(255, 94, 94, 0.6); /* Añade efecto glow */
+  border-color: #f34646; /* Cambia el color del óvalo */
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); /* Añade efecto glow */
 }
 
 .headerText:hover h1,
 .headerText:hover p {
-  color: #eb8a8a; /* Color neón guapo */
+  color: #ff0101; /* Color neón guapo */
 }
 
 .headerText:hover h1::after,
 .headerText:hover p::after {
   transform: scaleX(1);
-  background: #ff5e5e;
+  background: #af1111;
 }
 
 
 .cardsWrapper {
-  background-color: #464646;
-  border-radius: 16px;
+  background-color: #ebe9fd;
+  color: #000000;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
   margin: 40px;
-  max-width: 1200px;
-  width: 100%;
-  border: 1px solid #444;
+  width: 100vw; /* ocupa el ancho completo de la pantalla */
+  border: 1px solid #000000;
+  
 }
 
 
@@ -180,5 +190,49 @@ html, body {
   position: fixed; /* Fija el header en la parte superior */
   top: 0;
   left: 0;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000; /* Asegura que el header esté sobre otros elementos */
+}
+
+.footer{
+  background-color: #0c1841;
+  color: #ffffff;
+
+  width: 100vw; /* ocupa el ancho completo de la pantalla */
+}
+.imagecontainer {
+  display: flex;
+  gap: 0px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.imageWrapper {
+  text-align: center;
+}
+
+.image {
+  width: 351px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.image2 {
+  width: 348px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.image:hover,
+.image2:hover {
+  transform: scale(1.1) rotate(1.2deg);
+  filter: brightness(1.1) saturate(1.2);
+}
+
+.caption {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #555;
 }
