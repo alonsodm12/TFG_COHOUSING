@@ -1,19 +1,26 @@
 import React from 'react';
 import styles from "../pages/PerfilPage.module.css";
 import { getUsernameFromToken } from '../../authUtils';
-
+import { useNavigate } from "react-router-dom";
 const Body: React.FC = () => {
-
+    const navigate = useNavigate();
     const username = getUsernameFromToken();
+    const token = localStorage.getItem('token');
+    console.log(username);
     const handleDeleteUser = async () => {
         try {
           const response = await fetch('http://localhost:8081/user/delete/'+username, {
-            method: 'DELETE',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
           });
     
           if (response.ok) {
             console.log('Usuario eliminado con éxito');
             alert('Usuario eliminado');
+            navigate("/TFG_COHOUSING/");
           } else {
             console.error('Error al eliminar el usuario');
           }
@@ -22,35 +29,8 @@ const Body: React.FC = () => {
         }
       };
     
-      const handleEditUser = async () => {
-        try {
-          const response = await fetch('http://localhost:8081/api/usuarios/1', {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              username: 'alonso_actualizado',
-              email: 'nuevoemail@example.com',
-              password: 'nuevaclave123',
-              role: 'buscador',
-              sociabilidad: 3,
-              tranquilidad: 4,
-              compartirEspacios: 2,
-              limpieza: 5,
-              actividad: 1,
-            }),
-          });
-    
-          if (response.ok) {
-            console.log('Usuario modificado con éxito');
-            alert('Datos modificados');
-          } else {
-            console.error('Error al modificar el usuario');
-          }
-        } catch (error) {
-          console.error('Error de red:', error);
-        }
+      const handleEditUser = () => {
+        navigate("/TFG_COHOUSING/registro");
       };
     
 

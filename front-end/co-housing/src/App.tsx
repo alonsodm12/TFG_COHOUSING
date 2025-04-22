@@ -15,6 +15,7 @@ export const App = () => {
       <Route path="/TFG_COHOUSING/home" element={<HomePage />} />
       <Route path="/TFG_COHOUSING/login" element={<LoginPage />} />
       <Route path="/TFG_COHOUSING/perfil" element={<PerfilPage />} />
+      <Route path="/TFG_COHOUSING/register" element={<RegisterPage />} />
     </Routes>
   );
 

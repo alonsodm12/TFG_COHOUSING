@@ -4,7 +4,7 @@
   justify-content: start;
   align-items: center;
   min-height: 100vh;
-   background: url('/images/prueba11.jpg') center; 
+   background: url('/images/prueba2.jpg') center; 
   
   background-size: cover;
   color: #000000;
@@ -40,7 +40,7 @@ html, body {
   color: white;
   padding: 0.75rem 1.5rem;
   font-size: 1.2rem;
-  border: 7px inset rgba(255, 255, 255, 0.596);
+  border: 2px inset rgba(255, 255, 255, 0.596);
   border-radius: 30px;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
@@ -100,6 +100,7 @@ html, body {
   box-shadow: 0 0 10px rgba(243, 243, 243, 0.2);
   font-family: 'Lilita One', sans-serif;
   margin-top: 140px;
+  margin-bottom: 50px;
 }
 
 .headerText p {
@@ -201,7 +202,7 @@ html, body {
 }
 .imagecontainer {
   display: flex;
-  gap: 20px;
+  gap: 0px;
   justify-content: center;
   align-items: flex-start;
 }
@@ -211,14 +212,22 @@ html, body {
 }
 
 .image {
-  width: 300px;
+  width: 351px;
   transition: transform 0.3s ease, filter 0.3s ease;
   border-radius: 10px;
   cursor: pointer;
 }
 
-.image:hover {
-  transform: scale(1.05) rotate(1deg);
+.image2 {
+  width: 348px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.image:hover,
+.image2:hover {
+  transform: scale(1.1) rotate(1.2deg);
   filter: brightness(1.1) saturate(1.2);
 }
 

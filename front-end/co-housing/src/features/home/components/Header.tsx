@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
 
         {menuOpen && (
           <div className={styles.dropdown}>
-            <a href="/perfil">Perfil</a>
+            <a href="/TFG_COHOUSING/perfil">Perfil</a>
             <a href="/configuracion">Configuración</a>
             <a href="/logout">Cerrar sesión</a>
           </div>

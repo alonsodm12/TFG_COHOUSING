@@ -22,15 +22,17 @@ export const Body: React.FC = () => {
 
       <div className={styles.imagecontainer}>
         <div className={styles.imageWrapper}>
-          <img src="/TFG_COHOUSING/images/new-izq.png" alt="Imagen 1" className={styles.image} />
-          <p className={styles.caption}>¿Buscas una nueva comunidad?</p>
+          <img src="/TFG_COHOUSING/images/derecha3.png" alt="Imagen 1" className={styles.image} />
+          <p className={styles.caption}>🏘️¿Buscas una nueva comunidad?</p>
         </div>
         <div className={styles.imageWrapper}>
-          <img src="/TFG_COHOUSING/images/new-izq.png" alt="Imagen 2" className={styles.image} />
-          <p className={styles.caption}>¿Buscas integrantes para tu comunidad?</p>
+          <img src="/TFG_COHOUSING/images/derecha5.png" alt="Imagen 2" className={styles.image2} />
+          <p className={styles.caption}>🧍¿Buscas un nuevo miembro?</p>
         </div>
+
+
       </div>
-      <p>Comienza a formar parte de este nueva forma de vida</p>
+      <p>Únete a esta nueva forma de vida</p>
       <button className={styles.button} onClick={handleStartClick}>
         COMENZAR AHORA
       </button>
