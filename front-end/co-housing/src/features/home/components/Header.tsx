@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "../pages/HomePage.module.css";
-import { getRoleFromToken, getUsernameFromToken } from "../../authUtils";
+import { getRoleFromToken } from "../../authUtils";
 
 export const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
