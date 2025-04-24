@@ -1,5 +1,7 @@
 package com.gestioncomunidades.demo.models;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +38,12 @@ public class Community {
 
     @Column(name = "actividad")
     int actividad;
+
+    @Column(name = "integrantes")
+    List<Long> integrantes;
+
+    @Column(name = "admin", unique = true, nullable = false)
+    Long idAdmin;
 
     public Community() {
     }
