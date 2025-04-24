@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionusuarios.demo.DTOs.AuthRequest;
 import com.gestionusuarios.demo.DTOs.AuthResponse;
+import com.gestionusuarios.demo.DTOs.LifestyleDTO;
 import com.gestionusuarios.demo.DTOs.UserDTO;
 import com.gestionusuarios.demo.DTOs.UserUpdateDTO;
 import com.gestionusuarios.demo.models.User;
@@ -136,4 +137,23 @@ public class UserController {
                 .body(Map.of("Usuario Modificado correctamente", actualizado.toString()));
 
     }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getUsuario(@PathVariable String username){
+        Optional<User> usuario = userService.findByUsername(username);
+
+        if (usuario.isPresent()){
+            LifestyleDTO lifestyleDTO = new LifestyleDTO(usuario.get().getTranquilidad(), usuario.get().getActividad(), usuario.get().getLimpieza(), usuario.get().getCompartirEspacios(), usuario.get().getSociabilidad());
+
+            UserDTO userDto = new UserDTO(usuario.get().getUsername(),usuario.get().getPassword(),usuario.get().getRole(),usuario.get().getEmail(),lifestyleDTO);
+            
+            return ResponseEntity.status(HttpStatus.OK).body(userDto);
+        }
+
+        return ResponseEntity.ofNullable("Error en la consulta del usuario");
+
+        
+            
+    }
+
 }

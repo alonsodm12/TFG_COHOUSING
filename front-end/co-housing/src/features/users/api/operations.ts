@@ -22,8 +22,8 @@ export const updateUser = async (data: UpdateUserProfile) => {
 };
 
 //Get usuario
-export const fetchUserById = async (id: number) => {
-  const response = await fetch(`${API_BASE}/${id}`);
+export const fetchUserByUsername = async (username: string | null) => {
+  const response = await fetch(`${API_BASE}/${username}`);
   if (!response.ok) {
     throw new Error("Error al obtener los datos del usuario");
   }
@@ -51,7 +51,7 @@ export const createUser = async (data: UserProfile) => {
 
 //Post delete usuario
 
-export const deleteUser = async (username: String) => {
+export const deleteUser = async (username: string) => {
   const response = await fetch(`${API_BASE}/delete/${username}`, {
     method: "DELETE",
     headers: {

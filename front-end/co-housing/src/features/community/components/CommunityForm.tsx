@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { UpdateUserProfile, UserProfile } from "../api/types";
+import { UpdateCommunityProfile, CommunityProfile } from "../api/types";
 
 type UserFormProps = {
-    initialData?: Partial<UserProfile>;
-    onSubmit: (data : UpdateUserProfile) => void;
+    initialData?: Partial<CommunityProfile>;
+    onSubmit: (data : UpdateCommunityProfile) => void;
 }
 
-export const UserForm = ({ initialData = {}, onSubmit }: UserFormProps) => {
-    const [formData, setFormData] = useState<UpdateUserProfile>({
+export const CommunityForm = ({ initialData = {}, onSubmit }: UserFormProps) => {
+    const [formData, setFormData] = useState<UpdateCommunityProfile>({
         username: initialData.username || '',
         email: initialData.email || '',
         password: '',
@@ -38,11 +38,9 @@ export const UserForm = ({ initialData = {}, onSubmit }: UserFormProps) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <input name="username" value={formData.username} onChange={handleChange} placeholder="Nombre" />
-            <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
-            <input name="password" value={formData.password} onChange={handleChange} placeholder="Password" />
-            <input name="role" value={formData.role} onChange={handleChange} placeholder="role" />
-            
+            <input name="name" value={formData.username} onChange={handleChange} placeholder="Nombre" />
+            <input name="description" value={formData.email} onChange={handleChange} placeholder="Email" />
+            <input name="imagenes" value={formData.imagenes} onChange={handleChange} placeholder="imagenes" />     
         </form>
     )
 }
