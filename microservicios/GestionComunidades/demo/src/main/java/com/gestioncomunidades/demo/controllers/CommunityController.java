@@ -2,8 +2,10 @@ package com.gestioncomunidades.demo.controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +35,16 @@ public class CommunityController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Comunidades", comunidades.toString()));
     }
 
+    @GetMapping("/{communityname}")
+    public ResponseEntity<?> obtenerComunidad(@PathVariable String communityName){
+        Optional<CommunityDTO> comunidad = this.communityServices.obtenerComunidad(communityName);
+
+        if(comunidad.isPresent())
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(comunidad);
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
     @PostMapping("/comunidad")
     ResponseEntity<?> crearComunidad(CommunityDTO communityDTO) {
         try {
@@ -58,7 +70,10 @@ public class CommunityController {
     @PostMapping("/delete/{communityname}")
     public ResponseEntity<?> deleteCommunity(@PathVariable String communityname){
         try{
-            communityServices.deleteUser(communityname);
+            communityServices.deleteCommunity(communityname);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comunidad: "+communityname+" borrada correctamente");
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error borrando la comunidad: " + communityname);
         }
     }
 
