@@ -16,6 +16,11 @@ export interface UserProfile {
     lifestyleDTO: LifestyleDTO;
 }
 
+export interface UserLogin {
+    username: string;
+    password: string;
+}
+
 //Ambas interfaces destinadas a método patch
 export type UpdateUserProfile = Partial<UserProfile>;
 export type UpdateLifestyleDTO = Partial<LifestyleDTO>;

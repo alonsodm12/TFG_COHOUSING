@@ -1,26 +1,25 @@
 // features/user/pages/UserProfilePage.tsx
 import { useUser } from "../hook/useUser";
-import { useNavigate } from "react-router-dom";
-import styles from "./UserProfilePage.module.css";
-import { getRoleFromToken, getUsernameFromToken } from "@/features/authUtils";
 
-const rol: string | null = getRoleFromToken();
-const username: string | null = getUsernameFromToken();
+import common from "../../../index.css";
+
+import { Header } from "../../ui/Header/Header";
+import { Footer } from "../../ui/Footer/Footer";
+import BodyHero from "../components/BodyHero";
 
 export const UserHomePage = () => {
-  const { user, loading } = useUser(username); // ← aquí podrías meter el ID logueado
-  const navigate = useNavigate();
 
-  if (rol === "ROL_Ofertante") return < />;
+  //const { user, loading } = useUser(username); // ← aquí podrías meter el ID logueado
 
-  if (!user) return <p>No se pudo cargar el perfil.</p>;
+  //if (!user) return <p>{alonso} No se pudo cargar el perfil.</p>;
 
   return (
-    <div className={styles.container}>
-      <h2>Bienvenido</h2>
-      <p>
-        <strong>Nombre:</strong> {user.username}
-      </p>
+    <div id="root">
+      <Header />
+      <main className="page">
+        <BodyHero />
+      </main>
+      <Footer/>  
     </div>
   );
 };

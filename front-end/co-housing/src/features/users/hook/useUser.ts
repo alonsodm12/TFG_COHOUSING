@@ -8,10 +8,20 @@ export const useUser = (name: string | null) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserByUsername(name)
-      .then(setUser)
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    const loadUser = async () => {
+      try {
+        if (name) {
+          const data = await fetchUserByUsername(name);
+          setUser(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
   }, [name]);
 
   return { user, loading };

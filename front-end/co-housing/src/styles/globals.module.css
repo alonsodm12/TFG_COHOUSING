@@ -1,0 +1,74 @@
+/* global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilo personalizado para el header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.nav a:hover {
+  color: #2563eb; /* Tailwind blue-600 */
+}
+
+.profileImg {
+  border: 1px solid #ccc;
+}
+
+.dropdown a {
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: #333;
+}
+
+.dropdown a:hover {
+  background-color: #f1f1f1;
+}
+.button {
+  background-color: #27a847;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.2rem;
+  border: 2px inset rgba(255, 255, 255, 0.596);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  background-color: #1e8137;
+}
+
+/* Estilos del header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.nav a:hover {
+  color: #2563eb;
+}
+
+.profileImg {
+  border: 1px solid #ccc;
+}
+
+.dropdown a:hover {
+  background-color: #f1f1f1;
+}

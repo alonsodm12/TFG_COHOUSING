@@ -7,14 +7,15 @@ import { deleteUser } from "../api/operations";
 import { getUsernameFromToken } from "@/features/authUtils";
 import { useState } from "react";
 
-const [error, setError] = useState("");
-const [message, setMessage] = useState("");
+
 
 const username: string | null = getUsernameFromToken();
 
 
 //Esto abria que meterlo en un hook
 const handleRemove = async (e: React.FormEvent) => {
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   e.preventDefault();
 
   setError("");

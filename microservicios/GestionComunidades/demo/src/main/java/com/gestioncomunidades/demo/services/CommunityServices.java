@@ -37,7 +37,7 @@ public class CommunityServices {
     }
 
     public Optional<CommunityDTO> obtenerComunidad(String communityname){
-        Optional<Community> comunidad = communityRepository.findByCommunityName(communityname);
+        Optional<Community> comunidad = communityRepository.findByName(communityname);
 
         if(comunidad.isPresent()){
             CommunityDTO comunidadDTO = communityMapper.toDto(comunidad.get());
@@ -47,7 +47,7 @@ public class CommunityServices {
     }
 
     public Optional<Community> modificarCommunity(String communityName, CommunityDTO communityDTO){
-        Community comunidad = communityRepository.findByCommunityName(communityName).orElseThrow(() -> new RuntimeException("Comunidad no encontrada"));
+        Community comunidad = communityRepository.findByName(communityName).orElseThrow(() -> new RuntimeException("Comunidad no encontrada"));
 
         if (communityDTO.name() != null) comunidad.setName(communityDTO.name());
         if (communityDTO.descripcion() != null) comunidad.setDescription(communityDTO.descripcion());
@@ -66,7 +66,7 @@ public class CommunityServices {
     }
 
     public void deleteCommunity(String communityName) throws Exception{
-        Optional<Community> communityOptional = communityRepository.findByCommunityName(communityName);
+        Optional<Community> communityOptional = communityRepository.findByName(communityName);
 
         if (communityOptional.isPresent())
             communityRepository.delete(communityOptional.get());

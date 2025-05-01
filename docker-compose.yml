@@ -12,20 +12,20 @@ services:
     networks:
       - cohousing
     depends_on:
-      - postgres
+      - postgres-usuarios
 
-  #notificaciones:
-   # build:
-    #  context: ./microservicios/Notificaciones
-     # dockerfile: Dockerfile
-    #ports:
-      #- "8082:8080"
-    #environment:
-      #- SPRING_PROFILES_ACTIVE=dev
-    #networks:
-      #- cohousing
-    #depends_on:
-      #- postgres
+  gestion-comunidades:
+    build:
+      context: ./microservicios/GestionComunidades/demo
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - cohousing
+    depends_on:
+      - postgres-comunidades
 
   frontend:
     build:
@@ -41,22 +41,36 @@ services:
       - ./front-end/co-housing:/app
       - /app/node_modules
 
-  postgres:
+  postgres-usuarios:
     image: postgres:14
     environment:
       POSTGRES_USER: cohousing
       POSTGRES_PASSWORD: cohousing123
       POSTGRES_DB: cohousingdb
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Cambié el puerto para evitar conflictos
     networks:
       - cohousing
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata-usuarios:/var/lib/postgresql/data
+
+  postgres-comunidades:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: cohousing
+      POSTGRES_PASSWORD: cohousing123
+      POSTGRES_DB: comunidadesdb
+    ports:
+      - "5434:5432"  # Cambié el puerto para evitar conflictos
+    networks:
+      - cohousing
+    volumes:
+      - pgdata-comunidades:/var/lib/postgresql/data
 
 networks:
   cohousing:
     driver: bridge
 
 volumes:
-  pgdata:
+  pgdata-usuarios:
+  pgdata-comunidades:

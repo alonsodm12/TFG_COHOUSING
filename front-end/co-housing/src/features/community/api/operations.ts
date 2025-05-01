@@ -3,13 +3,14 @@
 import { UpdateCommunityProfile, CommunityProfile } from "./type";
 
 const API_BASE: String = "http://localhost:8081/community";
-
+const token = localStorage.getItem('token');
 //Patch comunidad
 export const updateCommunity = async (data: UpdateCommunityProfile) => {
   const response = await fetch(`${API_BASE}/update`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -38,6 +39,7 @@ export const createCommunity = async (data: CommunityProfile) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -56,6 +58,7 @@ export const deleteCommunity = async (communityname: string) => {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
     },
   });
 

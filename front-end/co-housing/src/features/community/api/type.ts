@@ -11,7 +11,7 @@ export interface LifestyleDTO {
 export interface CommunityProfile {
     name: string;
     descripcion: string;
-    idAdmin: number;
+    idAdmin: string;
     lifestyleDTO: LifestyleDTO
 }
 
