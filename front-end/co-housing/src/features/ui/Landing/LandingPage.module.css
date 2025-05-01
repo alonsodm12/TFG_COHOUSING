@@ -1,0 +1,160 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* ================= Header ================== */
+
+.headerText {
+  padding: 20px 20px;
+  border-radius: 50px;
+  display: inline-block;
+  border-width: 6px;
+  text-align: center;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 0 10px rgba(243, 243, 243, 0.2);
+  font-family: 'Lilita One', sans-serif;
+  margin-top: 10px;
+  margin-bottom: 70px;
+}
+
+.headerText p {
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+}
+
+.headerText h1 {
+  font-size: 55px;
+}
+
+.headerText h1,
+.headerText p {
+  color: rgb(0, 0, 0);
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.headerText:hover {
+  border-color: #f34646;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+}
+
+.headerText:hover h1,
+.headerText:hover p {
+  color: #ff0101;
+}
+
+/* ============== Imágenes =============== */
+
+.imagecontainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.imageWrapper {
+  text-align: center;
+}
+
+.image, .image2 {
+  width: 100%;
+  max-width: 350px;
+  border-radius: 10px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  cursor: pointer;
+}
+
+.image:hover, .image2:hover {
+  transform: scale(1.1) rotate(1.2deg);
+  filter: brightness(1.1) saturate(1.2);
+}
+
+.caption {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #555;
+}
+
+/* ============== Botón =============== */
+
+.button {
+  margin-top: 2rem;
+  padding: 0.8rem 2rem;
+  background-color: #0c1841;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #1e2e68;
+}
+
+/* ============= Tarjetas ============== */
+
+.cardsWrapper {
+  background-color: #ebe9fd;
+  color: #000000;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  margin: 40px auto;
+  width: 100%;
+  max-width: 1200px;
+
+  padding: 2rem 1rem;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.cardsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.typingP {
+  font-size: 30px;
+}
+
+
+
+/* ============ Responsive ============== */
+
+@media (max-width: 768px) {
+  .headerText h1 {
+    font-size: 36px;
+  }
+
+  .headerText p {
+    font-size: 16px;
+  }
+
+  .imagecontainer {
+    flex-direction: column;
+  }
+
+  .cardsContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .button {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .headerText {
+    margin-top: 60px;
+    margin-bottom: 30px;
+  }
+}

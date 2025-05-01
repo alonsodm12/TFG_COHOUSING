@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from '../pages/RegisterPage.module.css';
 import { useNavigate } from "react-router-dom";
+import { createUser } from '../../../features/users/api/operations';
 
 export const RegisterCard = () => {
   const [step, setStep] = useState(0);
@@ -30,10 +31,26 @@ export const RegisterCard = () => {
     setFormData({ ...formData, role });
   };
 
-  const nextStep = () => {
+  const nextStep = async() => {
     if (step < 4) {
       setStep(step + 1);
     } else {
+      try{
+        
+        const response = await createUser(formData);
+      
+        if (!response.ok) {
+          throw new Error("Error al registrar usuario");
+        }
+                  
+        //localStorage.setItem('token', response["Login correcto: "].token);
+                      
+        setSuccess("Registro del usuario correctamente");
+        navigate('/TFG_COHOUSING/home');
+        return response.json();
+      }catch (err){
+        setError((err as Error).message);
+      }
       // Enviar datos a la API
       fetch('http://localhost:8081/user/register', {
         method: 'POST',

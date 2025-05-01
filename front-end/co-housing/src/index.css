@@ -1,2 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply px-6 py-2 rounded-xl font-semibold text-white bg-blue-600 hover:bg-blue-700 transition duration-300 ease-in-out shadow-md;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-500 hover:bg-gray-600;
+  }
+
+  .btn-outline {
+    @apply border border-blue-600 text-blue-600 bg-transparent hover:bg-blue-600 hover:text-white;
+  }
+
+
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.page {
+  flex: 1;
+  display: flex;
+  padding-top: 4rem;
+  background: url('/public/images/prueba55.jpg') center;
+  background-size: cover;
+  flex-direction: column;
+  align-items: center;
+}
