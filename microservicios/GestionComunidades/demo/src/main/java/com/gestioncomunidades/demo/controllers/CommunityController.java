@@ -11,13 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.models.Community;
 import com.gestioncomunidades.demo.services.CommunityServices;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/comunidades")
@@ -30,8 +32,12 @@ public class CommunityController {
 
     @GetMapping("/obtener")
     ResponseEntity<?> obtenerComunidadesDisponibles() {
-        List<Community> comunidades = communityServices.obtenerComunidades().get();
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Comunidades", comunidades.toString()));
+        if(communityServices.obtenerComunidades().size()>0){
+            List<Community> comunidades = communityServices.obtenerComunidades();
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Comunidades", comunidades.toString()));    
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Error","No se ha encontrado ninguna comunidad"));
+
     }
 
     @GetMapping("/{communityname}")
@@ -45,8 +51,12 @@ public class CommunityController {
     }
 
     @PostMapping("/comunidad")
-    ResponseEntity<?> crearComunidad(CommunityDTO communityDTO) {
+    public ResponseEntity<?> crearComunidad(@RequestBody @Valid CommunityDTO communityDTO) {
         try {
+            System.out.println("MARIO  " + communityDTO.name());
+            System.out.println("MARIO  " + communityDTO.descripcion());
+            System.out.println("MARIO  " + communityDTO.toString());
+                        
             Community comunidad = communityServices.registrarComunidad(communityDTO);
             return ResponseEntity.status(HttpStatus.ACCEPTED)
                     .body(Map.of("Comunidad creada con exito: ", comunidad.getId().toString()));

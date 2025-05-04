@@ -6,7 +6,7 @@ services:
       context: ./microservicios/GestionUsuarios/demo
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
@@ -19,13 +19,24 @@ services:
       context: ./microservicios/GestionComunidades/demo
       dockerfile: Dockerfile
     ports:
-      - "8082:8081"
+      - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
       - cohousing
     depends_on:
       - postgres-comunidades
+
+  api-gateway:
+    build:
+      context: ./microservicios/ApiGateAway/demo
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - cohousing
 
   frontend:
     build:
