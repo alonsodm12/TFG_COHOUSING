@@ -22,7 +22,7 @@ public class Community {
     private String name;
 
     @Column(nullable = false, unique = true)
-    private String description;
+    private String descripcion;
 
     @Column(name = "sociabilidad")
     int sociabilidad;
@@ -48,10 +48,11 @@ public class Community {
     public Community() {
     }
 
-    public Community(String name, String description, int sociabilidad, int tranquilidad,
+    public Community(String name, String descripcion,Long idAdmin, int sociabilidad, int tranquilidad,
             int compartirEspacios, int limpieza, int actividad) {
         this.name = name;
-        this.description = description;
+        this.descripcion = descripcion;
+        this.idAdmin = idAdmin;
         this.sociabilidad = sociabilidad;
         this.tranquilidad = tranquilidad;
         this.compartirEspacios = compartirEspacios;
@@ -75,12 +76,12 @@ public class Community {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public int getSociabilidad() {
@@ -122,5 +123,22 @@ public class Community {
     public void setActividad(int actividad) {
         this.actividad = actividad;
     }
+
+    public List<Long> getIntegrantes() {
+        return integrantes;
+    }
+
+    public void setIntegrantes(List<Long> integrantes) {
+        this.integrantes = integrantes;
+    }
+
+    public Long getIdAdmin() {
+        return idAdmin;
+    }
+
+    public void setIdAdmin(Long idAdmin) {
+        this.idAdmin = idAdmin;
+    }
+
 
 }

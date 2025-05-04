@@ -2,7 +2,7 @@
 
 import { UpdateUserProfile, UserLogin, UserProfile } from "./types";
 
-const API_BASE: String = "http://localhost:8081/user";
+const API_BASE: String = "http://localhost:8080/user";
 const token = localStorage.getItem('token');
 //Patch usuario
 export const updateUser = async (data: UpdateUserProfile) => {
