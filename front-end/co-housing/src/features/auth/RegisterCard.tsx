@@ -33,7 +33,7 @@ export const RegisterCard = () => {
     if (step < 4) {
       setStep(step + 1);
     } else {
-      fetch('http://localhost:8081/user/register', {
+      fetch('http://localhost:8084/user/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

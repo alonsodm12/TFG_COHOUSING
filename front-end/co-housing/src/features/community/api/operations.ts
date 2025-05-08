@@ -2,7 +2,7 @@
 
 import { UpdateCommunityProfile, CommunityProfile } from "./type";
 
-const API_BASE: String = "http://localhost:8081/community";
+const API_BASE: String = "http://localhost:8084/community";
 const token = localStorage.getItem('token');
 //Patch comunidad
 export const updateCommunity = async (data: UpdateCommunityProfile) => {

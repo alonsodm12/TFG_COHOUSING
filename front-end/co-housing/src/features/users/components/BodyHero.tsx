@@ -36,7 +36,7 @@ const BodyHero: React.FC = () => {
           <div className="bg-white text-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition duration-300">
             <h2 className="text-xl font-semibold mb-2">Mi Perfil</h2>
             <p className="text-sm text-gray-600 mb-4">Edita tus datos personales y preferencias de comunidad.</p>
-            <Button to ="TFG_COHOUSING" label = "Editar perfil"/>
+            <Button to ="/TFG_COHOUSING/user/profile" label = "Editar perfil"/>
           </div>
 
           {/* Tarjeta 4 */}

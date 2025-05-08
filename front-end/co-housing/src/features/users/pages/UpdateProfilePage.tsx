@@ -4,7 +4,7 @@ import { updateUser } from '../api/operations';
 import { UserProfile } from '../api/types';
 import { UpdateUserForm } from '../components/UpdateUserForm';
 
-export const EditProfilePage = () => {
+export const UpdateProfilePage = () => {
   const location = useLocation();
   const user = location.state?.user as UserProfile;
 

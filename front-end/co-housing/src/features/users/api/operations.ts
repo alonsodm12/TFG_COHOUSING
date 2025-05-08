@@ -2,7 +2,7 @@
 
 import { UpdateUserProfile, UserLogin, UserProfile } from "./types";
 
-const API_BASE: String = "http://localhost:8080/user";
+const API_BASE: String = "http://localhost:8084/user";
 const token = localStorage.getItem('token');
 //Patch usuario
 export const updateUser = async (data: UpdateUserProfile) => {
@@ -41,7 +41,7 @@ export const fetchUserByUsername = async (username: string | null) => {
 //Post crear usuario
 
 export const createUser = async (data: UserProfile) => {
-  const response = await fetch(`${API_BASE}/create`, {
+  const response = await fetch(`${API_BASE}/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

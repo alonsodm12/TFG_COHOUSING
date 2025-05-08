@@ -9,7 +9,7 @@ export const Header: React.FC = () => {
   return (
     <header className={styles.header}>
       {/* Logo */}
-      <div className={styles.logo}>SHARE-HOUSE</div>
+      <div className={styles.headerTitle}>SHARE-HOUSE</div>
 
       {/* Navegación */}
       <nav className={styles.nav}>

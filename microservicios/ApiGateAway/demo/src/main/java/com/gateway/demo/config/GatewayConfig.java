@@ -44,7 +44,6 @@ public class GatewayConfig {
         .route("community-protected-routes", r -> r.path(
                     "/comunidades/**"
                 )
-                .filters(f -> f.filter(jwtAuthenticationFilter))
                 .uri("http://gestion-comunidades:8082"))
 
         .build();
