@@ -4,7 +4,7 @@ import styles from '../../../styles/globals.module.css';
 // Definir las propiedades (props) del botón
 interface ButtonProps {
   label: string;            // Nombre del botón (texto)
-  onClick: () => void;      // Función que se ejecuta al hacer clic
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;       // Propiedad opcional para deshabilitar el botón
   className?: string;       // Clase opcional para aplicar estilos personalizados
 }

@@ -1,82 +1,99 @@
 // features/user/pages/UserProfilePage.tsx
 import { useUser } from "../hook/useUser";
 import { useNavigate } from "react-router-dom";
-import { Spinner } from "../components/Spinner"; // asegúrate de tenerlo
+import { Spinner } from "../components/Spinner";
 import styles from "./UserProfilePage.module.css";
 import { deleteUser } from "../api/operations";
-import { getUsernameFromToken } from "@/features/authUtils";
+import { getUsernameFromToken } from "../../authUtils";
 import { useState } from "react";
-
-
-
-const username: string | null = getUsernameFromToken();
-
-
-//Esto abria que meterlo en un hook
-const handleRemove = async (e: React.FormEvent) => {
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-  e.preventDefault();
-
-  setError("");
-  setMessage("");
-
-  if (!username) {
-    setError("No se pudo obtener el nombre de usuario");
-    return;
-  }
-
-  try {
-    const response = await deleteUser(username);
-
-    if (!response.ok) {
-      throw new Error("Error al eliminar el perfil");
-    }
-
-    const result = await response.json();
-    setMessage("Perfil eliminado con éxito");
-    console.log("✅ Respuesta:", result);
-  } catch (err) {
-    setError((err as Error).message);
-  }
-};
+import { Header } from "../../ui/Header/Header";
+import Button from "../../ui/Button/Button";
+import ButtonFunction from "../../ui/Button/ButtonFunction";
 
 export const UserProfilePage = () => {
-  const { user, loading } = useUser(username); // ← aquí podrías meter el ID logueado
+  const username: string | null = getUsernameFromToken();
+  const { user, loading } = useUser(username);
   const navigate = useNavigate();
+
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+
+  //Llamada para eliminar usuario
+
+  const handleRemove = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    setError("");
+    setMessage("");
+
+    if (!username) {
+      setError("No se pudo obtener el nombre de usuario");
+      return;
+    }
+
+    try {
+      const response = await deleteUser(username);
+
+      if (!response.ok) {
+        throw new Error("Error al eliminar el perfil");
+      }
+
+      const result = await response.json();
+      setMessage("Perfil eliminado con éxito");
+      console.log("✅ Respuesta:", result);
+      navigate("/"); // redirige al inicio o login
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
 
   if (loading) return <Spinner />;
 
   if (!user) return <p>No se pudo cargar el perfil.</p>;
 
   return (
-    <div className={styles.container}>
-      <h2>Perfil de Usuario</h2>
-      <p>
-        <strong>Nombre:</strong> {user.username}
-      </p>
-      <p>
-        <strong>Email:</strong> {user.email}
-      </p>
-      <p>
-        <strong>Rol:</strong> {user.role}
-      </p>
+    <div id="root">
+      <Header />
+      <main className="page">
+        <div className="max-w-2xl mx-auto mt-10">
+          <div className="backdrop-blur-md bg-white/70 shadow-xl rounded-2xl p-6 border border-white/30">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Perfil de Usuario
+            </h2>
 
-      <h3>Estilo de vida</h3>
-      <ul>
-        <li>Tranquilo: {user.lifestyleDTO.tranquilo}</li>
-        <li>Actividad: {user.lifestyleDTO.actividad}</li>
-        <li>Limpieza: {user.lifestyleDTO.limpieza}</li>
-        <li>Compartir espacios: {user.lifestyleDTO.compartirEspacios}</li>
-        <li>Sociabilidad: {user.lifestyleDTO.sociabilidad}</li>
-      </ul>
+            <p className="text-base text-gray-700 mb-2">
+              <strong>Nombre:</strong> {user.username}
+            </p>
+            <p className="text-base text-gray-700 mb-2">
+              <strong>Email:</strong> {user.email}
+            </p>
+            <p className="text-base text-gray-700 mb-4">
+              <strong>Rol:</strong> {user.role}
+            </p>
 
-      <button
-        onClick={() => navigate("/TFG_COHOUSING/editar", { state: { user } })}
-      >
-        Editar perfil
-      </button>
-      <button onClick={handleRemove}>Eliminar usuario</button>
+            <h3 className="text-xl font-medium text-gray-800 mb-2">
+              Estilo de vida
+            </h3>
+            <ul className="list-disc pl-6 mb-6 text-gray-600 text-sm space-y-1">
+              <li>Tranquilo: {user.lifestyleDTO.tranquilo}</li>
+              <li>Actividad: {user.lifestyleDTO.actividad}</li>
+              <li>Limpieza: {user.lifestyleDTO.limpieza}</li>
+              <li>Compartir espacios: {user.lifestyleDTO.compartirEspacios}</li>
+              <li>Sociabilidad: {user.lifestyleDTO.sociabilidad}</li>
+            </ul>
+          </div>
+        </div>
+
+        <Button
+          label="Editar perfil"
+          to="/TFG_COHOUSING/user/profile/edit"
+          state={user}
+        />
+        <ButtonFunction label="Eliminar usuario" onClick={handleRemove} />
+
+        {error && <p className={styles.error}>{error}</p>}
+        {message && <p className={styles.success}>{message}</p>}
+      </main>
     </div>
   );
 };
