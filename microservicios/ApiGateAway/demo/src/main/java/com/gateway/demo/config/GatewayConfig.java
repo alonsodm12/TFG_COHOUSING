@@ -25,7 +25,8 @@ public class GatewayConfig {
                     "/user/register",
                     "/swagger-ui.html",
                     "/swagger-ui/**",
-                    "/v3/api-docs/**"
+                    "/v3/api-docs/**",
+                    "/user/usuario/{username}"
                 )
                 .uri("http://gestion-usuarios:8081"))
 
@@ -35,14 +36,15 @@ public class GatewayConfig {
                     "/user/usuarios",
                     "/user/delete/**",
                     "/user/{username}",
-                    "/user/usuario/{username}"
+                    "/user/profile/edit"
                 )
                 .filters(f -> f.filter(jwtAuthenticationFilter))
                 .uri("http://gestion-usuarios:8081"))
 
         // Rutas protegidas para comunidades
         .route("community-protected-routes", r -> r.path(
-                    "/comunidades/**"
+                    "/comunidades/**",
+                    "/community/create"
                 )
                 .uri("http://gestion-comunidades:8082"))
 

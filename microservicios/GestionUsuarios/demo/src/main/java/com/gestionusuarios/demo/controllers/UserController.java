@@ -85,7 +85,7 @@ public class UserController {
                     new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()));
 
             UserDetails user = (UserDetails) auth.getPrincipal();
-
+            
             String rol = "";
 
             Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
@@ -119,7 +119,7 @@ public class UserController {
     public ResponseEntity<?> deleteUsuario(@PathVariable String username) {
         try {
             userService.deleteUser(username);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error al eliminar el usuario"));
@@ -145,7 +145,7 @@ public class UserController {
         if (usuario.isPresent()){
             LifestyleDTO lifestyleDTO = new LifestyleDTO(usuario.get().getTranquilidad(), usuario.get().getActividad(), usuario.get().getLimpieza(), usuario.get().getCompartirEspacios(), usuario.get().getSociabilidad());
 
-            UserDTO userDto = new UserDTO(usuario.get().getUsername(),usuario.get().getPassword(),usuario.get().getRole(),usuario.get().getEmail(),lifestyleDTO);
+            UserDTO userDto = new UserDTO(usuario.get().getUsername(),usuario.get().getId(),usuario.get().getPassword(),usuario.get().getRole(),usuario.get().getEmail(),lifestyleDTO);
             
             return ResponseEntity.status(HttpStatus.OK).body(userDto);
         }

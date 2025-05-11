@@ -5,8 +5,8 @@ import { UpdateUserProfile, UserLogin, UserProfile } from "./types";
 const API_BASE: String = "http://localhost:8084/user";
 const token = localStorage.getItem('token');
 //Patch usuario
-export const updateUser = async (data: UpdateUserProfile) => {
-  const response = await fetch(`${API_BASE}/update`, {
+export const updateUser = async (username: string, data: UpdateUserProfile) => {
+  const response = await fetch(`${API_BASE}/usuario/${username}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

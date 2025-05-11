@@ -34,7 +34,7 @@ public class UserServiceTest {
 
     @Test
     public void registrarUsuario_devuelveUsuarioGuardado() {
-        UserDTO userDTO = new UserDTO("alonso", "grandad123", "buscador", "alonsodmx@gmail.com",
+        UserDTO userDTO = new UserDTO("alonso",1L, "grandad123", "buscador", "alonsodmx@gmail.com",
                 new LifestyleDTO(2, 2, 2, 2, 2));
 
         // Stubbing para que no lance la excepción por email duplicado

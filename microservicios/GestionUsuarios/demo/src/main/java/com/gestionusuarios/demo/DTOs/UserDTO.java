@@ -8,6 +8,8 @@ public record UserDTO(
 
         @NotBlank(message = "El nombre de usuario es obligatorio") @Size(min = 4, max = 20) String username,
 
+        @NotBlank(message = "El id del usuario tiene que estar") Long id,
+
         @NotBlank(message = "La contraseña es obligatoria") @Size(min = 6, message = "La contraseña debe tener un minimo de 8 caracteres") String password,
 
         @NotBlank(message = "El rol es obligatorio") String role,

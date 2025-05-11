@@ -1,12 +1,18 @@
-import { useState } from 'react';
-import { updateUser } from '../api/operations';
+import { useState,useEffect } from "react";
+import { updateUser } from "../api/operations";
+import { UserProfile } from "../api/types";
+import { Navigate, useNavigate } from "react-router-dom";
 
-export const UpdateUserForm = () => {
+type Props = {
+  user: UserProfile;
+};
+export const UpdateUserForm = ({ user }: Props) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    role: '',
+    username: "",
+    email: "",
+    password: "",
+    role: "",
     lifestyleDTO: {
       tranquilo: 3,
       actividad: 3,
@@ -16,12 +22,30 @@ export const UpdateUserForm = () => {
     },
   });
 
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        role: user.role,
+        lifestyleDTO: {
+          tranquilo: user.lifestyleDTO.tranquilo,
+          actividad: user.lifestyleDTO.actividad,
+          limpieza: user.lifestyleDTO.limpieza,
+          compartirEspacios: user.lifestyleDTO.compartirEspacios,
+          sociabilidad: user.lifestyleDTO.sociabilidad,
+        },
+      });
+    }
+  }, [user]);
+
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const updateProfile = (field: string, value: any) => {
-    if (field.startsWith('lifestyleDTO.')) {
-      const subField = field.split('.')[1];
+    if (field.startsWith("lifestyleDTO.")) {
+      const subField = field.split(".")[1];
       setFormData((prev) => ({
         ...prev,
         lifestyleDTO: {
@@ -39,75 +63,107 @@ export const UpdateUserForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setMessage("");
+
     try {
-      e.preventDefault();
-      setError('');
-      setMessage('');
-      
-      try {
-        const response = await updateUser(formData);
-        if (!response.ok) throw new Error('Error al actualizar el perfil');
-          setMessage('Perfil actualizado con éxito');
-        } catch (err) {
-          setError((err as Error).message);
-        }
-    }catch (err) {
+      const response = await updateUser(user.username,formData);
+      if (!response.ok) throw new Error("Error al actualizar el perfil");
+      setMessage("Perfil actualizado con éxito");
+      navigate('/TFG_COHOUSING/user/profile');
+    } catch (err) {
       setError((err as Error).message);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Nombre de usuario"
-        value={formData.username}
-        onChange={(e) => updateProfile('username', e.target.value)}
-      />
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-2xl mx-auto mt-10 mb-10 p-6 bg-white rounded-xl shadow-md border border-gray-200 space-y-6"
+    >
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">
+          Nombre de usuario
+        </label>
+        <input
+          type="text"
+          value={formData.username}
+          onChange={(e) => updateProfile("username", e.target.value)}
+          className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+          placeholder="Nombre de usuario"
+        />
+      </div>
 
-      <input
-        type="email"
-        placeholder="Correo electrónico"
-        value={formData.email}
-        onChange={(e) => updateProfile('email', e.target.value)}
-      />
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">
+          Correo electrónico
+        </label>
+        <input
+          type="email"
+          value={formData.email}
+          onChange={(e) => updateProfile("email", e.target.value)}
+          className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+          placeholder="Correo electrónico"
+        />
+      </div>
 
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={formData.password}
-        onChange={(e) => updateProfile('password', e.target.value)}
-      />
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">
+          Contraseña
+        </label>
+        <input
+          type="password"
+          value={formData.password}
+          onChange={(e) => updateProfile("password", e.target.value)}
+          className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+          placeholder="Contraseña"
+        />
+      </div>
 
-      <select
-        value={formData.role}
-        onChange={(e) => updateProfile('role', e.target.value)}
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">Rol</label>
+        <select
+          value={formData.role}
+          onChange={(e) => updateProfile("role", e.target.value)}
+          className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+        >
+          <option value="">Selecciona un rol</option>
+          <option value="Buscador">Buscador</option>
+          <option value="Ofertante">Ofertante</option>
+        </select>
+      </div>
+
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-gray-800">Estilo de vida</h3>
+        {Object.entries(formData.lifestyleDTO).map(([key, val]) => (
+          <div key={key}>
+            <label className="block text-sm font-medium text-gray-700 capitalize">
+              {key}
+            </label>
+            <input
+              type="range"
+              min={1}
+              max={5}
+              value={val}
+              onChange={(e) =>
+                updateProfile(`lifestyleDTO.${key}`, parseInt(e.target.value))
+              }
+              className="w-full"
+            />
+            <p className="text-sm text-gray-500">Valor: {val}</p>
+          </div>
+        ))}
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
       >
-        <option value="">Selecciona un rol</option>
-        <option value="USER">Usuario</option>
-        <option value="ADMIN">Administrador</option>
-      </select>
+        Actualizar perfil
+      </button>
 
-      <h3>Estilo de vida</h3>
-      {Object.entries(formData.lifestyleDTO).map(([key, val]) => (
-        <div key={key}>
-          <label>{key}</label>
-          <input
-            type="range"
-            min={1}
-            max={5}
-            value={val}
-            onChange={(e) =>
-              updateProfile(`lifestyleDTO.${key}`, parseInt(e.target.value))
-            }
-          />
-        </div>
-      ))}
-
-      <button type="submit">Actualizar perfil</button>
-
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {message && <p className="text-green-600 text-center">{message}</p>}
+      {error && <p className="text-red-600 text-center">{error}</p>}
     </form>
   );
 };

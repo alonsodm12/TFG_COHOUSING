@@ -2,6 +2,8 @@ import React from "react";
 import { CommunityProfile } from "../api/type";
 import { CommunityForm } from "../components/CommunityForm";  // Asegúrate de importar correctamente
 import { createCommunity } from "../api/operations";  // Asegúrate de importar desde el archivo correcto
+import { Header } from "../../ui/Header/Header";
+import { Footer } from "../../ui/Footer/Footer";
 
 const CreateCommunityPage = () => {
     const handleCreateCommunity = async (formData: CommunityProfile) => {
@@ -23,9 +25,12 @@ const CreateCommunityPage = () => {
     };
 
     return (
-        <div>
-            <h1>Crear Comunidad</h1>
-            <CommunityForm onSubmit={handleCreateCommunity} />
+        <div id="root">
+            <Header />
+            <main className="page">
+                <CommunityForm onSubmit={handleCreateCommunity} />
+            </main>
+            <Footer/>
         </div>
     );
 };

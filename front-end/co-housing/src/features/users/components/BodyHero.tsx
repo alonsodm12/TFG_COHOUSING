@@ -1,23 +1,31 @@
 import Button from "../../ui/Button/Button";
-import React from "react";
+import { useEffect } from "react";
 import { getRoleFromToken, getUsernameFromToken } from "../../authUtils";
+import { useUserContext } from "../../ui/Context/UserContext";
 const BodyHero: React.FC = () => {
 
-    const rol: string | null = getRoleFromToken();
-    const username: string | null = getUsernameFromToken();
+  const { username, userProfile, fetchUserProfile } = useUserContext();
+
+  useEffect(() => {
+    if(username)
+      fetchUserProfile();
+  }, [username]);
+
+  if (!userProfile) return <p>Cargando perfil...</p>;
+  
   return (
 
       <div className="max-w-6xl mx-auto w-full">
         {/* Bienvenida */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl text-black font-bold">¡Bienvenido a Cohousing! {username}</h1>
+          <h1 className="text-4xl text-black font-bold">¡Bienvenido a Cohousing! {userProfile.username}</h1>
           <p className="text-lg text-black mt-2">Tu espacio para conectar con comunidades y viviendas colaborativas.</p>
         </div>
 
         {/* Acciones rápidas */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 text-center">
         {/* Tarjeta 1 */}
-        {rol == "ROLE_buscador" && (
+        {userProfile.role == "buscador" && (
           
           <div className="bg-white text-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition duration-300">
             <h2 className="text-xl font-semibold mb-2">Explorar Comunidades</h2>
@@ -40,7 +48,7 @@ const BodyHero: React.FC = () => {
           </div>
 
           {/* Tarjeta 4 */}
-          {rol == "ROLE_ofertante" && (
+          {userProfile.role == "ofertante" && (
           <div className="bg-white text-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition duration-300">
             <h2 className="text-xl font-semibold mb-2">Crear Comunidad</h2>
             <p className="text-sm text-gray-600 mb-4">¿Tienes un espacio para ofrecer? Súbelo a la plataforma.</p>
@@ -62,11 +70,11 @@ const BodyHero: React.FC = () => {
             <Button to ="TFG_COHOUSING" label = "Ajustes"/>
           </div>
         </div>
-        {rol == "ROLE_ofertante" && (
+        {userProfile.role == "ofertante" && (
           <Button label = "Crear comunidad" to="/TFG_COHOUSING/community/create" />
         )}
         <Button label = "Consultar comunidad" to ="/TFG_COHOUSING/community/perfil" />
-        {rol == "ROLE_buscador" && (
+        {userProfile.role == "buscador" && (
           <Button label = "Buscar comunidad" to="/TFG_COHOUSING/community/buscar" />
         )}
 

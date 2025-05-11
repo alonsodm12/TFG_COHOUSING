@@ -4,14 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { Spinner } from "../components/Spinner";
 import styles from "./UserProfilePage.module.css";
 import { deleteUser } from "../api/operations";
-import { getUsernameFromToken } from "../../authUtils";
+
 import { useState } from "react";
 import { Header } from "../../ui/Header/Header";
 import Button from "../../ui/Button/Button";
 import ButtonFunction from "../../ui/Button/ButtonFunction";
+import { useUserContext } from "../../ui/Context/UserContext";
 
 export const UserProfilePage = () => {
-  const username: string | null = getUsernameFromToken();
+  
+  
+  
+  const {username} = useUserContext();
   const { user, loading } = useUser(username);
   const navigate = useNavigate();
 

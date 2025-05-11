@@ -50,7 +50,7 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @PostMapping("/comunidad")
+    @PostMapping("/create")
     public ResponseEntity<?> crearComunidad(@RequestBody @Valid CommunityDTO communityDTO) {
         try {
             System.out.println("MARIO  " + communityDTO.name());

@@ -82,7 +82,7 @@ export const LoginCard: React.FC = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             ¿No tienes cuenta?{' '}
-            <a href="/signup" className="text-blue-500 hover:underline">
+            <a href="/TFG_COHOUSING/registro" className="text-blue-500 hover:underline">
               Regístrate
             </a>
           </p>

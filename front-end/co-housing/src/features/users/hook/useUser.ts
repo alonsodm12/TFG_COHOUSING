@@ -13,6 +13,7 @@ export const useUser = (name: string | null) => {
         if (name) {
           const data = await fetchUserByUsername(name);
           setUser(data);
+          localStorage.setItem('currentUser', JSON.stringify(data));
         }
       } catch (error) {
         console.error(error);
