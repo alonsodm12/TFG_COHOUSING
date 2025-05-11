@@ -31,6 +31,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const tokenRole = getRoleFromToken();
     setUsername(tokenUsername);
     setRole(tokenRole);
+  
+    if (tokenUsername) {
+      fetchUserByUsername(tokenUsername)
+        .then((profile) => setUserProfile(profile))
+        .catch((error) =>
+          console.error("Error al obtener el perfil del usuario:", error)
+        );
+    }
   }, []);
 
   const fetchUserProfile = async () => {
