@@ -1,128 +1,128 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CommunityProfile, LifestyleDTO } from "../api/type";
-import { getUsernameFromToken } from "../../authUtils";
+import { useUserContext } from "../../ui/Context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 type CommunityFormProps = {
-    onSubmit: (data: CommunityProfile) => void;
-    initialData?: Partial<CommunityProfile>;
+  onSubmit: (data: CommunityProfile) => void;
 };
 
-const username: string | null = getUsernameFromToken();
-
-function buildInitialFormData(
-    initialData?: Partial<CommunityProfile>,
-    username?: string | null
-): CommunityProfile {
-    return {
-        name: initialData?.name ?? '',
-        descripcion: initialData?.descripcion ?? '',
-        idAdmin: initialData?.idAdmin ?? username ?? '',
-        lifestyleDTO: {
-            tranquilo: initialData?.lifestyleDTO?.tranquilo ?? 1,
-            actividad: initialData?.lifestyleDTO?.actividad ?? 1,
-            limpieza: initialData?.lifestyleDTO?.limpieza ?? 1,
-            compartirEspacios: initialData?.lifestyleDTO?.compartirEspacios ?? 1,
-            sociabilidad: initialData?.lifestyleDTO?.sociabilidad ?? 1,
-        },
-    };
+function buildInitialFormData(userId: number | null): CommunityProfile {
+  return {
+    name: "",
+    descripcion: "",
+    idAdmin: userId ?? 0,
+    lifestyleDTO: {
+      tranquilo: 1,
+      actividad: 1,
+      limpieza: 1,
+      compartirEspacios: 1,
+      sociabilidad: 1,
+    },
+  };
 }
 
-export const CommunityForm = ({ initialData, onSubmit }: CommunityFormProps) => {
-    const [formData, setFormData] = useState<CommunityProfile>(
-        buildInitialFormData(initialData, username)
-    );
+export const CommunityForm = ({ onSubmit }: CommunityFormProps) => {
+  const navigate = useNavigate();
+  const { userProfile } = useUserContext();
+  const [formData, setFormData] = useState<CommunityProfile>(
+    buildInitialFormData(userProfile?.id ?? null)
+  );
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
+  useEffect(() => {
+    if (userProfile?.id) {
+      setFormData(buildInitialFormData(userProfile.id));
+    }
+  }, [userProfile]);
 
-    const handleSliderChange = (name: keyof LifestyleDTO, value: number) => {
-        setFormData((prev) => ({
-            ...prev,
-            lifestyleDTO: {
-                ...prev.lifestyleDTO,
-                [name]: value,
-            },
-        }));
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSubmit(formData);
-    };
+  const handleSliderChange = (name: keyof LifestyleDTO, value: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      lifestyleDTO: {
+        ...prev.lifestyleDTO,
+        [name]: value,
+      },
+    }));
+  };
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>¿Cuál es el nombre de la comunidad?</label>
-                <input name="name" value={formData.name} onChange={handleChange} placeholder="Nombre" />
-            </div>
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+    navigate('/TFG_COHOUSING/home');
+  };
 
-            <div>
-                <label>¿Cómo describirías a tu comunidad?</label>
-                <input name="descripcion" value={formData.descripcion} onChange={handleChange} placeholder="Descripción" />
-            </div>
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-md space-y-6"
+    >
+      <h2 className="text-2xl font-semibold text-gray-800 text-center">
+        Crear comunidad
+      </h2>
 
-            <div>
-                <label>¿Qué tan tranquilo es tu espacio? (1 - poco, 5 - muy tranquilo)</label>
-                <input
-                    type="range"
-                    min={1}
-                    max={5}
-                    value={formData.lifestyleDTO.tranquilo}
-                    onChange={(e) => handleSliderChange("tranquilo", parseInt(e.target.value))}
-                />
-            </div>
+      <div>
+        <label className="block text-gray-700 mb-1">Nombre de la comunidad</label>
+        <input
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Nombre"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-            <div>
-                <label>¿Qué nivel de actividad hay en la comunidad? (1 - baja, 5 - alta)</label>
-                <input
-                    type="range"
-                    min={1}
-                    max={5}
-                    value={formData.lifestyleDTO.actividad}
-                    onChange={(e) => handleSliderChange("actividad", parseInt(e.target.value))}
-                />
-            </div>
+      <div>
+        <label className="block text-gray-700 mb-1">Descripción</label>
+        <input
+          name="descripcion"
+          value={formData.descripcion}
+          onChange={handleChange}
+          placeholder="Descripción"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-            <div>
-                <label>¿Qué tan importante es la limpieza? (1 - poco, 5 - mucho)</label>
-                <input
-                    type="range"
-                    min={1}
-                    max={5}
-                    value={formData.lifestyleDTO.limpieza}
-                    onChange={(e) => handleSliderChange("limpieza", parseInt(e.target.value))}
-                />
-            </div>
+      {[
+        { label: "Tranquilidad", name: "tranquilo" },
+        { label: "Nivel de actividad", name: "actividad" },
+        { label: "Importancia de limpieza", name: "limpieza" },
+        { label: "Compartir espacios", name: "compartirEspacios" },
+        { label: "Sociabilidad", name: "sociabilidad" },
+      ].map((item) => (
+        <div key={item.name}>
+          <label className="block text-gray-700 mb-1">
+            {item.label} (1 - 5)
+          </label>
+          <input
+            type="range"
+            min={1}
+            max={5}
+            value={formData.lifestyleDTO[item.name as keyof LifestyleDTO]}
+            onChange={(e) =>
+              handleSliderChange(
+                item.name as keyof LifestyleDTO,
+                parseInt(e.target.value)
+              )
+            }
+            className="w-full accent-blue-600"
+          />
+        </div>
+      ))}
 
-            <div>
-                <label>¿Qué tanto comparten espacios comunes? (1 - poco, 5 - mucho)</label>
-                <input
-                    type="range"
-                    min={1}
-                    max={5}
-                    value={formData.lifestyleDTO.compartirEspacios}
-                    onChange={(e) => handleSliderChange("compartirEspacios", parseInt(e.target.value))}
-                />
-            </div>
-
-            <div>
-                <label>¿Qué tan sociable es la comunidad? (1 - poco, 5 - muy sociable)</label>
-                <input
-                    type="range"
-                    min={1}
-                    max={5}
-                    value={formData.lifestyleDTO.sociabilidad}
-                    onChange={(e) => handleSliderChange("sociabilidad", parseInt(e.target.value))}
-                />
-            </div>
-
-            <button type="submit">Guardar comunidad</button>
-        </form>
-    );
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Guardar comunidad
+      </button>
+    </form>
+  );
 };

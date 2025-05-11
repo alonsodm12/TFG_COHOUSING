@@ -5,10 +5,14 @@ import './index.css'; // Si estás usando Tailwind o CSS global
 import { App } from './App';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
+import { UserProvider } from './features/ui/Context/UserContext';
 
 // Asegúrate de envolver tu App con BrowserRouter para que Link funcione
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <BrowserRouter>
-    <App />
+    <UserProvider>
+      <App />
+    </UserProvider>
+    
   </BrowserRouter>
 );

@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../users/api/operations';
+import { getRoleFromToken, getUsernameFromToken } from '../authUtils';
+import { useUserContext } from '../ui/Context/UserContext';
 
 export const LoginCard: React.FC = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
+
+  // Accede al contexto
+  const { setUsername, setRole } = useUserContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,11 +28,22 @@ export const LoginCard: React.FC = () => {
         throw new Error('Credenciales inválidas');
       }
 
-      
-      
-      localStorage.setItem('token', response["Login correcto: "].token); // Suponiendo que viene como { token: '...' }
+      // Guarda el token en localStorage
+      const token = response["Login correcto: "].token;
+      localStorage.setItem('token', token); 
+
+      // Obtén el username y el role desde el token y actualiza el contexto
+      const username = getUsernameFromToken();
+      const role = getRoleFromToken();
+
+      if (username && role) {
+        setUsername(username);
+        setRole(role);
+      }
 
       setSuccess('Inicio de sesión correcto');
+      
+      // Navegar después de actualizar el contexto
       navigate('/TFG_COHOUSING/home');
     } catch (err) {
       setError((err as Error).message);
@@ -36,7 +52,7 @@ export const LoginCard: React.FC = () => {
 
   return (
     <div>
-      <div className="bg-white p-8 rounded-lg shadow-xl  max-w-md ">
+      <div className="bg-white p-8 rounded-lg shadow-xl max-w-md">
         <h2 className="text-4xl font-bold text-center text-gray-900 mb-6">
           Bienvenido de nuevo
         </h2>
@@ -82,7 +98,7 @@ export const LoginCard: React.FC = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             ¿No tienes cuenta?{' '}
-            <a href="/signup" className="text-blue-500 hover:underline">
+            <a href="/TFG_COHOUSING/registro" className="text-blue-500 hover:underline">
               Regístrate
             </a>
           </p>

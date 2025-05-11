@@ -24,20 +24,23 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
     private SecretKey key;
-    // Initializes the key after the class is instantiated and the jwtSecret is injected, 
+
+    // Initializes the key after the class is instantiated and the jwtSecret is
+    // injected,
     // preventing the repeated creation of the key and enhancing performance
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
+
     // Generate JWT token
-    public String generateToken(String username,String role) {
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .subject(username)
                 .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(key,Jwts.SIG.HS256)
+                .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -51,9 +54,9 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    //Get role from JWT token
-    public String getRoleFromToken(String token){
-        Claims claims =  Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+    // Get role from JWT token
+    public String getRoleFromToken(String token) {
+        Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
         return claims.get("role").toString();
     }
 
