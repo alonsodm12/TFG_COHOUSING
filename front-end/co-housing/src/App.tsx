@@ -11,6 +11,7 @@ import UpdateCommunityPage from './features/community/pages/UpdateCommunityPage'
 import { UserHomePage } from './features/users/pages/UserHomePage';
 import { UserProfilePage } from './features/users/pages/UserProfilePage';
 import { UpdateProfilePage } from './features/users/pages/UpdateProfilePage';
+import Dudas from './features/ui/Dudas/Dudas';
 
 export const App = () => {
   return (
@@ -25,6 +26,7 @@ export const App = () => {
       <Route path="/TFG_COHOUSING/community/edit" element={<UpdateCommunityPage />} />
       <Route path="/TFG_COHOUSING/user/profile" element={<UserProfilePage/>} />
       <Route path="/TFG_COHOUSING/user/profile/edit" element={<UpdateProfilePage/>} />
+      <Route path="/TFG_COHOUSING/dudas" element={<Dudas/>} />
     </Routes>
   );
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../../styles/globals.module.css';
+import '../../../index.css';
 
 // Definir las propiedades (props) del botón
 interface ButtonProps {
@@ -12,7 +12,7 @@ interface ButtonProps {
 // Componente reutilizable Button
 const ButtonFunction: React.FC<ButtonProps> = ({ label, onClick, disabled = false, className = '' }) => {
   return (
-    <button className={styles.button}
+    <button className="btn btn-primary"
       onClick={onClick}
       disabled={disabled}
     >

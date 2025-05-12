@@ -10,4 +10,5 @@ import com.gestioncomunidades.demo.models.Community;
 @Repository
 public interface CommunityRepository extends JpaRepository<Community,Long>{
     public Optional<Community> findByName(String name);
+    public Optional<Community> findByIdAdmin(Long id);
 }

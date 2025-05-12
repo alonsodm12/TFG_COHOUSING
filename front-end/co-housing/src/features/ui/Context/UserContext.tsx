@@ -29,6 +29,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   // Cargar perfil cuando el username cambie (tras login)
   useEffect(() => {
+    const storedUsername = getUsernameFromToken();
+    const storedRole = getRoleFromToken();
+    if (storedUsername) setUsername(storedUsername);
+    if (storedRole) setRole(storedRole);
+  }, []);
+  
+  useEffect(() => {
     if (!username) {
       setUserProfile(null);
       setIsLoading(false);

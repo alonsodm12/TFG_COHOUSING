@@ -17,9 +17,6 @@ export const UpdateProfilePage = () => {
     <div id="root">
       <Header />
       <main className="page">
-        <h1 className="text-2xl font-semibold text-center text-gray-800 mt-4 mb-2">
-          Editar Perfil
-        </h1>
         <UpdateUserForm user={user}/>
       </main>
       <Footer />

@@ -41,7 +41,7 @@ public class CommunityServices {
 
     }
 
-    public Optional<CommunityDTO> obtenerComunidad(String communityname) {
+    public Optional<CommunityDTO> obtenerComunidadName(String communityname) {
         Optional<Community> comunidad = communityRepository.findByName(communityname);
 
         if (comunidad.isPresent()) {
@@ -71,7 +71,36 @@ public class CommunityServices {
             return Optional.empty();
         }
     }
+    public Optional<CommunityDTO> obtenerComunidadId(Long communityId) {
+        Optional<Community> comunidad = communityRepository.findById(communityId);
 
+        if (comunidad.isPresent()) {
+            Community community = comunidad.get();
+
+            // Convertimos manualmente la entidad Community a CommunityDTO
+            LifestyleDTO lifestyleDTO = new LifestyleDTO(
+                community.getSociabilidad(),
+                community.getTranquilidad(),
+                community.getCompartirEspacios(),
+                community.getLimpieza(),
+                community.getActividad()
+            );
+
+            // Convertir Community a CommunityDTO manualmente
+            CommunityDTO communityDTO = new CommunityDTO(
+                community.getName(),
+                community.getDescripcion(),
+                community.getIdAdmin(),
+                lifestyleDTO,
+                community.getIntegrantes()
+            );
+
+            // Devuelve el DTO envuelto en un Optional
+            return Optional.of(communityDTO);
+        } else {
+            return Optional.empty();
+        }
+    }
     public List<Community> obtenerComunidades() {
     List<Community> comunidades = communityRepository.findAll();
 

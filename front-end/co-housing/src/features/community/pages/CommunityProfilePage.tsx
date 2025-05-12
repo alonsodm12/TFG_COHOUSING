@@ -1,4 +1,4 @@
-// features/user/pages/UserProfilePage.tsx
+// Community Profile Page
 
 import { getUsernameFromToken } from "../../authUtils";
 import { useState, useEffect } from "react";
