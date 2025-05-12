@@ -25,16 +25,16 @@ export const UpdateUserForm = ({ user }: Props) => {
   useEffect(() => {
     if (user) {
       setFormData({
-        username: user.username,
-        email: user.email,
-        password: user.password,
-        role: user.role,
+        username: user.username ?? "",
+        email: user.email ?? "",
+        password: user.password ?? "",
+        role: user.role ?? "",
         lifestyleDTO: {
-          tranquilo: user.lifestyleDTO.tranquilo,
-          actividad: user.lifestyleDTO.actividad,
-          limpieza: user.lifestyleDTO.limpieza,
-          compartirEspacios: user.lifestyleDTO.compartirEspacios,
-          sociabilidad: user.lifestyleDTO.sociabilidad,
+          tranquilo: user.lifestyleDTO?.tranquilo ?? 3,
+          actividad: user.lifestyleDTO?.actividad ?? 3,
+          limpieza: user.lifestyleDTO?.limpieza ?? 3,
+          compartirEspacios: user.lifestyleDTO?.compartirEspacios ?? 3,
+          sociabilidad: user.lifestyleDTO?.sociabilidad ?? 3,
         },
       });
     }
@@ -60,21 +60,32 @@ export const UpdateUserForm = ({ user }: Props) => {
       }));
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setMessage("");
-
+  
     try {
-      const response = await updateUser(user.username,formData);
-      if (!response.ok) throw new Error("Error al actualizar el perfil");
-      setMessage("Perfil actualizado con éxito");
-      navigate('/TFG_COHOUSING/user/profile');
+      const response = await updateUser(user.username, formData);
+  
+      // Extrae la primera clave del objeto de respuesta
+      const keys = Object.keys(response);
+      if (keys.length === 0) throw new Error("Respuesta vacía del servidor");
+  
+      const successMessage = keys[0];
+      setMessage(successMessage);
+      
+      // Navegar después de un breve delay para mostrar el mensaje
+      setTimeout(() => {
+        navigate('/TFG_COHOUSING/user/profile');
+      }, 1000);
     } catch (err) {
-      setError((err as Error).message);
+      console.error(err);
+      setError("Error al actualizar el perfil");
     }
   };
+  
+  
 
   return (
     <form

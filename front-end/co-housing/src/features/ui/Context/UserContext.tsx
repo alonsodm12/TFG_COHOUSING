@@ -1,4 +1,3 @@
-// src/context/UserContext.tsx
 import {
   createContext,
   useContext,
@@ -7,7 +6,7 @@ import {
   ReactNode,
 } from "react";
 import { getUsernameFromToken, getRoleFromToken } from "../../authUtils";
-import { fetchUserByUsername } from "../../users/api/operations"; // Ajusta la ruta si es necesario
+import { fetchUserByUsername } from "../../users/api/operations";
 import { UserProfile } from "../../users/api/types";
 
 interface UserContextType {
@@ -17,6 +16,7 @@ interface UserContextType {
   setUsername: (username: string | null) => void;
   setRole: (role: string | null) => void;
   fetchUserProfile: () => Promise<void>;
+  isLoading: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -25,29 +25,55 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // Cargar perfil cuando el username cambie (tras login)
   useEffect(() => {
-    const tokenUsername = getUsernameFromToken();
-    const tokenRole = getRoleFromToken();
-    setUsername(tokenUsername);
-    setRole(tokenRole);
-  
-    if (tokenUsername) {
-      fetchUserByUsername(tokenUsername)
-        .then((profile) => setUserProfile(profile))
-        .catch((error) =>
-          console.error("Error al obtener el perfil del usuario:", error)
-        );
-    }
+    const storedUsername = getUsernameFromToken();
+    const storedRole = getRoleFromToken();
+    if (storedUsername) setUsername(storedUsername);
+    if (storedRole) setRole(storedRole);
   }, []);
+  
+  useEffect(() => {
+    if (!username) {
+      setUserProfile(null);
+      setIsLoading(false);
+      return;
+    }
 
+    setIsLoading(true);
+    console.log(username);
+    fetchUserByUsername(username)
+      .then((profile) => {
+        setUserProfile(profile);
+      })
+      .catch((error) => {
+        console.error("Error al obtener el perfil del usuario:", error);
+        // Mostrar detalles adicionales del error
+        console.log(username);
+        if (error instanceof Error) {
+          console.error("Detalles del error:", error.message);
+        } else {
+          console.error("Respuesta de error desconocida:", error);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [username]);
+
+  // Función reutilizable para recargar el perfil manualmente
   const fetchUserProfile = async () => {
     if (!username) return;
+    setIsLoading(true);
     try {
       const profile = await fetchUserByUsername(username);
       setUserProfile(profile);
     } catch (error) {
       console.error("Error al obtener el perfil del usuario:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,6 +86,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setUsername,
         setRole,
         fetchUserProfile,
+        isLoading,
       }}
     >
       {children}

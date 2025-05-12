@@ -59,6 +59,9 @@ public class User implements UserDetails {
     @Column(name = "actividad")
     int actividad;
 
+    @Column(name = "idComunidad")
+    Long idComunidad;
+
     public User() {
     }
 
@@ -74,6 +77,7 @@ public class User implements UserDetails {
         this.limpieza = limpieza;
         this.tranquilidad = tranquilidad;
         this.sociabilidad = sociabilidad;
+        this.idComunidad = 0L;
     }
 
     @Override

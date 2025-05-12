@@ -1,5 +1,4 @@
-// features/user/pages/UserProfilePage.tsx
-import { useUser } from "../hook/useUser";
+import { useUserContext } from "../../ui/Context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../components/Spinner";
 import styles from "./UserProfilePage.module.css";
@@ -9,21 +8,16 @@ import { useState } from "react";
 import { Header } from "../../ui/Header/Header";
 import Button from "../../ui/Button/Button";
 import ButtonFunction from "../../ui/Button/ButtonFunction";
-import { useUserContext } from "../../ui/Context/UserContext";
+import { Footer } from "../../ui/Footer/Footer";
 
 export const UserProfilePage = () => {
-  
-  
-  
-  const {username} = useUserContext();
-  const { user, loading } = useUser(username);
+  const { username, userProfile, isLoading } = useUserContext(); // Usar el contexto directamente
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  //Llamada para eliminar usuario
-
+  // Llamada para eliminar usuario
   const handleRemove = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -51,9 +45,9 @@ export const UserProfilePage = () => {
     }
   };
 
-  if (loading) return <Spinner />;
+  if (isLoading) return <Spinner />; // Mostrar el spinner si aún estamos cargando
 
-  if (!user) return <p>No se pudo cargar el perfil.</p>;
+  if (!userProfile) return <p>No se pudo cargar el perfil.</p>; // En caso de que no haya datos del usuario
 
   return (
     <div id="root">
@@ -66,24 +60,24 @@ export const UserProfilePage = () => {
             </h2>
 
             <p className="text-base text-gray-700 mb-2">
-              <strong>Nombre:</strong> {user.username}
+              <strong>Nombre:</strong> {userProfile.username}
             </p>
             <p className="text-base text-gray-700 mb-2">
-              <strong>Email:</strong> {user.email}
+              <strong>Email:</strong> {userProfile.email}
             </p>
             <p className="text-base text-gray-700 mb-4">
-              <strong>Rol:</strong> {user.role}
+              <strong>Rol:</strong> {userProfile.role}
             </p>
 
             <h3 className="text-xl font-medium text-gray-800 mb-2">
               Estilo de vida
             </h3>
             <ul className="list-disc pl-6 mb-6 text-gray-600 text-sm space-y-1">
-              <li>Tranquilo: {user.lifestyleDTO.tranquilo}</li>
-              <li>Actividad: {user.lifestyleDTO.actividad}</li>
-              <li>Limpieza: {user.lifestyleDTO.limpieza}</li>
-              <li>Compartir espacios: {user.lifestyleDTO.compartirEspacios}</li>
-              <li>Sociabilidad: {user.lifestyleDTO.sociabilidad}</li>
+              <li>Tranquilo: {userProfile.lifestyleDTO.tranquilo}</li>
+              <li>Actividad: {userProfile.lifestyleDTO.actividad}</li>
+              <li>Limpieza: {userProfile.lifestyleDTO.limpieza}</li>
+              <li>Compartir espacios: {userProfile.lifestyleDTO.compartirEspacios}</li>
+              <li>Sociabilidad: {userProfile.lifestyleDTO.sociabilidad}</li>
             </ul>
           </div>
         </div>
@@ -91,13 +85,14 @@ export const UserProfilePage = () => {
         <Button
           label="Editar perfil"
           to="/TFG_COHOUSING/user/profile/edit"
-          state={user}
+          state={userProfile}
         />
         <ButtonFunction label="Eliminar usuario" onClick={handleRemove} />
 
         {error && <p className={styles.error}>{error}</p>}
         {message && <p className={styles.success}>{message}</p>}
       </main>
+      <Footer />
     </div>
   );
 };

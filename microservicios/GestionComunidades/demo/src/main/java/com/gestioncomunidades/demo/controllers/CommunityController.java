@@ -34,7 +34,7 @@ public class CommunityController {
     ResponseEntity<?> obtenerComunidadesDisponibles() {
         if(communityServices.obtenerComunidades().size()>0){
             List<Community> comunidades = communityServices.obtenerComunidades();
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Comunidades", comunidades.toString()));    
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Comunidades", comunidades.get(0).getName()));    
         }
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Error","No se ha encontrado ninguna comunidad"));
 
@@ -42,7 +42,17 @@ public class CommunityController {
 
     @GetMapping("/{communityname}")
     public ResponseEntity<?> obtenerComunidad(@PathVariable String communityName){
-        Optional<CommunityDTO> comunidad = this.communityServices.obtenerComunidad(communityName);
+        Optional<CommunityDTO> comunidad = this.communityServices.obtenerComunidadName(communityName);
+
+        if(comunidad.isPresent())
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(comunidad);
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping("/{communityID}")
+    public ResponseEntity<?> obtenerComunidadId(@PathVariable Long communityId){
+        Optional<CommunityDTO> comunidad = this.communityServices.obtenerComunidadId(communityId);
 
         if(comunidad.isPresent())
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(comunidad);

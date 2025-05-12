@@ -11,9 +11,9 @@ export interface LifestyleDTO {
 export interface UserProfile {
     username: string;
     id: number;
-    email: string;
     password: string;
     role: string;
+    email: string;
     lifestyleDTO: LifestyleDTO;
 }
 
