@@ -1,11 +1,14 @@
-//Inclusion de toda la lógica de llamadas a la API de Usuarios
-
 import { UpdateUserProfile, UserLogin, UserProfile } from "./types";
-
 const API_BASE: String = "http://localhost:8084/user";
-const token = localStorage.getItem('token');
-//Patch usuario
+
+// Patch usuario
 export const updateUser = async (username: string, data: UpdateUserProfile) => {
+  const token = localStorage.getItem('token');  // Obtener el token dentro de la función
+
+  if (!token) {
+    throw new Error("Token no disponible. El usuario no está autenticado.");
+  }
+
   const response = await fetch(`${API_BASE}/usuario/${username}`, {
     method: "PATCH",
     headers: {
@@ -22,24 +25,31 @@ export const updateUser = async (username: string, data: UpdateUserProfile) => {
   return response.json();
 };
 
-//Get usuario
+// Get usuario
 export const fetchUserByUsername = async (username: string | null) => {
-  const response = await fetch(`${API_BASE}/${username}`,{
+  const token = localStorage.getItem('token');  // Obtener el token dentro de la función
+
+  if (!token) {
+    throw new Error("Token no disponible. El usuario no está autenticado.");
+  }
+
+  const response = await fetch(`${API_BASE}/${username}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`,
     },
   });
-  if (response==null) {
+
+  if (!response.ok) {
     throw new Error("Error al obtener los datos del usuario");
   }
 
-  return response.json();
+  const data = await response.json();
+  return data;
 };
 
-//Post crear usuario
-
+// Post crear usuario
 export const createUser = async (data: UserProfile) => {
   const response = await fetch(`${API_BASE}/register`, {
     method: "POST",
@@ -56,25 +66,31 @@ export const createUser = async (data: UserProfile) => {
   return response.json();
 };
 
-export const loginUser = async (data:UserLogin) => {
+// Login usuario
+export const loginUser = async (data: UserLogin) => {
   const response = await fetch(`${API_BASE}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-
   });
-  if (!response.ok){
+
+  if (!response.ok) {
     throw new Error("Error al logear el usuario");
   }
 
   return response.json();
-}
+};
 
-//Post delete usuario
-
+// Delete usuario
 export const deleteUser = async (username: string | null) => {
+  const token = localStorage.getItem('token');  // Obtener el token dentro de la función
+
+  if (!token) {
+    throw new Error("Token no disponible. El usuario no está autenticado.");
+  }
+
   const response = await fetch(`${API_BASE}/delete/${username}`, {
     method: "DELETE",
     headers: {

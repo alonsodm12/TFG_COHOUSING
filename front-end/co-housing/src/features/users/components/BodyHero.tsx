@@ -1,10 +1,11 @@
-import Button from "../../ui/Button/Button";
 import { useUserContext } from "../../ui/Context/UserContext";
+import Button from "../../ui/Button/Button";
 
 const BodyHero: React.FC = () => {
-  const { userProfile } = useUserContext();
+  const { userProfile, isLoading } = useUserContext();
 
-  if (!userProfile) return <p>Cargando perfil...</p>;
+  if (isLoading) return <p>Cargando perfil...</p>;
+  if (!userProfile) return <p>No se pudo cargar el perfil</p>;
 
   return (
     <div className="max-w-6xl mx-auto w-full">
@@ -56,7 +57,7 @@ const BodyHero: React.FC = () => {
             <p className="text-sm text-gray-600 mb-4">
               ¿Tienes un espacio para ofrecer? Súbelo a la plataforma.
             </p>
-            <Button to="TFG_COHOUSING" label="Publicar" />
+            <Button to="/TFG_COHOUSING/community/create" label="Publicar" />
           </div>
         )}
 

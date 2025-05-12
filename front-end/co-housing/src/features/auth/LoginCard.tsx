@@ -10,7 +10,6 @@ export const LoginCard: React.FC = () => {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  // Accede al contexto
   const { setUsername, setRole } = useUserContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,28 +23,37 @@ export const LoginCard: React.FC = () => {
 
     try {
       const response = await loginUser(formData);
-      if (response == null) {
+      if (!response || !response["Login correcto: "]?.token) {
         throw new Error('Credenciales inválidas');
       }
 
-      // Guarda el token en localStorage
+      // 1. Guardamos el token
       const token = response["Login correcto: "].token;
-      localStorage.setItem('token', token); 
+      localStorage.setItem('token', token);
 
-      // Obtén el username y el role desde el token y actualiza el contexto
+      // 2. Confirmamos que el token existe realmente
+      const storedToken = localStorage.getItem('token');
+      if (!storedToken) {
+        throw new Error('Error al guardar el token');
+      }
+
+      // 3. Obtenemos username y role del token
       const username = getUsernameFromToken();
       const role = getRoleFromToken();
 
-      if (username && role) {
-        setUsername(username);
-        setRole(role);
+      if (!username || !role) {
+        throw new Error('Token inválido');
       }
 
+      // 4. Actualizamos el contexto
+      setUsername(username);
+      setRole(role);
+
+      // 5. Éxito y redirección
       setSuccess('Inicio de sesión correcto');
-      
-      // Navegar después de actualizar el contexto
       navigate('/TFG_COHOUSING/home');
     } catch (err) {
+      console.error(err);
       setError((err as Error).message);
     }
   };
