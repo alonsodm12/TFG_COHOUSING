@@ -77,7 +77,7 @@ export const loginUser = async (data: UserLogin) => {
   });
 
   if (!response.ok) {
-    throw new Error("Error al logear el usuario");
+    throw new Error("Comprueba de nuevo el usuario y la contraseña.");
   }
 
   return response.json();
