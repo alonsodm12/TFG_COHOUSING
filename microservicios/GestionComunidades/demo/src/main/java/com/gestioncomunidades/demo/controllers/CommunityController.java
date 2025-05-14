@@ -63,9 +63,6 @@ public class CommunityController {
     @PostMapping("/create")
     public ResponseEntity<?> crearComunidad(@RequestBody @Valid CommunityDTO communityDTO) {
         try {
-            System.out.println("MARIO  " + communityDTO.name());
-            System.out.println("MARIO  " + communityDTO.descripcion());
-            System.out.println("MARIO  " + communityDTO.toString());
                         
             Community comunidad = communityServices.registrarComunidad(communityDTO);
             return ResponseEntity.status(HttpStatus.ACCEPTED)

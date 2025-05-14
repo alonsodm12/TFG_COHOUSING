@@ -1,3 +1,4 @@
+
 version: '3.8'
 
 services:
@@ -51,6 +52,15 @@ services:
     volumes:
       - ./front-end/co-housing:/app
       - /app/node_modules
+
+  recomendador:
+    build:
+      context: ./microservicios/Recomendador
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - cohousing
 
   postgres-usuarios:
     image: postgres:14

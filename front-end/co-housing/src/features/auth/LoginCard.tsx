@@ -27,17 +27,10 @@ export const LoginCard: React.FC = () => {
         throw new Error('Credenciales inválidas');
       }
 
-      // 1. Guardamos el token
       const token = response["Login correcto: "].token;
       localStorage.setItem('token', token);
 
-      // 2. Confirmamos que el token existe realmente
-      const storedToken = localStorage.getItem('token');
-      if (!storedToken) {
-        throw new Error('Error al guardar el token');
-      }
-
-      // 3. Obtenemos username y role del token
+      
       const username = getUsernameFromToken();
       const role = getRoleFromToken();
 
@@ -45,7 +38,6 @@ export const LoginCard: React.FC = () => {
         throw new Error('Token inválido');
       }
 
-      // 4. Actualizamos el contexto
       setUsername(username);
       setRole(role);
 

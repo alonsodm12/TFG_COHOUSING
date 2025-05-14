@@ -5,21 +5,27 @@ from app.database import get_db_users, get_db_communities
 from app.crud.user import get_user_by_id
 from app.crud.user import get_all_communities
 from app.recommendation.recommendation import recommend_communities_by_user
+from typing import List
+from app.schemas.community_schema import CommunitySchema
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-@app.get("/recommendations/{user_id}")
+# Habilitar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Puedes poner ["http://localhost:5173"] si quieres restringir
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+@app.get("/recommendations/{user_id}", response_model=List[CommunitySchema])
 def get_recommendations(user_id: int, db_users: Session = Depends(get_db_users), db_communities: Session = Depends(get_db_communities)):
-    # Recuperar el usuario desde la base de datos de usuarios
     user = get_user_by_id(db_users, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Recuperar las comunidades desde la base de datos de comunidades
     communities = get_all_communities(db_communities)
-    
-    # Realizar la recomendación (por ejemplo, utilizando clustering)
     recommended_communities = recommend_communities_by_user(user, communities)
     
-    # Devolver las comunidades recomendadas
-    return {"recommended_communities": [c.name for c in recommended_communities]}
+    return recommended_communities
