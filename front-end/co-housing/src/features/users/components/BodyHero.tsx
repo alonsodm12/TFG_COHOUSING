@@ -28,7 +28,7 @@ const BodyHero: React.FC = () => {
             <p className="text-sm text-green-800 mb-4">
               Busca espacios disponibles que se ajusten a tus necesidades.
             </p>
-            <Button to="TFG_COHOUSING" label="Buscar" />
+            <Button to="/TFG_COHOUSING/recommendations" label="Buscar" />
           </div>
         )}
 
