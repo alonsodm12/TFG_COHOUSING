@@ -1,4 +1,5 @@
 // src/components/CommunityCard.tsx
+import Button from '../../ui/Button/Button';
 import React from 'react';
 
 interface CommunityCardProps {
@@ -10,7 +11,7 @@ interface CommunityCardProps {
   compartir_espacios: number;
   limpieza: number;
   actividad: number;
-  integrantes: number[];
+  integrantes: number[] | null;
   admin: number;
 }
 
@@ -25,9 +26,11 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
         <li><strong>Compartir espacios:</strong> {props.compartir_espacios}</li>
         <li><strong>Limpieza:</strong> {props.limpieza}</li>
         <li><strong>Actividad:</strong> {props.actividad}</li>
-        <li><strong>Integrantes:</strong> {props.integrantes.join(', ')}</li>
+        <li><strong>Integrantes:</strong> {(props.integrantes ?? []).join(', ')}</li>
         <li><strong>Admin:</strong> {props.admin}</li>
       </ul>
+      <Button to={`/TFG_COHOUSING/community/profile/${props.name}`} label="Consultar Perfil" />
+
     </div>
   );
 };

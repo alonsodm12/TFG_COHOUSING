@@ -18,7 +18,6 @@ import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.models.Community;
 import com.gestioncomunidades.demo.services.CommunityServices;
 
-
 import jakarta.validation.Valid;
 
 @Controller
@@ -32,29 +31,36 @@ public class CommunityController {
 
     @GetMapping("/obtener")
     ResponseEntity<?> obtenerComunidadesDisponibles() {
-        if(communityServices.obtenerComunidades().size()>0){
-            List<Community> comunidades = communityServices.obtenerComunidades();
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Comunidades", comunidades.get(0).getName()));    
-        }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Error","No se ha encontrado ninguna comunidad"));
+        List<Community> comunidades = communityServices.obtenerComunidades();
 
+        if (!comunidades.isEmpty()) {
+            List<String> nombres = comunidades.stream()
+                    .map(Community::getName)
+                    .toList();
+
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                    .body(Map.of("Comunidades", nombres));
+        }
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(Map.of("Error", "No se ha encontrado ninguna comunidad"));
     }
 
     @GetMapping("/{communityname}")
-    public ResponseEntity<?> obtenerComunidad(@PathVariable String communityName){
-        Optional<CommunityDTO> comunidad = this.communityServices.obtenerComunidadName(communityName);
+    public ResponseEntity<?> obtenerComunidad(@PathVariable String communityname) {
+        Optional<CommunityDTO> comunidad = this.communityServices.obtenerComunidadName(communityname);
 
-        if(comunidad.isPresent())
+        if (comunidad.isPresent())
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(comunidad);
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @GetMapping("/{communityID}")
-    public ResponseEntity<?> obtenerComunidadId(@PathVariable Long communityId){
+    @GetMapping("/id/{communityID}")
+    public ResponseEntity<?> obtenerComunidadId(@PathVariable Long communityId) {
         Optional<CommunityDTO> comunidad = this.communityServices.obtenerComunidadId(communityId);
 
-        if(comunidad.isPresent())
+        if (comunidad.isPresent())
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(comunidad);
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -63,7 +69,7 @@ public class CommunityController {
     @PostMapping("/create")
     public ResponseEntity<?> crearComunidad(@RequestBody @Valid CommunityDTO communityDTO) {
         try {
-                        
+
             Community comunidad = communityServices.registrarComunidad(communityDTO);
             return ResponseEntity.status(HttpStatus.ACCEPTED)
                     .body(Map.of("Comunidad creada con exito: ", comunidad.getId().toString()));
@@ -84,11 +90,12 @@ public class CommunityController {
     }
 
     @PostMapping("/delete/{communityname}")
-    public ResponseEntity<?> deleteCommunity(@PathVariable String communityname){
-        try{
+    public ResponseEntity<?> deleteCommunity(@PathVariable String communityname) {
+        try {
             communityServices.deleteCommunity(communityname);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comunidad: "+communityname+" borrada correctamente");
-        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                    .body("Comunidad: " + communityname + " borrada correctamente");
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error borrando la comunidad: " + communityname);
         }
     }
