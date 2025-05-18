@@ -64,27 +64,29 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Push Docker images (Java y Python)
-        run: |
-          for dir in microservicios/*/; do
-          nombre_micro=$(basename "$dir")
-          echo "Procesando microservicio: $nombre_micro"
-          cd "$dir"
+      run: |
+        for dir in microservicios/*/; do
+        nombre_micro=$(basename "$dir")
+        echo "Procesando microservicio: $nombre_micro"
 
-          if [ -f "$dir/demo/pom.xml" ]; then
+        # Microservicio Java
+        if [ -f "$dir/demo/pom.xml" ]; then
             echo "Java microservice detectado"
+            cd "$dir/demo"
             docker build --build-arg JAR_FILE=target/${nombre_micro}-0.0.1-SNAPSHOT.jar \
             -t ${{ secrets.DOCKER_USERNAME }}/spring-cohousing-${nombre_micro}:0.0.1-SNAPSHOT .
             docker push ${{ secrets.DOCKER_USERNAME }}/spring-cohousing-${nombre_micro}:0.0.1-SNAPSHOT
+            cd - > /dev/null
 
-          elif [ -f "requirements.txt" ]; then
+        # Microservicio Python
+        elif [ -f "$dir/requirements.txt" ]; then
             echo "Python microservice detectado"
+            cd "$dir"
             docker build -t ${{ secrets.DOCKER_USERNAME }}/python-cohousing-${nombre_micro}:0.0.1-SNAPSHOT .
             docker push ${{ secrets.DOCKER_USERNAME }}/python-cohousing-${nombre_micro}:0.0.1-SNAPSHOT
+            cd - > /dev/null
 
-          else
+        else
             echo "No se detectó tipo de microservicio, saltando..."
-          fi
-
-          cd - > /dev/null
-          done
-
+        fi
+        done
