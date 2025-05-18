@@ -74,7 +74,7 @@ jobs:
             if [ -f "$dir/demo/pom.xml" ]; then
               echo "Java microservice detectado"
               cd "$dir/demo"
-              docker build --build-arg JAR_FILE=target/${nombre_micro}-0.0.1-SNAPSHOT.jar \
+              docker build --build-arg JAR_FILE=target/demo-0.0.1-SNAPSHOT.jar \
                 -t ${{ secrets.DOCKER_USERNAME }}/spring-cohousing-${nombre_micro_lower}:0.0.1-SNAPSHOT .
               docker push ${{ secrets.DOCKER_USERNAME }}/spring-cohousing-${nombre_micro_lower}:0.0.1-SNAPSHOT
               cd - > /dev/null
