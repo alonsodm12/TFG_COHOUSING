@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import CommunityCard from "../components/CommunityCard";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
-import common from "../../../index.css";
 import { useUserContext } from "../../ui/Context/UserContext";
 
 interface Community {

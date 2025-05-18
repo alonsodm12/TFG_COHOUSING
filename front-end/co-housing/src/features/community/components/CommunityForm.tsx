@@ -3,37 +3,39 @@ import { CommunityProfile, LifestyleDTO } from "../api/type";
 import { useUserContext } from "../../ui/Context/UserContext";
 import { useNavigate } from "react-router-dom";
 
-type CommunityFormProps = {
+export type CommunityFormProps = {
   onSubmit: (data: CommunityProfile) => void;
+  initialData?: Partial<CommunityProfile>;
 };
 
-function buildInitialFormData(userId: number | null): CommunityProfile {
+function buildInitialFormData(userId: number | null, overrides?: Partial<CommunityProfile>): CommunityProfile {
   return {
-    name: "",
-    descripcion: "",
-    idAdmin: userId ?? 0,
+    name: overrides?.name ?? "",
+    descripcion: overrides?.descripcion ?? "",
+    idAdmin: overrides?.idAdmin ?? userId ?? 0,
     lifestyleDTO: {
-      tranquilo: 1,
-      actividad: 1,
-      limpieza: 1,
-      compartirEspacios: 1,
-      sociabilidad: 1,
+      tranquilo: overrides?.lifestyleDTO?.tranquilo ?? 1,
+      actividad: overrides?.lifestyleDTO?.actividad ?? 1,
+      limpieza: overrides?.lifestyleDTO?.limpieza ?? 1,
+      compartirEspacios: overrides?.lifestyleDTO?.compartirEspacios ?? 1,
+      sociabilidad: overrides?.lifestyleDTO?.sociabilidad ?? 1,
     },
   };
 }
 
-export const CommunityForm = ({ onSubmit }: CommunityFormProps) => {
+export const CommunityForm = ({ onSubmit, initialData }: CommunityFormProps) => {
   const navigate = useNavigate();
   const { userProfile } = useUserContext();
+
   const [formData, setFormData] = useState<CommunityProfile>(
-    buildInitialFormData(userProfile?.id ?? null)
+    buildInitialFormData(userProfile?.id ?? null, initialData)
   );
 
   useEffect(() => {
-    if (userProfile?.id) {
+    if (userProfile?.id && !initialData) {
       setFormData(buildInitialFormData(userProfile.id));
     }
-  }, [userProfile]);
+  }, [userProfile, initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,7 +67,7 @@ export const CommunityForm = ({ onSubmit }: CommunityFormProps) => {
       descripcion: formatDescripcion(formData.descripcion),
     };
     onSubmit(formattedData);
-    navigate('/TFG_COHOUSING/home');
+    navigate("/TFG_COHOUSING/home");
   };
 
   return (
@@ -74,7 +76,7 @@ export const CommunityForm = ({ onSubmit }: CommunityFormProps) => {
       className="max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-md space-y-6"
     >
       <h2 className="text-2xl font-semibold text-gray-800 text-center">
-        Crear comunidad
+        {initialData ? "Editar comunidad" : "Crear comunidad"}
       </h2>
 
       <div>
@@ -133,7 +135,7 @@ export const CommunityForm = ({ onSubmit }: CommunityFormProps) => {
         type="submit"
         className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
       >
-        Guardar comunidad
+        {initialData ? "Guardar cambios" : "Crear comunidad"}
       </button>
     </form>
   );

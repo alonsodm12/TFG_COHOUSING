@@ -2,7 +2,6 @@ import React from "react";
 import { RegisterCard } from './RegisterCard';
 import { HeaderLanding } from "../ui/Header/HeaderLanding";
 import { Footer } from "../ui/Footer/Footer";
-import common from "../../../index.css";
 
 const RegisterPage: React.FC = () => {
   return (

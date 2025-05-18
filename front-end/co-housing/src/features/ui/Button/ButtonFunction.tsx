@@ -10,7 +10,7 @@ interface ButtonProps {
 }
 
 // Componente reutilizable Button
-const ButtonFunction: React.FC<ButtonProps> = ({ label, onClick, disabled = false, className = '' }) => {
+const ButtonFunction: React.FC<ButtonProps> = ({ label, onClick, disabled = false}) => {
   return (
     <button className="btn btn-primary"
       onClick={onClick}

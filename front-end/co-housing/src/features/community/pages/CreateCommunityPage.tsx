@@ -1,7 +1,6 @@
-import React from "react";
 import { CommunityProfile } from "../api/type";
-import { CommunityForm } from "../components/CommunityForm";  // Asegúrate de importar correctamente
-import { createCommunity } from "../api/operations";  // Asegúrate de importar desde el archivo correcto
+import { CommunityForm } from "../components/CommunityForm";
+import { createCommunity } from "../api/operations";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 
@@ -11,11 +10,11 @@ const CreateCommunityPage = () => {
             // Llamamos a la función createCommunity para enviar los datos al servidor
             const response = await createCommunity(formData);
 
-            // Si la respuesta es exitosa, se puede mostrar un mensaje o redirigir
+            // Uso de la variable response (por ejemplo, log para depuración)
+            console.log('Respuesta del servidor al crear comunidad:', response);
+
             alert('Comunidad creada con éxito!');
-            // Aquí podrías hacer una redirección o limpiar el formulario, dependiendo de tus necesidades
         } catch (error: unknown) {
-            // Manejo del error
             if (error instanceof Error) {
                 alert('Hubo un error creando la comunidad: ' + error.message);
             } else {

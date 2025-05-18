@@ -1,5 +1,3 @@
-import common from "../../../index.css";
-
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import BodyHero from "../components/BodyHero";

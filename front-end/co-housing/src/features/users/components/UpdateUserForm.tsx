@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react";
 import { updateUser } from "../api/operations";
 import { UserProfile } from "../api/types";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   user: UserProfile;

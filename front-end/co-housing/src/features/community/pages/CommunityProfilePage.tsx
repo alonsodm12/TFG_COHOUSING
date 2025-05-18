@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Importa useParams para obtener el nombre de la comunidad desde la URL
 
 
-import { deleteCommunity } from "../api/operations";
 import { useCommunity } from "../hook/useCommunity";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
@@ -36,22 +35,6 @@ export const CommunityProfilePage = () => {
     setResponseMessage(null); // Resetear el mensaje de respuesta cuando se vuelva a renderizar
   }, [community]);
 
-  // Manejo de la eliminación de la comunidad
-  const handleRemove = async () => {
-    try {
-      const response = await deleteCommunity(username);
-
-      if (!response.ok) {
-        throw new Error("Error al eliminar la comunidad");
-      }
-
-      const result = await response.json();
-      setResponseMessage("Comunidad eliminada con éxito");
-      console.log("✅ Respuesta:", result);
-    } catch (err) {
-      setResponseMessage((err as Error).message);
-    }
-  };
 
   if (loading) return <p>Cargando datos...</p>;
   if (error) return <p>Error: {error}</p>;

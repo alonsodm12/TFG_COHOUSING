@@ -1,7 +1,6 @@
 import React from "react";
 import { Body } from "./Body";
 import { Footer } from "../Footer/Footer";
-import common from '../../../index.css';
 import { HeaderLanding } from "../Header/HeaderLanding";
 
 const LandingPage: React.FC = () => {

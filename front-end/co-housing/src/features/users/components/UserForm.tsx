@@ -22,14 +22,10 @@ export const UserForm = ({ initialData = {}, onSubmit }: UserFormProps) => {
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target as HTMLInputElement;
         setFormData((prev) => ({ ...prev, [name]: value}));
 
     };
-
-    const handleSliderChange = (name: keyof typeof formData.lifestyleDTO, value: number) => {
-
-    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
