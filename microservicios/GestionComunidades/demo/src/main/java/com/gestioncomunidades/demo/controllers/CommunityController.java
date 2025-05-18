@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gestioncomunidades.demo.DTOs.CommunityDTO;
+import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
 import com.gestioncomunidades.demo.models.Community;
 import com.gestioncomunidades.demo.services.CommunityServices;
 
@@ -97,6 +98,19 @@ public class CommunityController {
                     .body("Comunidad: " + communityname + " borrada correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error borrando la comunidad: " + communityname);
+        }
+    }
+
+    @PostMapping("/unirse")
+    public ResponseEntity<Map<String, String>> unirseAComunidad(@RequestBody UnionRequestDTO request) {
+
+        try {
+            communityServices.procesarUnion(request);
+            Map<String, String> response = Map.of("message", "Solicitud de unión enviada exitosamente");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (RuntimeException e) {
+            Map<String, String> error = Map.of("error", "No se pudo procesar la solicitud. Inténtalo más tarde.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 

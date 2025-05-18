@@ -53,9 +53,18 @@ export const CommunityForm = ({ onSubmit }: CommunityFormProps) => {
     }));
   };
 
+  const formatDescripcion = (desc: string) => {
+    const trimmed = desc.trim();
+    return trimmed ? trimmed.charAt(0).toUpperCase() + trimmed.slice(1) : "";
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    const formattedData = {
+      ...formData,
+      descripcion: formatDescripcion(formData.descripcion),
+    };
+    onSubmit(formattedData);
     navigate('/TFG_COHOUSING/home');
   };
 
@@ -85,9 +94,12 @@ export const CommunityForm = ({ onSubmit }: CommunityFormProps) => {
           name="descripcion"
           value={formData.descripcion}
           onChange={handleChange}
-          placeholder="Descripción"
+          placeholder="Ej: Somos un grupo tranquilo, valoramos la limpieza y disfrutamos compartir espacios comunes."
           className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <small className="text-gray-500">
+          Describe brevemente el estilo de convivencia. Ej: "Buscamos un ambiente tranquilo, limpio y colaborativo".
+        </small>
       </div>
 
       {[

@@ -1,5 +1,7 @@
 package com.gestionusuarios.demo.DTOs;
 
+import java.io.Serializable;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
@@ -13,7 +15,7 @@ public record UserUpdateDTO(
 
         @Email(message = "Correo inválido") String email,
 
-        LifestyleUpdateDTO lifestyleDTO)
+        LifestyleUpdateDTO lifestyleDTO) implements Serializable
 
 {
 }

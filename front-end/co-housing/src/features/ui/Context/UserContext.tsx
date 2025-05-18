@@ -34,7 +34,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     if (storedUsername) setUsername(storedUsername);
     if (storedRole) setRole(storedRole);
   }, []);
-  
+
   useEffect(() => {
     if (!username) {
       setUserProfile(null);

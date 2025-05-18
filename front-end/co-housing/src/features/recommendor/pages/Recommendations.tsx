@@ -4,6 +4,7 @@ import CommunityCard from "../components/CommunityCard";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import common from "../../../index.css";
+import { useUserContext } from "../../ui/Context/UserContext";
 
 interface Community {
   id: number;
@@ -19,10 +20,10 @@ interface Community {
 }
 
 const Recommendations: React.FC = () => {
-  const { id } = useParams(); // ← obtiene ID de la URL
+  const { id } = useParams();
   const [communities, setCommunities] = useState<Community[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { username } = useUserContext();
   useEffect(() => {
     if (!id) return;
 
@@ -56,9 +57,18 @@ const Recommendations: React.FC = () => {
         </h1>
 
         {isLoading ? (
-          <p className="text-center text-gray-500">Cargando recomendaciones...</p>
+          <p className="text-center text-gray-500">
+            Cargando recomendaciones...
+          </p>
         ) : communities.length > 0 ? (
-          communities.map((c) => <CommunityCard key={c.id} {...c} />)
+          communities.map((c) => (
+            <CommunityCard
+              key={c.id}
+              {...c}
+              userId={id ? parseFloat(id) : 0}
+              username={username}
+            />
+          ))
         ) : (
           <p className="text-center text-gray-500">
             No se encontraron recomendaciones para este usuario.
