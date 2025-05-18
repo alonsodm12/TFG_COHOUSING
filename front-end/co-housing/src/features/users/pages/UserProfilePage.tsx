@@ -76,18 +76,19 @@ export const UserProfilePage = () => {
               <li>Tranquilo: {userProfile.lifestyleDTO.tranquilo}</li>
               <li>Actividad: {userProfile.lifestyleDTO.actividad}</li>
               <li>Limpieza: {userProfile.lifestyleDTO.limpieza}</li>
-              <li>Compartir espacios: {userProfile.lifestyleDTO.compartirEspacios}</li>
+              <li>
+                Compartir espacios: {userProfile.lifestyleDTO.compartirEspacios}
+              </li>
               <li>Sociabilidad: {userProfile.lifestyleDTO.sociabilidad}</li>
             </ul>
+            <Button
+              label="Editar perfil"
+              to="/TFG_COHOUSING/user/profile/edit"
+              state={userProfile}
+            />
+            <ButtonFunction label="Eliminar usuario" onClick={handleRemove} />
           </div>
         </div>
-
-        <Button
-          label="Editar perfil"
-          to="/TFG_COHOUSING/user/profile/edit"
-          state={userProfile}
-        />
-        <ButtonFunction label="Eliminar usuario" onClick={handleRemove} />
 
         {error && <p className={styles.error}>{error}</p>}
         {message && <p className={styles.success}>{message}</p>}

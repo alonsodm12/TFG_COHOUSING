@@ -22,13 +22,13 @@ export const App = () => {
       <Route path="/TFG_COHOUSING/home" element={<UserHomePage />} />
       <Route path="/TFG_COHOUSING/login" element={<LoginPage />} />
 
-      <Route path="/TFG_COHOUSING/community" element={<CommunityProfilePage />} />
+      <Route path="/TFG_COHOUSING/community/profile/:communityName" element={<CommunityProfilePage />} />
       <Route path="/TFG_COHOUSING/community/create" element={<CreateCommunityPage />} />
       <Route path="/TFG_COHOUSING/community/edit" element={<UpdateCommunityPage />} />
       <Route path="/TFG_COHOUSING/user/profile" element={<UserProfilePage/>} />
       <Route path="/TFG_COHOUSING/user/profile/edit" element={<UpdateProfilePage/>} />
       <Route path="/TFG_COHOUSING/dudas" element={<Dudas/>} />
-      <Route path="/TFG_COHOUSING/recommendations" element={<Recommendations />} />
+      <Route path="/TFG_COHOUSING/recommendations/:id" element={<Recommendations />} />
     </Routes>
   );
 

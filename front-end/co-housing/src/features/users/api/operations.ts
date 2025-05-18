@@ -32,7 +32,8 @@ export const fetchUserByUsername = async (username: string | null) => {
   if (!token) {
     throw new Error("Token no disponible. El usuario no está autenticado.");
   }
-
+  console.log("token: ",token);
+  
   const response = await fetch(`${API_BASE}/${username}`, {
     method: "GET",
     headers: {
