@@ -16,6 +16,8 @@ const UpdateCommunityPage: React.FC = () => {
 
             // Si la respuesta es exitosa, se puede mostrar un mensaje o redirigir
             alert('Comunidad creada con éxito!');
+
+            console.log("Respuesta del servidor: ",response);
             // Aquí podrías hacer una redirección o limpiar el formulario, dependiendo de tus necesidades
         } catch (error: unknown) {
             // Manejo del error
