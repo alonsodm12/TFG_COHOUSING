@@ -18,6 +18,9 @@ def test_recommend_communities_by_user_basic():
     ])
 
     result = recommend_communities_by_user(user, communities, n_recommendations=2)
+    
+    assert isinstance(result, list)
     assert len(result) == 2
     for r in result:
         assert isinstance(r, np.ndarray)
+        assert r.shape == (2,)  # Cada comunidad debe tener 2 características
