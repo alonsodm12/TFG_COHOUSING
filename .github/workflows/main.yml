@@ -65,25 +65,26 @@ jobs:
 
       - name: Build and Push Docker images (Java y Python)
         run: |
-          for dir in microservicios/*/demo; do
-            nombre_micro=$(basename "$dir")
-            echo "Procesando microservicio: $nombre_micro"
-            cd "$dir"
+          for dir in microservicios/*/; do
+          nombre_micro=$(basename "$dir")
+          echo "Procesando microservicio: $nombre_micro"
+          cd "$dir"
 
-            if [ -f "pom.xml" ]; then
-              echo "Java microservice detectado"
-              docker build --build-arg JAR_FILE=target/${nombre_micro}-0.0.1-SNAPSHOT.jar \
-                -t ${{ secrets.DOCKER_USERNAME }}/spring-cohousing-${nombre_micro}:0.0.1-SNAPSHOT .
-              docker push ${{ secrets.DOCKER_USERNAME }}/spring-cohousing-${nombre_micro}:0.0.1-SNAPSHOT
+          if [ -f "$dir/demo/pom.xml" ]; then
+            echo "Java microservice detectado"
+            docker build --build-arg JAR_FILE=target/${nombre_micro}-0.0.1-SNAPSHOT.jar \
+            -t ${{ secrets.DOCKER_USERNAME }}/spring-cohousing-${nombre_micro}:0.0.1-SNAPSHOT .
+            docker push ${{ secrets.DOCKER_USERNAME }}/spring-cohousing-${nombre_micro}:0.0.1-SNAPSHOT
 
-            elif [ -f "requirements.txt" ]; then
-              echo "Python microservice detectado"
-              docker build -t ${{ secrets.DOCKER_USERNAME }}/python-cohousing-${nombre_micro}:0.0.1-SNAPSHOT .
-              docker push ${{ secrets.DOCKER_USERNAME }}/python-cohousing-${nombre_micro}:0.0.1-SNAPSHOT
+          elif [ -f "requirements.txt" ]; then
+            echo "Python microservice detectado"
+            docker build -t ${{ secrets.DOCKER_USERNAME }}/python-cohousing-${nombre_micro}:0.0.1-SNAPSHOT .
+            docker push ${{ secrets.DOCKER_USERNAME }}/python-cohousing-${nombre_micro}:0.0.1-SNAPSHOT
 
-            else
-              echo "No se detectó tipo de microservicio, saltando..."
-            fi
+          else
+            echo "No se detectó tipo de microservicio, saltando..."
+          fi
 
-            cd - > /dev/null
+          cd - > /dev/null
           done
+

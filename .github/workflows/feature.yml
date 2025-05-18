@@ -49,17 +49,6 @@ jobs:
             cd - > /dev/null
           done
 
-      - name: Configurar Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Instalar dependencias Python
-        run: |
-          cd microservicios/Recomendador
-          pip install -r requirements.txt
-          pip install coverage
-
       - name: Ejecutar tests y generar cobertura Python
         run: |
           cd microservicios/Recomendador

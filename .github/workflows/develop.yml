@@ -30,14 +30,26 @@ jobs:
         run: |
           for dir in microservicios/*/; do
             echo "Compilando $dir"
-            cd "$dir/demo"
-            if [ -f pom.xml ]; then
+            if [ -f "$dir/demo/pom.xml" ]; then
+                cd "$dir/demo"
                 mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
             else
                 echo "No se encontró pom.xml en $dir/demo, saltando..."
             fi
             cd - > /dev/null
           done
+
+      - name: Instalar dependencias Python
+        run: |
+          cd microservicios/Recomendador
+          pip install -r requirements.txt
+          pip install coverage
+
+      - name: Ejecutar tests y generar cobertura Python
+        run: |
+          cd microservicios/Recomendador
+          coverage run -m pytest
+          coverage xml
 
       - name: Descargar Codecov Uploader
         run: |
@@ -61,3 +73,10 @@ jobs:
                 ls "$dir/target/site/jacoco"
             fi
             done
+
+      - name: Subir cobertura Python a Codecov
+        run: |
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} \
+          --git-service github \
+          --slug alonsodm12/TFG_COHOUSING \
+          --file microservicios/Recomendador/coverage.xml
