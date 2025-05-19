@@ -46,14 +46,14 @@ public class SolicitudesService {
         if(solicitud.isPresent())
             return ResponseEntity.ok(solicitud);
         else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay solicitud con este id");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No hay solicitud con este id");
     }
 
     public ResponseEntity<?> obtenerSolicitudesUsuario(Long userId){
         List<Solicitud> solicitudes = solicitudesRepository.findByUserId(userId);
 
         if(solicitudes.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay solicitud con este id");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No hay solicitud con este id");
         else
             return ResponseEntity.ok(solicitudes);
         

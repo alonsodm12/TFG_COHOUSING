@@ -40,9 +40,9 @@ jobs:
         run: |
           for dir in microservicios/*/; do
             echo "Compilando $dir"
-            cd "$dir/demo"
-            if [ -f pom.xml ]; then
-                mvn clean package || exit 1
+            if [ -f "$dir/demo/pom.xml" ]; then
+                cd "$dir/demo"
+                mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
             else
                 echo "No se encontró pom.xml en $dir/demo, saltando..."
             fi
