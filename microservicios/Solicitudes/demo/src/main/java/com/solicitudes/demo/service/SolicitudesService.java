@@ -1,8 +1,12 @@
 package com.solicitudes.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.solicitudes.demo.DTOs.UnionRequestDTO;
@@ -34,5 +38,29 @@ public class SolicitudesService {
         solicitudesRepository.save(solicitud);
 
         System.out.println("Ha funcionado correctamente el rabbitmq: " + solicitud.getDescripcion());
+    }
+
+    public ResponseEntity<?> obtenerSolicitudPorId(Long id){
+        Optional<Solicitud> solicitud = solicitudesRepository.findById(id);
+
+        if(solicitud.isPresent())
+            return ResponseEntity.ok(solicitud);
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay solicitud con este id");
+    }
+
+    public ResponseEntity<?> obtenerSolicitudesUsuario(Long userId){
+        List<Solicitud> solicitudes = solicitudesRepository.findByUserId(userId);
+
+        if(solicitudes.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay solicitud con este id");
+        else
+            return ResponseEntity.ok(solicitudes);
+        
+    }
+
+    public ResponseEntity<?> obtenerSolicitudes(){
+        List<Solicitud> solicitudes = solicitudesRepository.findAll();
+        return ResponseEntity.ok(solicitudes);
     }
 }
