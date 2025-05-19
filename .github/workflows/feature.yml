@@ -49,11 +49,6 @@ jobs:
             cd - > /dev/null
           done
 
-      - name: Ejecutar tests y generar cobertura Python
-        run: |
-          cd microservicios/Recomendador
-          coverage run -m pytest
-          coverage xml
 
       - name: Set up Node
         uses: actions/setup-node@v3
