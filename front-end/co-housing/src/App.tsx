@@ -13,6 +13,7 @@ import { UserProfilePage } from './features/users/pages/UserProfilePage';
 import { UpdateProfilePage } from './features/users/pages/UpdateProfilePage';
 import Dudas from './features/ui/Dudas/Dudas';
 import Recommendations from './features/recommendor/pages/Recommendations';
+import SolicitudesPage from './features/solicitudes/pages/SolicitudesPage';
 
 export const App = () => {
   return (
@@ -29,6 +30,7 @@ export const App = () => {
       <Route path="/TFG_COHOUSING/user/profile/edit" element={<UpdateProfilePage/>} />
       <Route path="/TFG_COHOUSING/dudas" element={<Dudas/>} />
       <Route path="/TFG_COHOUSING/recommendations/:id" element={<Recommendations />} />
+      <Route path="/TFG_COHOUSING/solicitudes/:userId" element={<SolicitudesPage />} />
     </Routes>
   );
 

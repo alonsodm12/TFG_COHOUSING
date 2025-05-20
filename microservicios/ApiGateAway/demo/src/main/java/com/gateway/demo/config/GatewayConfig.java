@@ -19,35 +19,38 @@ public class GatewayConfig {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
 
-        // Rutas públicas (sin autenticación)
-        .route("auth-routes", r -> r.path(
-                    "/user/login",
-                    "/user/register",
-                    "/swagger-ui.html",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/user/usuario/{username}"
-                )
-                .uri("http://gestion-usuarios:8081"))
+                // Rutas públicas (sin autenticación)
+                .route("auth-routes", r -> r.path(
+                        "/user/login",
+                        "/user/register",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/user/usuario/{username}")
+                        .uri("http://gestion-usuarios:8081"))
 
-        // Rutas protegidas para usuarios
-        .route("user-protected-routes", r -> r.path(
-                    "/user/usuario/**",
-                    "/user/usuarios",
-                    "/user/delete/**",
-                    "/user/{username}",
-                    "/user/profile/edit"
-                )
-                .filters(f -> f.filter(jwtAuthenticationFilter))
-                .uri("http://gestion-usuarios:8081"))
+                // Rutas protegidas para usuarios
+                .route("user-protected-routes", r -> r.path(
+                        "/user/usuario/**",
+                        "/user/usuarios",
+                        "/user/delete/**",
+                        "/user/{username}",
+                        "/user/profile/edit")
+                        .filters(f -> f.filter(jwtAuthenticationFilter))
+                        .uri("http://gestion-usuarios:8081"))
 
-        // Rutas protegidas para comunidades
-        .route("community-protected-routes", r -> r.path(
-                    "/comunidades/**",
-                    "/community/create"
-                )
-                .uri("http://gestion-comunidades:8082"))
+                // Rutas protegidas para comunidades
+                .route("community-protected-routes", r -> r.path(
+                        "/comunidades/**",
+                        "/community/create")
+                        .uri("http://gestion-comunidades:8082"))
 
-        .build();
+                // Rutas para solicitudes
+                .route("solicitudes-protected-routes", r -> r.path(
+                        "/solicitudes/**",
+                        "/solicitudes/{userId}")
+                        .uri("http://solicitudes:8083"))
+
+                .build();
     }
 }

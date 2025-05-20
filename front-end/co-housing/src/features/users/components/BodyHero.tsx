@@ -33,7 +33,7 @@ const BodyHero: React.FC = () => {
       role: null,
       label: "📩",
       text: "Solicitudes",
-      to: "TFG_COHOUSING",
+      to: `/TFG_COHOUSING/solicitudes/${userProfile.id}`,
       angle: 180,
     },
     {

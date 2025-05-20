@@ -17,7 +17,10 @@ public class RabbitMQConfig {
     public static final String QUEUE_NAME = "comunidad.join.queue";
     public static final String EXCHANGE_NAME = "comunidad.exchange";
     public static final String ROUTING_KEY = "comunidad.join";
+    public static final String RESPONSE_QUEUE = "comunidad.response.queue";
+    public static final String RESPONSE_ROUTING_KEY = "comunidad.response";
 
+    
     @Bean
     public MessageConverter jsonMessageConverter(){
         return new Jackson2JsonMessageConverter();
@@ -38,10 +41,26 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
 
+
+    @Bean
+    public Queue responseQueue() {
+        return new Queue(RESPONSE_QUEUE, false);
+    }
+    
+    @Bean
+    public Binding responseBinding(Queue responseQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(responseQueue).to(exchange).with(RESPONSE_ROUTING_KEY);
+    }
+    
+
+
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter);
         return rabbitTemplate;
     }
+
+
+    
 }

@@ -6,15 +6,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.DTOs.LifestyleDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
+import com.gestioncomunidades.demo.DTOs.UnionResponseDTO;
 import com.gestioncomunidades.demo.config.RabbitMQConfig;
 import com.gestioncomunidades.demo.models.Community;
 import com.gestioncomunidades.demo.repository.CommunityRepository;
+
+import jakarta.transaction.Transactional;
 
 /*
  * Clase servicio con la logica de negocio de las comunidades
@@ -218,6 +222,23 @@ public class CommunityServices {
             throw new RuntimeException("Error al enviar la solicitud a la cola",e);
         }
         
+    }
+
+    @Transactional
+    @RabbitListener(queues = RabbitMQConfig.RESPONSE_QUEUE)
+    public void recibirRespuestaUnion(UnionResponseDTO response) {
+        if (response.aceptado()) {
+            Community comunidad = communityRepository.findById(response.comunidadId())
+                    .orElseThrow(() -> new RuntimeException("Comunidad no encontrada"));
+
+            List<Long> integrantes = comunidad.getIntegrantes();
+            if (!integrantes.contains(response.userId())) {
+                integrantes.add(response.userId());
+                communityRepository.save(comunidad);
+            }
+        } else {
+            System.out.println("Unión rechazada para usuario: " + response.userId());
+        }
     }
 
 }
