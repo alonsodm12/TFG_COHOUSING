@@ -10,11 +10,15 @@ from app.schemas.community_schema import CommunitySchema
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
+origins = [
+    "http://localhost:5173",  # frontend local
+    "http://127.0.0.1:3000",  # otro posible origen
+    # "https://tu-frontend-en-produccion.com",  <-- si lo usas en producción
+]
 # Habilitar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Puedes poner ["http://localhost:5173"] si quieres restringir
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

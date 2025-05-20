@@ -36,28 +36,34 @@ export const Body: React.FC = () => {
       <Button label="EMPEZAR YA" to="/TFG_COHOUSING/registro" />
       <div className={styles.cardsWrapper}>
         <h1 className={styles.typingP}>Lo que dicen nuestros usuarios</h1>
-        <div className={styles.cardsContainer}>
-          <Card 
+        <div className="flex gap-6 justify-center flex-wrap mt-4">
+          <Card
+            photoUrl="https://randomuser.me/api/portraits/women/44.jpg"
             title="Laura García"
             description="ShareSpace me ha ayudado a encontrar un lugar perfecto para vivir con amigos. Es fácil de usar y todo está organizado."
             emoji="🌟"
+            rating={5}
             additionalText="Una experiencia increíble"
           />
-          <Card 
+          <Card
+            photoUrl="https://randomuser.me/api/portraits/men/32.jpg"
             title="Juan Pérez"
             description="Me encanta lo fácil que es gestionar las tareas del día a día con la plataforma. Además, la comunidad es muy activa."
             emoji="👏"
+            rating={4}
             additionalText="¡Altamente recomendado!"
           />
-          <Card 
+          <Card
+            photoUrl="https://randomuser.me/api/portraits/women/65.jpg"
             title="María López"
             description="La seguridad y privacidad son lo más importante para mí, y ShareSpace ofrece ambas cosas con su sistema de autenticación."
             emoji="🔒"
+            rating={5}
             additionalText="Me siento seguro usando esta plataforma"
           />
         </div>
       </div>
-
     </section>
+
   );
 };

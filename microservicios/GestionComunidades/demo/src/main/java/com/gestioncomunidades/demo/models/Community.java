@@ -1,55 +1,52 @@
 package com.gestioncomunidades.demo.models;
 
+import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Table(name = "communities")
 @Entity
+@Table(name = "communities")
 public class Community {
 
     @Id
-    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String descripcion;
 
     @Column(name = "sociabilidad")
-    int sociabilidad;
+    private int sociabilidad;
 
     @Column(name = "tranquilidad")
-    int tranquilidad;
+    private int tranquilidad;
 
-    @Column(name = "compartirEspacios")
-    int compartirEspacios;
+    @Column(name = "compartir_espacios")
+    private int compartirEspacios;
 
     @Column(name = "limpieza")
-    int limpieza;
+    private int limpieza;
 
     @Column(name = "actividad")
-    int actividad;
+    private int actividad;
 
-    @Column(name = "integrantes")
-    List<Long> integrantes;
+    @ElementCollection
+    @CollectionTable(name = "community_integrantes", joinColumns = @JoinColumn(name = "community_id"))
+    @Column(name = "integrante_id")
+    private List<Long> integrantes = new ArrayList<>();
 
-    @Column(name = "admin", unique = true, nullable = false)
-    Long idAdmin;
+    @Column(name = "admin", nullable = false)
+    private Long idAdmin;
 
-    public Community() {
-    }
+    // Constructor vacío
+    public Community() {}
 
-    public Community(String name, String descripcion,Long idAdmin, int sociabilidad, int tranquilidad,
-            int compartirEspacios, int limpieza, int actividad) {
+    // Constructor completo
+    public Community(String name, String descripcion, Long idAdmin, int sociabilidad, int tranquilidad,
+                     int compartirEspacios, int limpieza, int actividad) {
         this.name = name;
         this.descripcion = descripcion;
         this.idAdmin = idAdmin;
@@ -140,5 +137,6 @@ public class Community {
         this.idAdmin = idAdmin;
     }
 
+    // Getters y setters...
 
 }

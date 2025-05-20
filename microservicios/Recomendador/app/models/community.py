@@ -1,12 +1,10 @@
 # app/models/community.py
-from sqlalchemy import Column, Integer, String
-
-from app.database import BaseCommunities
-from sqlalchemy import BigInteger
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import relationship
+from sqlalchemy import Table, Column, ForeignKey
 
 class Community(BaseCommunities):
     __tablename__ = 'communities'
+
     id = Column(BigInteger, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     descripcion = Column(String, nullable=False, unique=True)
@@ -15,5 +13,16 @@ class Community(BaseCommunities):
     compartir_espacios = Column(Integer)
     limpieza = Column(Integer)
     actividad = Column(Integer)
-    integrantes = Column(ARRAY(BigInteger))
     admin = Column(BigInteger, nullable=False, unique=True)
+
+    integrantes = relationship("CommunityIntegrante", back_populates="community")
+
+
+class CommunityIntegrante(BaseCommunities):
+    __tablename__ = 'community_integrantes'
+
+    id = Column(BigInteger, primary_key=True)
+    community_id = Column(BigInteger, ForeignKey('communities.id'))
+    integrante_id = Column(BigInteger)
+
+    community = relationship("Community", back_populates="integrantes")

@@ -26,9 +26,10 @@ public class SolicitudesService {
     private RabbitTemplate rabbitTemplate;
 
     public SolicitudesService(SolicitudesRepository solicitudesRepository,
-            SolicitudRespuestaRepository solicitudRespuestaRepository) {
+            SolicitudRespuestaRepository solicitudRespuestaRepository,RabbitTemplate rabbitTemplate) {
         this.solicitudesRepository = solicitudesRepository;
         this.solicitudRespuestaRepository = solicitudRespuestaRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
@@ -121,7 +122,7 @@ public class SolicitudesService {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("❌ Error al rechazar la solicitud: " + e.getMessage());
+                    .body(" Error al rechazar la solicitud: " + e.getMessage());
         }
     }
 

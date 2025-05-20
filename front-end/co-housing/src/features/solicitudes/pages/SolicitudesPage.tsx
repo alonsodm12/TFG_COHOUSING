@@ -41,9 +41,9 @@ const SolicitudesPage: React.FC = () => {
     };
 
     return (
-        <div id="root" className="min-h-screen flex flex-col bg-gray-100">
+        <div id="root">
             <Header />
-            <main className="flex-grow container mx-auto px-4 py-8">
+            <main className="page">
                 <h1 className="text-3xl font-bold mb-6 text-gray-800">Mis Solicitudes</h1>
 
                 {solicitudes.length === 0 ? (
