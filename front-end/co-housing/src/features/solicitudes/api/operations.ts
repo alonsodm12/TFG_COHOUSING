@@ -31,3 +31,13 @@ export const getSolicitudId = async (solicitudId : string) => {
 
     return response.json();
 }
+
+export const aceptarSolicitud = async (id: number) => {
+    const res = await fetch(`${API_BASE}/${id}/aceptar`, { method: "POST" });
+    if (!res.ok) throw new Error("Error al aceptar la solicitud");
+};
+
+export const rechazarSolicitud = async (id: number) => {
+    const res = await fetch(`${API_BASE}/${id}/rechazar`, { method: "POST" });
+    if (!res.ok) throw new Error("Error al rechazar la solicitud");
+};
