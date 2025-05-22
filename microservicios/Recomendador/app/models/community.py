@@ -1,6 +1,6 @@
-# app/models/community.py
+from sqlalchemy import Table, Column, ForeignKey, BigInteger, String, Integer
 from sqlalchemy.orm import relationship
-from sqlalchemy import Table, Column, ForeignKey
+from app.database import BaseCommunities  # ESTA LÍNEA ES LA CLAVE
 
 class Community(BaseCommunities):
     __tablename__ = 'communities'
@@ -21,8 +21,7 @@ class Community(BaseCommunities):
 class CommunityIntegrante(BaseCommunities):
     __tablename__ = 'community_integrantes'
 
-    id = Column(BigInteger, primary_key=True)
-    community_id = Column(BigInteger, ForeignKey('communities.id'))
-    integrante_id = Column(BigInteger)
+    community_id = Column(BigInteger, ForeignKey('communities.id'), primary_key=True)
+    integrante_id = Column(BigInteger, primary_key=True)
 
     community = relationship("Community", back_populates="integrantes")

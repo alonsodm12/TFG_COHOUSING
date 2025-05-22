@@ -14,6 +14,7 @@ class CommunitySchema(BaseModel):
     actividad: Optional[int]
     integrantes: Optional[List[CommunityIntegranteSchema]]
     admin: int
+    affinity: Optional[float] = None   # Campo nuevo, opcional
 
     class Config:
         orm_mode = True

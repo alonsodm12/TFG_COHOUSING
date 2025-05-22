@@ -137,6 +137,4 @@ public class Community {
         this.idAdmin = idAdmin;
     }
 
-    // Getters y setters...
-
 }

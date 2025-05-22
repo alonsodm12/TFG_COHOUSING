@@ -59,14 +59,15 @@ const SolicitudesPage: React.FC = () => {
                                     Solicitud #{index + 1}
                                 </h2>
                                 <p className="text-gray-700 mb-4">{solicitud.descripcion}</p>
-
-                                {solicitud.estado === "PENDIENTE" ? (
+                                
+                                
                                     <div className="flex gap-4">
                                         <button
                                             onClick={() => handleAccion(solicitud.id, "aceptar")}
                                             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
                                             disabled={loading}
                                         >
+                                            <p>{solicitud.descripcion}</p>
                                             Aceptar
                                         </button>
                                         <button
@@ -77,9 +78,7 @@ const SolicitudesPage: React.FC = () => {
                                             Rechazar
                                         </button>
                                     </div>
-                                ) : (
-                                    <p className="text-sm mt-2 text-gray-500">Estado: {solicitud.estado}</p>
-                                )}
+                                
                             </div>
                         ))}
                     </div>
