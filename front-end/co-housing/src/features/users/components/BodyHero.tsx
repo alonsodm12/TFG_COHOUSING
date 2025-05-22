@@ -10,9 +10,9 @@ const BodyHero: React.FC = () => {
   const items = [
     {
       role: null,
-      label: "💬",
-      text: "Mensajes",
-      to: "TFG_COHOUSING",
+      label: "🏡",
+      text: "Comunidad",
+      to: "/TFG_COHOUSING/CommunityUserPage/:userId",
       angle: 0,
     },
     {

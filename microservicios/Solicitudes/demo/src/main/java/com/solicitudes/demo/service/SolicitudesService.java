@@ -34,18 +34,13 @@ public class SolicitudesService {
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
     public void solicitudUnionComunidad(UnionRequestDTO unionRequestDTO) {
-        Solicitud solicitud = new Solicitud();
+        System.out.println("ENTRAAAAAAAAAAA");
+        guardarRespuesta(unionRequestDTO.idAdmin(), "El usuario: "+ unionRequestDTO.username() + "ha solicitado unirse a tu comunidad");
 
-        solicitud.setUserId(unionRequestDTO.userId());
-        solicitud.setAdminId(unionRequestDTO.idAdmin());
-        solicitud.setComunidadId(unionRequestDTO.communityId());
-        solicitud.setFecha(LocalDateTime.now());
-        solicitud.setEstado("PENDIENTE");
-        solicitud.setDescripcion("El usuario " + unionRequestDTO.username() + "ha solicitado unirse a tu comunidad");
-
-        solicitudesRepository.save(solicitud);
-
-        System.out.println("Ha funcionado correctamente el rabbitmq: " + solicitud.getDescripcion());
+        
+        System.out.println("Ha funcionado correctamente rabbitmq");
+        
+        
     }
 
     public ResponseEntity<?> obtenerSolicitudPorId(Long id) {
@@ -58,7 +53,7 @@ public class SolicitudesService {
     }
 
     public ResponseEntity<?> obtenerSolicitudesUsuario(Long userId) {
-        List<Solicitud> solicitudes = solicitudesRepository.findByUserId(userId);
+        List<SolicitudRespuesta> solicitudes = solicitudRespuestaRepository.findByDestinoUserId(userId);
 
         if (solicitudes.isEmpty())
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No hay solicitud con este id");

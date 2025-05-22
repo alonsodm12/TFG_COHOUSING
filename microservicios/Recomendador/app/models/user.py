@@ -1,8 +1,5 @@
-# app/models/user.py
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, BigInteger
 from app.database import BaseUsers
-from sqlalchemy import BigInteger
-
 
 class User(BaseUsers):
     __tablename__ = 'users'
