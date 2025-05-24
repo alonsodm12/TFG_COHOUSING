@@ -15,11 +15,11 @@ export const Body: React.FC = () => {
 
       <div className={styles.imagecontainer}>
         <div className={styles.imageWrapper}>
-          <img src="/TFG_COHOUSING/images/izquierda-usando3.png" alt="Imagen 1" className={styles.image} />
+          <img src="/TFG_COHOUSING/images/izquierda-usando3.png" alt="Imagen 1" className={styles.image2} />
           <p className={styles.caption}>🏘️¿Buscas una nueva comunidad?</p>
         </div>
         <div className={styles.imageWrapper}>
-          <img src="/TFG_COHOUSING/images/derecha-usando.png" alt="Imagen 2" className={styles.image2} />
+          <img src="/TFG_COHOUSING/images/derecha-usando.png" alt="Imagen 2" className={styles.image} />
           <p className={styles.caption}>🧍¿Buscas un nuevo miembro?</p>
         </div>
 
@@ -38,7 +38,7 @@ export const Body: React.FC = () => {
         <h1 className={styles.typingP}>Lo que dicen nuestros usuarios</h1>
         <div className="flex gap-6 justify-center flex-wrap mt-4">
           <Card
-            photoUrl="https://randomuser.me/api/portraits/women/44.jpg"
+            photoUrl="https://i.pravatar.cc/150?img=3"
             title="Laura García"
             description="ShareSpace me ha ayudado a encontrar un lugar perfecto para vivir con amigos. Es fácil de usar y todo está organizado."
             emoji="🌟"
@@ -46,7 +46,7 @@ export const Body: React.FC = () => {
             additionalText="Una experiencia increíble"
           />
           <Card
-            photoUrl="https://randomuser.me/api/portraits/men/32.jpg"
+            photoUrl="https://i.pravatar.cc/150?img=7"
             title="Juan Pérez"
             description="Me encanta lo fácil que es gestionar las tareas del día a día con la plataforma. Además, la comunidad es muy activa."
             emoji="👏"
@@ -54,7 +54,7 @@ export const Body: React.FC = () => {
             additionalText="¡Altamente recomendado!"
           />
           <Card
-            photoUrl="https://randomuser.me/api/portraits/women/65.jpg"
+            photoUrl="https://i.pravatar.cc/150?img=10"
             title="María López"
             description="La seguridad y privacidad son lo más importante para mí, y ShareSpace ofrece ambas cosas con su sistema de autenticación."
             emoji="🔒"

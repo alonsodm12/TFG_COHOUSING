@@ -11,23 +11,15 @@ public class Solicitud {
     private Long id;
 
     private Long userId;
-    private Long comunidadId;
-    private Long adminId;
-
-    public Long getAdminId() {
-        return adminId;
-    }
-
-    public void setAdminId(Long adminId) {
-        this.adminId = adminId;
-    }
+    private Long userOrigenId;
+    private Long communityId;
 
     private LocalDateTime fecha;
 
-    private String estado; // Por ejemplo: "PENDIENTE", "ACEPTADA", "RECHAZADA"
-
     private String descripcion;
-    // Getters y setters
+    private String tipo;
+
+
 
     public Long getId() {
         return id;
@@ -45,12 +37,12 @@ public class Solicitud {
         this.userId = userId;
     }
 
-    public Long getComunidadId() {
-        return comunidadId;
+    public Long getUserOrigenId() {
+        return userOrigenId;
     }
 
-    public void setComunidadId(Long comunidadId) {
-        this.comunidadId = comunidadId;
+    public void setUserOrigenId(Long userOrigenId) {
+        this.userOrigenId = userOrigenId;
     }
 
     public LocalDateTime getFecha() {
@@ -61,14 +53,6 @@ public class Solicitud {
         this.fecha = fecha;
     }
 
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
@@ -77,4 +61,18 @@ public class Solicitud {
         this.descripcion = descripcion;
     }
 
+    public Long getCommunityId() {
+        return communityId;
+    }
+
+    public void setCommunityId(Long communityId) {
+        this.communityId = communityId;
+    }
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }

@@ -14,6 +14,7 @@ import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.DTOs.LifestyleDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
 import com.gestioncomunidades.demo.DTOs.UnionResponseDTO;
+import com.gestioncomunidades.demo.DTOs.UpdateUserCommunityDTO;
 import com.gestioncomunidades.demo.config.RabbitMQConfig;
 import com.gestioncomunidades.demo.models.Community;
 import com.gestioncomunidades.demo.repository.CommunityRepository;
@@ -215,30 +216,44 @@ public class CommunityServices {
      */
 
     public void procesarUnion(UnionRequestDTO requestDTO) {
-        try{
+        try {
             rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY, requestDTO);
+        } catch (AmqpException e) {
+            throw new RuntimeException("Error al enviar la solicitud a la cola", e);
         }
-        catch (AmqpException e){
-            throw new RuntimeException("Error al enviar la solicitud a la cola",e);
-        }
-        
+
     }
 
     @Transactional
     @RabbitListener(queues = RabbitMQConfig.RESPONSE_QUEUE)
     public void recibirRespuestaUnion(UnionResponseDTO response) {
-        if (response.aceptado()) {
-            Community comunidad = communityRepository.findById(response.comunidadId())
-                    .orElseThrow(() -> new RuntimeException("Comunidad no encontrada"));
-
-            List<Long> integrantes = comunidad.getIntegrantes();
-            if (!integrantes.contains(response.userId())) {
-                integrantes.add(response.userId());
-                communityRepository.save(comunidad);
-            }
-        } else {
+        if (!response.aceptado()) {
             System.out.println("Unión rechazada para usuario: " + response.userId());
+            return;
         }
+
+        // Buscar la comunidad una sola vez
+        Community comunidad = communityRepository.findById(response.comunidadId())
+                .orElseThrow(() -> new RuntimeException("Comunidad no encontrada"));
+
+        List<Long> integrantes = comunidad.getIntegrantes();
+        Long userId = response.userId();
+
+        // Solo añadir y guardar si no está ya en la comunidad
+        if (integrantes.contains(userId)) {
+            System.out.println("Usuario ya es integrante de la comunidad");
+            return;
+        }
+
+        integrantes.add(userId);
+        communityRepository.save(comunidad);
+
+        System.out.println("Unión aceptada para usuario: " + userId);
+
+        UpdateUserCommunityDTO payload = new UpdateUserCommunityDTO(userId, comunidad.getId());
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME,
+                RabbitMQConfig.USER_COMMUNITY_UPDATE_ROUTING_KEY,
+                payload);
     }
 
 }

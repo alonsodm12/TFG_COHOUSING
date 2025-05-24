@@ -10,7 +10,7 @@ export const LoginCard: React.FC = () => {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  const { setUsername, setRole } = useUserContext();
+  const { setUsername, setRole, fetchUserProfile } = useUserContext(); // añadimos fetchUserProfile
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,7 +30,6 @@ export const LoginCard: React.FC = () => {
       const token = response["Login correcto: "].token;
       localStorage.setItem('token', token);
 
-      
       const username = getUsernameFromToken();
       const role = getRoleFromToken();
 
@@ -41,7 +40,9 @@ export const LoginCard: React.FC = () => {
       setUsername(username);
       setRole(role);
 
-      // 5. Éxito y redirección
+      // ⚠️ Cargar perfil explícitamente después de setear username y role
+      await fetchUserProfile();
+
       setSuccess('Inicio de sesión correcto');
       navigate('/TFG_COHOUSING/home');
     } catch (err) {
