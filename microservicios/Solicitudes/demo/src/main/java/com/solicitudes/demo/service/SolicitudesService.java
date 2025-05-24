@@ -1,88 +1,81 @@
 package com.solicitudes.demo.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.solicitudes.demo.DTOs.UnionRequestDTO;
 import com.solicitudes.demo.DTOs.UnionResponseDTO;
 import com.solicitudes.demo.configuration.RabbitMQConfig;
 import com.solicitudes.demo.models.Solicitud;
-import com.solicitudes.demo.models.SolicitudRespuesta;
-import com.solicitudes.demo.repository.SolicitudRespuestaRepository;
 import com.solicitudes.demo.repository.SolicitudesRepository;
+
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class SolicitudesService {
 
-    private SolicitudesRepository solicitudesRepository;
-    private SolicitudRespuestaRepository solicitudRespuestaRepository;
-    private RabbitTemplate rabbitTemplate;
+    private final SolicitudesRepository solicitudesRepository;
+    private final RabbitTemplate rabbitTemplate;
+
 
     public SolicitudesService(SolicitudesRepository solicitudesRepository,
-            SolicitudRespuestaRepository solicitudRespuestaRepository,RabbitTemplate rabbitTemplate) {
+            RabbitTemplate rabbitTemplate) {
         this.solicitudesRepository = solicitudesRepository;
-        this.solicitudRespuestaRepository = solicitudRespuestaRepository;
         this.rabbitTemplate = rabbitTemplate;
+
     }
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
     public void solicitudUnionComunidad(UnionRequestDTO unionRequestDTO) {
-        System.out.println("ENTRAAAAAAAAAAA");
-        guardarRespuesta(unionRequestDTO.idAdmin(), "El usuario: "+ unionRequestDTO.username() + "ha solicitado unirse a tu comunidad");
-
-        
-        System.out.println("Ha funcionado correctamente rabbitmq");
-        
-        
-    }
-
-    public ResponseEntity<?> obtenerSolicitudPorId(Long id) {
-        Optional<Solicitud> solicitud = solicitudesRepository.findById(id);
-
-        if (solicitud.isPresent())
-            return ResponseEntity.ok(solicitud);
-        else
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No hay solicitud con este id");
+        System.out.println("🐰 Recibida solicitud por RabbitMQ");
+        guardarRespuestaUnion(unionRequestDTO.idAdmin(),unionRequestDTO.communityId(),unionRequestDTO.userId(),
+                "El usuario: " + unionRequestDTO.username() + " ha solicitado unirse a tu comunidad");
+        System.out.println("✅ Mensaje procesado correctamente");
     }
 
     public ResponseEntity<?> obtenerSolicitudesUsuario(Long userId) {
-        List<SolicitudRespuesta> solicitudes = solicitudRespuestaRepository.findByDestinoUserId(userId);
-
-        if (solicitudes.isEmpty())
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No hay solicitud con este id");
-        else
+        List<Solicitud> solicitudes = solicitudesRepository.findByUserId(userId).get();
+        if (solicitudes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No hay solicitudes para este usuario");
+        } else {
             return ResponseEntity.ok(solicitudes);
-
+        }
     }
 
-    public ResponseEntity<?> obtenerSolicitudes() {
+    public ResponseEntity<?> obtenerSolicitudPorId(Long id) {
+        Solicitud solicitud = solicitudesRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No hay solicitudes para este usuario"));
+
+        return ResponseEntity.ok(solicitud);
+    }
+
+    public ResponseEntity<?> obtenerTodasLasSolicitudes() {
         List<Solicitud> solicitudes = solicitudesRepository.findAll();
         return ResponseEntity.ok(solicitudes);
     }
 
+    @Transactional
     public ResponseEntity<?> aceptarSolicitudUnion(Long id) {
         try {
-            Solicitud solicitud = obtenerSolicitudPendiente(id);
+            Solicitud solicitud = solicitudesRepository.findById(id).get();
 
-            solicitud.setEstado("ACEPTADA");
-            solicitudesRepository.save(solicitud);
-
-            // Crear mensaje informativo
-            String mensaje = "Tu solicitud para unirte a la comunidad " + solicitud.getComunidadId()
+            String mensaje = "¡Enhorabuena! Tu solicitud para unirte a la comunidad "
                     + " ha sido aceptada.";
-            guardarRespuesta(solicitud.getUserId(), mensaje);
 
-            // Notificar al micro de comunidad
+            guardarRespuesta(solicitud.getUserOrigenId(),solicitud.getCommunityId(), mensaje);
+
             UnionResponseDTO response = new UnionResponseDTO(
-                    solicitud.getUserId(),
-                    solicitud.getComunidadId(),
+                    solicitud.getUserOrigenId(),
+                    solicitud.getCommunityId(),
                     true,
                     "¡Enhorabuena! Has sido aceptado en la comunidad.");
 
@@ -90,6 +83,9 @@ public class SolicitudesService {
                     RabbitMQConfig.EXCHANGE_NAME,
                     "comunidad.response",
                     response);
+
+            solicitudesRepository.deleteById(id);
+
 
             return ResponseEntity.ok("✅ Solicitud aceptada correctamente.");
 
@@ -100,41 +96,53 @@ public class SolicitudesService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> rechazarSolicitudUnion(Long id) {
         try {
-            Solicitud solicitud = obtenerSolicitudPendiente(id);
+            Solicitud solicitud = solicitudesRepository.findById(id).get();
 
-            solicitud.setEstado("RECHAZADA");
-            solicitudesRepository.save(solicitud);
-
-            // Crear mensaje de rechazo
-            String mensaje = "Tu solicitud para unirte a la comunidad " + solicitud.getComunidadId()
+            String mensaje = "Tu solicitud para unirte a la comunidad " + solicitud.getCommunityId()
                     + " ha sido rechazada.";
-            guardarRespuesta(solicitud.getUserId(), mensaje);
+            guardarRespuesta(solicitud.getUserId(),solicitud.getCommunityId(), mensaje);
 
+            solicitudesRepository.deleteById(id);
             return ResponseEntity.ok("✅ Solicitud rechazada correctamente.");
 
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(" Error al rechazar la solicitud: " + e.getMessage());
+                    .body("Error al rechazar la solicitud: " + e.getMessage());
         }
     }
 
-    private Solicitud obtenerSolicitudPendiente(Long id) {
-        Solicitud solicitud = solicitudesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
-
-        if (!"PENDIENTE".equalsIgnoreCase(solicitud.getEstado())) {
-            throw new IllegalStateException("La solicitud ya ha sido procesada");
+    public ResponseEntity<?> eliminarSolicitud(Long id){
+        try{
+            solicitudesRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Se elimino la solicitud");
         }
-        return solicitud;
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo eliminar la solicitud");
+        }
     }
 
-    private void guardarRespuesta(Long destinoUserId, String mensaje) {
-        SolicitudRespuesta respuesta = new SolicitudRespuesta();
-        respuesta.setDestinoUserId(destinoUserId);
-        respuesta.setMensaje(mensaje);
-        solicitudRespuestaRepository.save(respuesta);
+
+    private void guardarRespuesta(Long destinoUserId,Long communityId, String mensaje) {
+        Solicitud respuesta = new Solicitud();
+        respuesta.setUserId(destinoUserId);
+        respuesta.setDescripcion(mensaje);
+        respuesta.setCommunityId(communityId);
+        respuesta.setTipo("basica");
+        solicitudesRepository.save(respuesta);
+    }
+
+
+    private void guardarRespuestaUnion(Long destinoUserId,Long communityId,Long origenUserId,String mensaje) {
+        Solicitud respuesta = new Solicitud();
+        respuesta.setUserId(destinoUserId);
+        respuesta.setUserOrigenId(origenUserId);
+        respuesta.setDescripcion(mensaje);
+        respuesta.setCommunityId(communityId);
+        respuesta.setTipo("compleja");
+        solicitudesRepository.save(respuesta);
     }
 }

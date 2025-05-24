@@ -41,3 +41,8 @@ export const rechazarSolicitud = async (id: number) => {
     const res = await fetch(`${API_BASE}/${id}/rechazar`, { method: "POST" });
     if (!res.ok) throw new Error("Error al rechazar la solicitud");
 };
+
+export const eliminarSolicitud = async (id: number) => {
+    const res = await fetch(`${API_BASE}/${id}/eliminar`, { method: "POST" });
+    if (!res.ok) throw new Error("Error al eliminar la solicitud")
+}

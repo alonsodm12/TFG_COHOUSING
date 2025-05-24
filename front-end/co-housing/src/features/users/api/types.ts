@@ -15,6 +15,7 @@ export interface UserProfile {
     role: string;
     email: string;
     lifestyleDTO: LifestyleDTO;
+    idComunidad: number | null;
 }
 
 export interface UserLogin {

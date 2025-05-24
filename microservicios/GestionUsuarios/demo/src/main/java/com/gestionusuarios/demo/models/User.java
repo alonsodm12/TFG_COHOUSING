@@ -62,6 +62,7 @@ public class User implements UserDetails {
     @Column(name = "idComunidad")
     Long idComunidad;
 
+
     public User() {
     }
 
@@ -172,13 +173,21 @@ public class User implements UserDetails {
     public void setActividad(int actividad) {
         this.actividad = actividad;
     }
+    public Long getIdComunidad() {
+        return idComunidad;
+    }
+
+    public void setIdComunidad(Long idComunidad) {
+        this.idComunidad = idComunidad;
+    }
 
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
                 + ", enabled=" + enabled + ", role=" + role + ", sociabilidad=" + sociabilidad + ", tranquilidad="
                 + tranquilidad + ", compartirEspacios=" + compartirEspacios + ", limpieza=" + limpieza + ", actividad="
-                + actividad + "]";
+                + actividad + ", idComunidad=" + idComunidad + "]";
     }
+
 
 }

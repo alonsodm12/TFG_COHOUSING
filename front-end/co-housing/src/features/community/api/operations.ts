@@ -32,6 +32,17 @@ export const fetchCommunityByName = async (communityname: string | null) => {
   return response.json();
 };
 
+//Get comunidad por su id
+export const fetchCommunityById = async (communityId: string | null) => {
+  const response = await fetch(`${API_BASE}/id/${communityId}`);
+  if (!response.ok) {
+    throw new Error("Error al obtener los datos de la comunidad");
+  }
+
+  return response.json();
+};
+
+
 //Post crear comunidad
 
 export const createCommunity = async (data: CommunityProfile) => {

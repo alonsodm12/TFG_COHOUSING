@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { getUsernameFromToken, getRoleFromToken } from "../../authUtils";
 import { fetchUserByUsername } from "../../users/api/operations";
 import { UserProfile } from "../../users/api/types";
@@ -22,48 +16,35 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [username, setUsername] = useState<string | null>(null);
-  const [role, setRole] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(getUsernameFromToken());
+  const [role, setRole] = useState<string | null>(getRoleFromToken());
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Cargar perfil cuando el username cambie (tras login)
+  // 🔁 Se ejecuta cada vez que cambia el username
   useEffect(() => {
-    const storedUsername = getUsernameFromToken();
-    const storedRole = getRoleFromToken();
-    if (storedUsername) setUsername(storedUsername);
-    if (storedRole) setRole(storedRole);
-  }, []);
-
-  useEffect(() => {
-    if (!username) {
-      setUserProfile(null);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    console.log(username);
-    fetchUserByUsername(username)
-      .then((profile) => {
-        setUserProfile(profile);
-      })
-      .catch((error) => {
-        console.error("Error al obtener el perfil del usuario:", error);
-        // Mostrar detalles adicionales del error
-        console.log(username);
-        if (error instanceof Error) {
-          console.error("Detalles del error:", error.message);
-        } else {
-          console.error("Respuesta de error desconocida:", error);
-        }
-      })
-      .finally(() => {
+    const loadProfile = async () => {
+      if (!username) {
+        setUserProfile(null);
         setIsLoading(false);
-      });
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const profile = await fetchUserByUsername(username);
+        setUserProfile(profile);
+      } catch (error) {
+        console.error("Error al obtener el perfil del usuario:", error);
+        setUserProfile(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProfile();
   }, [username]);
 
-  // Función reutilizable para recargar el perfil manualmente
   const fetchUserProfile = async () => {
     if (!username) return;
     setIsLoading(true);

@@ -6,4 +6,5 @@ export interface SolicitudesDTO {
     fecha: Date;
     estado: string;
     descripcion: string;
+    tipo: string;
 }

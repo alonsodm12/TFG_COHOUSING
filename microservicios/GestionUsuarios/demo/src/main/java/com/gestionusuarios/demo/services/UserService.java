@@ -5,14 +5,19 @@ import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.gestionusuarios.demo.DTOs.UpdateUserCommunityDTO;
 import com.gestionusuarios.demo.DTOs.UserDTO;
 import com.gestionusuarios.demo.DTOs.UserUpdateDTO;
+import com.gestionusuarios.demo.config.RabbitMQConfig;
 import com.gestionusuarios.demo.models.User;
 import com.gestionusuarios.demo.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -110,5 +115,24 @@ public class UserService {
             return Optional.empty();
         }
 
+    }
+
+
+    @Transactional
+    @RabbitListener(queues = RabbitMQConfig.USER_COMMUNITY_UPDATE_QUEUE)
+    public void recibirRespuestaUnion(UpdateUserCommunityDTO payload) {
+        Long userId = payload.userId();
+        Long comunidadId = payload.comunidadId();
+
+        Optional<User> usuario = userRepository.findById(userId);
+        if(usuario.isPresent()){
+            User usuarioUnir = usuario.get();
+            usuarioUnir.setIdComunidad(comunidadId);
+            userRepository.save(usuarioUnir);
+            System.out.println("Usuario actualizado a su nueva comunidad");
+        }
+        else{
+            System.out.println("Error uniendo al usuario a la comunidad");
+        }
     }
 }

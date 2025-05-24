@@ -31,7 +31,7 @@ public class SolicitudesController {
 
     @GetMapping
     public ResponseEntity<?> getSolicitudes(){
-        return solicitudesService.obtenerSolicitudes();
+        return solicitudesService.obtenerTodasLasSolicitudes();
     }
 
     @PostMapping("/{id}/aceptar")
@@ -43,5 +43,11 @@ public class SolicitudesController {
     public ResponseEntity<?> responderSolicitudRechazar(@PathVariable Long id){
         return solicitudesService.rechazarSolicitudUnion(id);
     }
+
+    @PostMapping("/{id}/eliminar")
+    public ResponseEntity<?> eliminarSolicitud(@PathVariable Long id){
+        return solicitudesService.eliminarSolicitud(id);
+    }
+
 
 }

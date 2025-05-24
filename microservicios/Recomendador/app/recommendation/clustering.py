@@ -18,6 +18,8 @@ def preprocess_data(user: User, communities: list):
     ])
     
     # Unir todas las preferencias
+    # Matriz de tamaño n_comunidades + 1 , 5
+    
     all_preferences = np.vstack([user_preferences, communities_preferences])
     
     # Normalizar
