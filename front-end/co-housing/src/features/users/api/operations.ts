@@ -50,14 +50,10 @@ export const fetchUserByUsername = async (username: string | null) => {
   return data;
 };
 
-// Post crear usuario
-export const createUser = async (data: UserProfile) => {
+export const createUser = async (data: FormData) => {
   const response = await fetch(`${API_BASE}/register`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+    body: data,
   });
 
   if (!response.ok) {
@@ -66,6 +62,7 @@ export const createUser = async (data: UserProfile) => {
 
   return response.json();
 };
+
 
 // Login usuario
 export const loginUser = async (data: UserLogin) => {

@@ -14,7 +14,8 @@ services:
       - cohousing
     depends_on:
       - postgres-usuarios
-
+    volumes:
+      - ./uploads:/app/uploads
   gestion-comunidades:
     build:
       context: ./microservicios/GestionComunidades/demo

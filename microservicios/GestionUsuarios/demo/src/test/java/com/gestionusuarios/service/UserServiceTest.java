@@ -34,15 +34,39 @@ public class UserServiceTest {
 
     @Test
     public void registrarUsuario_devuelveUsuarioGuardado() {
-        UserDTO userDTO = new UserDTO("alonso",1L, "grandad123", "buscador", "alonsodmx@gmail.com",
-                new LifestyleDTO(2, 2, 2, 2, 2));
+        UserDTO userDTO = new UserDTO(
+            "alonso",
+            1L,
+            "grandad123",
+            "buscador",
+            "alonsodmx@gmail.com",
+            "Calle Falsa 123",
+            40.4168,
+            -3.7038,
+            "http://foto.url",
+            new LifestyleDTO(2, 2, 2, 2, 2),0L
+        );
 
         // Stubbing para que no lance la excepción por email duplicado
         when(userRepository.findByEmail(userDTO.email())).thenReturn(Optional.empty());
 
         // Stubbing del repositorio para el método save
         when(userRepository.save(any(User.class)))
-                .thenReturn(new User("alonso", "alonsodmx@gmail.com", "grandad123", true, "buscador", 2, 2, 2, 2, 2));
+            .thenReturn(new User(
+                "alonso",
+                "alonsodmx@gmail.com",
+                "grandad123",
+                "http://foto.url",
+                40.4168,
+                -3.7038,
+                "Calle Falsa 123",
+                "buscador",
+                2,
+                2,
+                2,
+                2,
+                2
+            ));
 
         User usuario = userService.registerUser(userDTO);
 

@@ -16,7 +16,17 @@ public record UserDTO(
 
         @NotBlank(message = "El correo es obligatorio") @Email(message = "Correo inválido") String email,
 
-        LifestyleDTO lifestyleDTO)
+        String direccion,
+
+        Double latitud,
+
+        Double longitud,
+
+        String fotoUrl,
+
+        LifestyleDTO lifestyleDTO,
+        
+        Long idComunidad)
 
 {
 }

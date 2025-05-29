@@ -40,8 +40,8 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/user/login", "/user/register", "/swagger-ui/**", "/v3/api-docs/**",
-                                "/swagger-ui.html", "/user/delete")
+                        .requestMatchers("/user/login", "/user/register",
+                                "/uploads/**", "/user/delete")
                         .permitAll()
                         .requestMatchers("/user/usuarios").hasRole("buscador")
                         .anyRequest().authenticated())

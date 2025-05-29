@@ -20,6 +20,27 @@ import jakarta.persistence.Table;
 @Entity
 public class User implements UserDetails {
 
+    public User(String username, String email, String password, String fotoUrl, Double latitud,
+            Double longitud, String direccion, String role, int sociabilidad, int tranquilidad,
+            int compartirEspacios, int limpieza, int actividad) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.fotoUrl = fotoUrl;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.direccion = direccion;
+        this.enabled = true;
+        this.role = role;
+        this.sociabilidad = sociabilidad;
+        this.tranquilidad = tranquilidad;
+        this.compartirEspacios = compartirEspacios;
+        this.limpieza = limpieza;
+        this.actividad = actividad;
+        this.idComunidad = 0L;
+    }
+
+
     @Schema(description = "ID del usuario")
     @Id
     @Column(nullable = false)
@@ -37,6 +58,18 @@ public class User implements UserDetails {
 
     @Column(unique = false, nullable = false)
     private String password;
+
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
+
+    @Column(name = "direccion")
+    private String direccion;
 
     @Column(nullable = false)
     private boolean enabled = true;
@@ -66,21 +99,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String email, String password, boolean enabled, String role, int sociabilidad,
-            int tranquilidad, int compartirEspacios, int limpieza, int actividad) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.enabled = enabled;
-        this.role = role;
-        this.actividad = actividad;
-        this.compartirEspacios = compartirEspacios;
-        this.limpieza = limpieza;
-        this.tranquilidad = tranquilidad;
-        this.sociabilidad = sociabilidad;
-        this.idComunidad = 0L;
-    }
-
+ 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
@@ -181,13 +200,49 @@ public class User implements UserDetails {
         this.idComunidad = idComunidad;
     }
 
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+    
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
+    
+    public String getDireccion() {
+        return direccion;
+    }
+    
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+    
+    public Double getLatitud() {
+        return latitud;
+    }
+    
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+    
+    public Double getLongitud() {
+        return longitud;
+    }
+    
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
+
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
-                + ", enabled=" + enabled + ", role=" + role + ", sociabilidad=" + sociabilidad + ", tranquilidad="
-                + tranquilidad + ", compartirEspacios=" + compartirEspacios + ", limpieza=" + limpieza + ", actividad="
-                + actividad + ", idComunidad=" + idComunidad + "]";
+                + ", fotoUrl=" + fotoUrl + ", latitud=" + latitud + ", longitud=" + longitud + ", direccion="
+                + direccion + ", enabled=" + enabled + ", role=" + role + ", sociabilidad=" + sociabilidad
+                + ", tranquilidad=" + tranquilidad + ", compartirEspacios=" + compartirEspacios + ", limpieza="
+                + limpieza + ", actividad=" + actividad + ", idComunidad=" + idComunidad + "]";
     }
+    
+
 
 
 }
