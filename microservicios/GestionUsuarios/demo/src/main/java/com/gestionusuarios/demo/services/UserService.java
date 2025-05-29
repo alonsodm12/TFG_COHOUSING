@@ -1,14 +1,18 @@
 package com.gestionusuarios.demo.services;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gestionusuarios.demo.DTOs.UpdateUserCommunityDTO;
 import com.gestionusuarios.demo.DTOs.UserDTO;
@@ -39,28 +43,13 @@ public class UserService {
 
         String codedPassword = passwordEncoder.encode(userDTO.password());
 
-        User usuario = new User(userDTO.username(), userDTO.email(), codedPassword, true, userDTO.role(),
+        User usuario = new User(userDTO.username(), userDTO.email(), codedPassword, userDTO.fotoUrl(),
+                userDTO.latitud(), userDTO.longitud(), userDTO.direccion(), userDTO.role(),
                 userDTO.lifestyleDTO().sociabilidad(), userDTO.lifestyleDTO().tranquilidad(),
                 userDTO.lifestyleDTO().compartirEspacios(), userDTO.lifestyleDTO().limpieza(),
                 userDTO.lifestyleDTO().actividad());
 
         return userRepository.save(usuario);
-    }
-
-    public Optional<User> loginUser(String username, String password) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-
-        if (userOptional.isPresent()) {
-            String passwordCoded = userOptional.get().getPassword();
-
-            Boolean coincidencia = passwordEncoder.matches(password, passwordCoded);
-
-            if (coincidencia)
-                return userOptional;
-            else
-                return Optional.empty();
-        } else
-            return Optional.empty();
     }
 
     public Optional<List<String>> getUsers() {
@@ -72,7 +61,39 @@ public class UserService {
             return Optional.of(respuesta);
         }
     }
-
+    public String guardarFoto(MultipartFile foto) {
+        // Construimos un nombre único para evitar colisiones
+        String filename = System.currentTimeMillis() + "_" + foto.getOriginalFilename();
+    
+        // Usamos la carpeta 'uploads' en el directorio home del usuario para evitar problemas de permisos
+        Path uploadsDir = Paths.get("/app/uploads/");
+    
+        // Ruta completa al archivo
+        Path ruta = uploadsDir.resolve(filename);
+    
+        try {
+            System.out.println("Guardando foto en: " + ruta.toAbsolutePath());
+    
+            // Creamos la carpeta uploads si no existe
+            if (!Files.exists(uploadsDir)) {
+                Files.createDirectories(uploadsDir);
+                System.out.println("Carpeta uploads creada en: " + uploadsDir.toAbsolutePath());
+            } else {
+                System.out.println("Carpeta uploads ya existe");
+            }
+    
+            // Guardamos el archivo
+            foto.transferTo(ruta.toFile());
+    
+            // Devolvemos la ruta relativa para que puedas guardar en DB
+            return "/uploads/" + filename;
+    
+        } catch (IOException e) {
+            System.err.println("Error guardando la foto en: " + ruta.toAbsolutePath());
+            e.printStackTrace();
+            throw new RuntimeException("Error guardando la foto", e);
+        }
+    }
     public void deleteUser(String username) {
 
         Optional<User> userOptional = userRepository.findByUsername(username);
@@ -85,21 +106,31 @@ public class UserService {
     }
 
     public Optional<User> modificarUser(String username, UserUpdateDTO user) {
-        User usuario = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-    
-        if (user.username() != null) usuario.setUsername(user.username());
-        if (user.email() != null) usuario.setEmail(user.email());
-        if (user.password() != null) usuario.setPassword(user.password());
-        if (user.role() != null) usuario.setRole(user.role());
-    
+        User usuario = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (user.username() != null)
+            usuario.setUsername(user.username());
+        if (user.email() != null)
+            usuario.setEmail(user.email());
+        if (user.password() != null)
+            usuario.setPassword(user.password());
+        if (user.role() != null)
+            usuario.setRole(user.role());
+
         if (user.lifestyleDTO() != null) {
-            if (user.lifestyleDTO().actividad() != 0) usuario.setActividad(user.lifestyleDTO().actividad());
-            if (user.lifestyleDTO().compartirEspacios() != 0) usuario.setCompartirEspacios(user.lifestyleDTO().compartirEspacios());
-            if (user.lifestyleDTO().limpieza() != 0) usuario.setLimpieza(user.lifestyleDTO().limpieza());
-            if (user.lifestyleDTO().sociabilidad() != 0) usuario.setSociabilidad(user.lifestyleDTO().sociabilidad());
-            if (user.lifestyleDTO().tranquilidad() != 0) usuario.setTranquilidad(user.lifestyleDTO().tranquilidad());
+            if (user.lifestyleDTO().actividad() != 0)
+                usuario.setActividad(user.lifestyleDTO().actividad());
+            if (user.lifestyleDTO().compartirEspacios() != 0)
+                usuario.setCompartirEspacios(user.lifestyleDTO().compartirEspacios());
+            if (user.lifestyleDTO().limpieza() != 0)
+                usuario.setLimpieza(user.lifestyleDTO().limpieza());
+            if (user.lifestyleDTO().sociabilidad() != 0)
+                usuario.setSociabilidad(user.lifestyleDTO().sociabilidad());
+            if (user.lifestyleDTO().tranquilidad() != 0)
+                usuario.setTranquilidad(user.lifestyleDTO().tranquilidad());
         }
-    
+
         User usuarioUpdate = userRepository.save(usuario);
         return Optional.of(usuarioUpdate);
     }
@@ -108,15 +139,13 @@ public class UserService {
 
         Optional<User> usuario = userRepository.findByUsername(username);
 
-        if(usuario.isPresent()){
+        if (usuario.isPresent()) {
             return usuario;
-        }
-        else{
+        } else {
             return Optional.empty();
         }
 
     }
-
 
     @Transactional
     @RabbitListener(queues = RabbitMQConfig.USER_COMMUNITY_UPDATE_QUEUE)
@@ -125,13 +154,12 @@ public class UserService {
         Long comunidadId = payload.comunidadId();
 
         Optional<User> usuario = userRepository.findById(userId);
-        if(usuario.isPresent()){
+        if (usuario.isPresent()) {
             User usuarioUnir = usuario.get();
             usuarioUnir.setIdComunidad(comunidadId);
             userRepository.save(usuarioUnir);
             System.out.println("Usuario actualizado a su nueva comunidad");
-        }
-        else{
+        } else {
             System.out.println("Error uniendo al usuario a la comunidad");
         }
     }

@@ -16,7 +16,7 @@ export const UserProfilePage = () => {
 
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
+  console.log("Perfil recibido:", userProfile);
   // Llamada para eliminar usuario
   const handleRemove = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -58,40 +58,56 @@ export const UserProfilePage = () => {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">
               Perfil de Usuario
             </h2>
-
-            <p className="text-base text-gray-700 mb-2">
-              <strong>Nombre:</strong> {userProfile.username}
-            </p>
-            <p className="text-base text-gray-700 mb-2">
-              <strong>Email:</strong> {userProfile.email}
-            </p>
-            <p className="text-base text-gray-700 mb-4">
-              <strong>Rol:</strong> {userProfile.role}
-            </p>
-
-            <h3 className="text-xl font-medium text-gray-800 mb-2">
-              Estilo de vida
-            </h3>
-            <ul className="list-disc pl-6 mb-6 text-gray-600 text-sm space-y-1">
-              <li>Tranquilo: {userProfile.lifestyleDTO.tranquilo}</li>
-              <li>Actividad: {userProfile.lifestyleDTO.actividad}</li>
-              <li>Limpieza: {userProfile.lifestyleDTO.limpieza}</li>
-              <li>
-                Compartir espacios: {userProfile.lifestyleDTO.compartirEspacios}
-              </li>
-              <li>Sociabilidad: {userProfile.lifestyleDTO.sociabilidad}</li>
-            </ul>
-            <Button
-              label="Editar perfil"
-              to="/TFG_COHOUSING/user/profile/edit"
-              state={userProfile}
-            />
-            <ButtonFunction label="Eliminar usuario" onClick={handleRemove} />
+  
+            {userProfile.fotoUrl && (
+              <img
+                src={`http://localhost:8081${userProfile.fotoUrl}`}
+                alt="Foto"
+                width="100"
+                className="rounded mb-4"
+              />
+            )}
+  
+            <div className="text-base text-gray-700 space-y-2 mb-6">
+              <p>
+                <strong>Nombre:</strong> {userProfile?.username}
+              </p>
+              <p>
+                <strong>Email:</strong> {userProfile?.email}
+              </p>
+              <p>
+                <strong>Rol:</strong> {userProfile?.role}
+              </p>
+            </div>
+  
+            {userProfile?.lifestyleDTO && (
+              <>
+                <h3 className="text-xl font-medium text-gray-800 mb-2">
+                  Estilo de vida
+                </h3>
+                <ul className="list-disc pl-6 mb-6 text-gray-600 text-sm space-y-1">
+                  <li>Tranquilo: {userProfile.lifestyleDTO.tranquilidad}</li>
+                  <li>Actividad: {userProfile.lifestyleDTO.actividad}</li>
+                  <li>Limpieza: {userProfile.lifestyleDTO.limpieza}</li>
+                  <li>Compartir espacios: {userProfile.lifestyleDTO.compartirEspacios}</li>
+                  <li>Sociabilidad: {userProfile.lifestyleDTO.sociabilidad}</li>
+                </ul>
+              </>
+            )}
+  
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                label="Editar perfil"
+                to="/TFG_COHOUSING/user/profile/edit"
+                state={userProfile}
+              />
+              <ButtonFunction label="Eliminar usuario" onClick={handleRemove} />
+            </div>
           </div>
+  
+          {error && <p className="text-red-600 mt-4">{error}</p>}
+          {message && <p className="text-green-600 mt-4">{message}</p>}
         </div>
-
-        {error && <p className={styles.error}>{error}</p>}
-        {message && <p className={styles.success}>{message}</p>}
       </main>
       <Footer />
     </div>
