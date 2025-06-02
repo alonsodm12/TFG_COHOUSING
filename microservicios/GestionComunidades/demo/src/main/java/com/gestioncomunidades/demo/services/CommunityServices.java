@@ -1,6 +1,9 @@
 package com.gestioncomunidades.demo.services;
 
-import java.time.Instant;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +12,7 @@ import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.DTOs.LifestyleDTO;
@@ -52,7 +56,12 @@ public class CommunityServices {
                 communityDTO.lifestyleDTO().tranquilidad(),
                 communityDTO.lifestyleDTO().compartirEspacios(),
                 communityDTO.lifestyleDTO().limpieza(),
-                communityDTO.lifestyleDTO().actividad());
+                communityDTO.lifestyleDTO().actividad(),
+                communityDTO.fotoUrl(),
+                communityDTO.latitud(),
+                communityDTO.longitud(),
+                communityDTO.direccion(),
+                communityDTO.precio());
 
         if (communityDTO.integrantes() != null && !communityDTO.integrantes().isEmpty()) {
             List<Long> integrantes = new ArrayList<>();
@@ -92,7 +101,12 @@ public class CommunityServices {
                     community.getDescripcion(),
                     community.getIdAdmin(),
                     lifestyleDTO,
-                    community.getIntegrantes());
+                    community.getIntegrantes(),
+                    community.getFotoUrl(),
+                    community.getLatitud(),
+                    community.getLongitud(),
+                    community.getDireccion(),
+                    community.getPrecio());
 
             // Devuelve el DTO envuelto en un Optional
             return Optional.of(communityDTO);
@@ -128,12 +142,51 @@ public class CommunityServices {
                     community.getDescripcion(),
                     community.getIdAdmin(),
                     lifestyleDTO,
-                    community.getIntegrantes());
+                    community.getIntegrantes(),
+                    community.getFotoUrl(),
+                    community.getLatitud(),
+                    community.getLongitud(),
+                    community.getDireccion(),
+                    community.getPrecio());
 
             // Devuelve el DTO envuelto en un Optional
             return Optional.of(communityDTO);
         } else {
             return Optional.empty();
+        }
+    }
+
+        public String guardarFoto(MultipartFile foto) {
+        // Construimos un nombre único para evitar colisiones
+        String filename = System.currentTimeMillis() + "_" + foto.getOriginalFilename();
+    
+        // Usamos la carpeta 'uploads' en el directorio home del usuario para evitar problemas de permisos
+        Path uploadsDir = Paths.get("/app/uploads/");
+    
+        // Ruta completa al archivo
+        Path ruta = uploadsDir.resolve(filename);
+    
+        try {
+            System.out.println("Guardando foto en: " + ruta.toAbsolutePath());
+    
+            // Creamos la carpeta uploads si no existe
+            if (!Files.exists(uploadsDir)) {
+                Files.createDirectories(uploadsDir);
+                System.out.println("Carpeta uploads creada en: " + uploadsDir.toAbsolutePath());
+            } else {
+                System.out.println("Carpeta uploads ya existe");
+            }
+    
+            // Guardamos el archivo
+            foto.transferTo(ruta.toFile());
+    
+            // Devolvemos la ruta relativa para que puedas guardar en DB
+            return "/uploads/" + filename;
+    
+        } catch (IOException e) {
+            System.err.println("Error guardando la foto en: " + ruta.toAbsolutePath());
+            e.printStackTrace();
+            throw new RuntimeException("Error guardando la foto", e);
         }
     }
 

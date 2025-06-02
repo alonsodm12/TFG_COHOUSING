@@ -45,14 +45,10 @@ export const fetchCommunityById = async (communityId: string | null) => {
 
 //Post crear comunidad
 
-export const createCommunity = async (data: CommunityProfile) => {
+export const createCommunity = async (data: FormData) => {
   const response = await fetch(`${API_BASE}/create`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
+    body: data,
   });
 
   if (!response.ok) {
@@ -61,6 +57,7 @@ export const createCommunity = async (data: CommunityProfile) => {
 
   return response.json();
 };
+
 
 //Post delete comunidad
 

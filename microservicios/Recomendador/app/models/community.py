@@ -1,27 +1,58 @@
-from sqlalchemy import Table, Column, ForeignKey, BigInteger, String, Integer
-from sqlalchemy.orm import relationship
-from app.database import BaseCommunities  # ESTA LÍNEA ES LA CLAVE
+from typing import List
+from sqlalchemy import Column, Integer, String, BigInteger, Float
+from app.database import BaseCommunities
+from pydantic import BaseModel
 
-class Community(BaseCommunities):
+
+# Modelo ORM (SQLAlchemy)
+class CommunityBase(BaseCommunities):
     __tablename__ = 'communities'
+    id = Column(BigInteger,primary_key=True)
+    name = Column(String, nullable=False)
+    descripcion = Column(String, nullable=False)
+    sociabilidad = Column(Integer, nullable=False)
+    tranquilidad = Column(Integer, nullable=False)
+    compartir_espacios = Column(Integer, nullable=False)
+    limpieza = Column(Integer, nullable=False)
+    actividad = Column(Integer, nullable=False)
+    admin = Column(BigInteger, nullable=False)
+    foto_url = Column(String)
+    latitud = Column(Float)
+    longitud = Column(Float)
+    direccion = Column(String)
+    precio = Column(Integer)
 
-    id = Column(BigInteger, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
-    descripcion = Column(String, nullable=False, unique=True)
-    sociabilidad = Column(Integer)
-    tranquilidad = Column(Integer)
-    compartir_espacios = Column(Integer)
-    limpieza = Column(Integer)
-    actividad = Column(Integer)
-    admin = Column(BigInteger, nullable=False, unique=True)
 
-    integrantes = relationship("CommunityIntegrante", back_populates="community")
+# Modelos Pydantic para validación / request / response
+
+class CommunityCreate(BaseModel):
+    name: str
+    descripcion: str
+    sociabilidad: int
+    tranquilidad: int
+    compartir_espacios: int
+    limpieza: int
+    actividad: int
+    admin: int
+    foto_url: str | None = None
+    latitud: float | None = None
+    longitud: float | None = None
+    direccion: str | None = None
+    precio: int | None = None
 
 
-class CommunityIntegrante(BaseCommunities):
-    __tablename__ = 'community_integrantes'
+class CommunityOut(CommunityCreate):
+    id: int
 
-    community_id = Column(BigInteger, ForeignKey('communities.id'), primary_key=True)
-    integrante_id = Column(BigInteger, primary_key=True)
+    class Config:
+        orm_mode = True
 
-    community = relationship("Community", back_populates="integrantes")
+
+class CommunityIntegranteBase(BaseModel):
+    community_id: int
+    integrante_id: int
+
+
+class CommunityIntegranteOut(CommunityIntegranteBase):
+    class Config:
+        orm_mode = True

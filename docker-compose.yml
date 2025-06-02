@@ -28,7 +28,8 @@ services:
       - cohousing
     depends_on:
       - postgres-comunidades
-
+    volumes:
+      - ./uploads:/app/uploads
   api-gateway:
     build:
       context: ./microservicios/ApiGateAway/demo

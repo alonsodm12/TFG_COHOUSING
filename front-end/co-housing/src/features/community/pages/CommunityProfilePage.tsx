@@ -44,6 +44,17 @@ export const CommunityProfilePage = () => {
       <Header />
       <main className="page">
         <h1>Perfil de Comunidad</h1>
+        {community?.fotoUrl ? (
+        <img
+          src={URL.createObjectURL(community?.fotoUrl)}
+          alt={`Foto de ${community?.name}`}
+          className="w-full h-64 object-cover"
+        />
+      ) : (
+        <div className="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500">
+          Sin imagen
+        </div>
+      )}
         <p>
           <strong>Nombre:</strong> {community?.name}
         </p>

@@ -1,7 +1,6 @@
 import { useUserContext } from "../../ui/Context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../components/Spinner";
-import styles from "./UserProfilePage.module.css";
 import { deleteUser } from "../api/operations";
 
 import { useState } from "react";

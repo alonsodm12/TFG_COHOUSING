@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from app.models.user import User
-from app.models.community import Community
+from app.models.community import CommunityBase
 
 def preprocess_data(user: User, communities: list):
     # Extraer preferencias del usuario

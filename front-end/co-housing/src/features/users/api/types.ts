@@ -9,6 +9,7 @@ export interface LifestyleDTO {
 }
 
 export interface UserProfile {
+    id?: number | null;
     username: string;
     email: string;
     password: string;
