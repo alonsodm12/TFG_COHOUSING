@@ -10,11 +10,8 @@ import { UserProvider } from './features/ui/Context/UserContext';
 // Asegúrate de envolver tu App con BrowserRouter para que Link funcione
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <UserProvider>
-  <BrowserRouter>
-    
-      <App />
-    
-    
-  </BrowserRouter>
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
   </UserProvider>
 );

@@ -12,7 +12,7 @@ export const RegisterCard: React.FC = () => {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState<UserProfile>({
+  const [formData, setFormData] = useState<UserProfile & { fotoFile?: File | null }>({
     username: "",
     email: "",
     password: "",
@@ -28,13 +28,19 @@ export const RegisterCard: React.FC = () => {
       compartirEspacios: 5,
       sociabilidad: 5,
     },
-    idComunidad: null
+    idComunidad: null,
+    fotoFile: null, // nuevo campo para almacenar el archivo
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
     if (name === "foto") {
-      setFormData(prev => ({ ...prev, fotoFile: files ? files[0] : null }));
+      const file = files ? files[0] : null;
+      setFormData(prev => ({
+        ...prev,
+        fotoFile: file,
+        fotoUrl: file ? URL.createObjectURL(file) : null,
+      }));
     } else if (name in formData.lifestyleDTO) {
       setFormData(prev => ({
         ...prev,
@@ -78,8 +84,7 @@ export const RegisterCard: React.FC = () => {
 
   const handleSubmit = async () => {
     const dataToSend = new FormData();
-  
-    // Construir objeto JSON con los datos del usuario (sin la foto)
+
     const userWithoutFile = {
       username: formData.username,
       email: formData.email,
@@ -91,26 +96,23 @@ export const RegisterCard: React.FC = () => {
       lifestyleDTO: formData.lifestyleDTO,
       idComunidad: formData.idComunidad
     };
-  
-    // Crear el blob JSON
+
     const userBlob = new Blob([JSON.stringify(userWithoutFile)], {
       type: "application/json"
     });
-  
-    // Añadir el JSON del usuario con la clave 'user'
+
     dataToSend.append("user", userBlob);
-  
-    // Añadir la foto si está presente
-    if (formData.fotoUrl) {
-      dataToSend.append("foto", formData.fotoUrl);
+
+    if (formData.fotoFile) {
+      dataToSend.append("foto", formData.fotoFile);
     }
-  
+
     try {
       const result = await createUser(dataToSend);
       console.log("Registro exitoso:", result);
       setSuccess("Registro completado correctamente");
       setTimeout(() => navigate("/TFG_COHOUSING/home"), 2000);
-    } catch (err : any) {
+    } catch (err: any) {
       console.error("Error:", err);
       setError(err.message || "Ocurrió un error en el registro.");
     }
@@ -120,14 +122,12 @@ export const RegisterCard: React.FC = () => {
     <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
       <h2 className="text-4xl font-bold text-center mb-6">Crear cuenta</h2>
 
-      {/* Pasos indicadores */}
       <div className="flex justify-center space-x-2 mb-6">
         {[...Array(7)].map((_, index) => (
           <span key={index} className={`w-3 h-3 rounded-full ${step === index ? 'bg-blue-600' : 'bg-gray-300'}`} />
         ))}
       </div>
 
-      {/* Paso 0 - Usuario */}
       {step === 0 && (
         <>
           <h3 className="text-lg font-semibold">Nombre de usuario</h3>
@@ -135,7 +135,6 @@ export const RegisterCard: React.FC = () => {
         </>
       )}
 
-      {/* Paso 1 - Email */}
       {step === 1 && (
         <>
           <h3 className="text-lg font-semibold">Correo electrónico</h3>
@@ -143,7 +142,6 @@ export const RegisterCard: React.FC = () => {
         </>
       )}
 
-      {/* Paso 2 - Contraseña */}
       {step === 2 && (
         <>
           <h3 className="text-lg font-semibold">Contraseña</h3>
@@ -151,7 +149,6 @@ export const RegisterCard: React.FC = () => {
         </>
       )}
 
-      {/* Paso 3 - Rol */}
       {step === 3 && (
         <>
           <h3 className="text-lg font-semibold">Rol</h3>
@@ -167,7 +164,6 @@ export const RegisterCard: React.FC = () => {
         </>
       )}
 
-      {/* Paso 4 - Dirección */}
       {step === 4 && (
         <>
           <h3 className="text-lg font-semibold">Ubicación</h3>
@@ -176,25 +172,23 @@ export const RegisterCard: React.FC = () => {
         </>
       )}
 
-      {/* Paso 5 - Foto */}
       {step === 5 && (
         <>
           <h3 className="text-lg font-semibold">Foto de perfil</h3>
           <input name="foto" type="file" accept="image/*" onChange={handleChange} className="mb-4" />
           {formData.fotoUrl && (
-            <img src={URL.createObjectURL(formData.fotoUrl)} alt="Vista previa" className="w-32 h-32 object-cover rounded-full border" />
+            <img src={formData.fotoUrl} alt="Vista previa" className="w-32 h-32 object-cover rounded-full border" />
           )}
         </>
       )}
 
-      {/* Paso 6 - Estilo de vida */}
       {step === 6 && (
         <>
           <h3 className="text-lg font-semibold">Estilo de vida</h3>
           {[
             { name: "tranquilidad", label: "¿Qué tan importante es para ti la tranquilidad?" },
             { name: "actividad", label: "¿Prefieres una comunidad activa o más relajada?" },
-            { name: "limpieza", label: "¿Cuanto valoras la limpieza?" },
+            { name: "limpieza", label: "¿Cuánto valoras la limpieza?" },
             { name: "compartirEspacios", label: "¿Qué importancia das a compartir espacios?" },
             { name: "sociabilidad", label: "¿Qué tan sociable eres?" },
           ].map(({ name, label }) => (
@@ -214,7 +208,6 @@ export const RegisterCard: React.FC = () => {
         </>
       )}
 
-      {/* Navegación */}
       <div className="flex justify-between mt-6">
         {step > 0 && <ButtonFunction label="Atrás" onClick={prevStep} />}
         {step < 6 ? (

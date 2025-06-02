@@ -1,22 +1,11 @@
-// src/components/CommunityCard.tsx
-import ButtonFunction from '../../ui/Button/ButtonFunction';
-import Button from '../../ui/Button/Button';
-import React from 'react';
+import React from "react";
+import { CommunityRecommended } from "../../community/api/type";
+import Button from "../../ui/Button/Button";
+import ButtonFunction from "../../ui/Button/ButtonFunction";
 import { UnirseComuniadad } from '../api/operations';
-
-interface CommunityCardProps {
-  id: number;
-  name: string;
-  descripcion: string;
-  sociabilidad: number;
-  tranquilidad: number;
-  compartir_espacios: number;
-  limpieza: number;
-  actividad: number;
-  integrantes: number[] | null;
-  admin: number;
+interface CommunityCardProps extends CommunityRecommended {
   userId: number;
-  username: string | null;
+  username: string;
 }
 
 const CommunityCard: React.FC<CommunityCardProps> = (props) => {
@@ -41,21 +30,49 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
   };
 
   return (
-    <div className="border rounded-xl p-4 shadow-lg mb-4">
-      <h2 className="text-xl font-bold">{props.name}</h2>
-      <p className="text-gray-600 mb-2">{props.descripcion}</p>
-      <ul className="text-sm text-gray-800">
-        <li><strong>Sociabilidad:</strong> {props.sociabilidad}</li>
-        <li><strong>Tranquilidad:</strong> {props.tranquilidad}</li>
-        <li><strong>Compartir espacios:</strong> {props.compartir_espacios}</li>
-        <li><strong>Limpieza:</strong> {props.limpieza}</li>
-        <li><strong>Actividad:</strong> {props.actividad}</li>
-        <li><strong>Integrantes:</strong> {(props.integrantes ?? []).join(', ')}</li>
-        <li><strong>Admin:</strong> {props.admin}</li>
-      </ul>
-      <div className="flex gap-4 mt-4">
-        <Button to={`/TFG_COHOUSING/community/profile/${props.name}`} label="Consultar Perfil" />
-        <ButtonFunction label="Solicitar Unión" onClick={handleJoin} />
+    <div className="bg-white rounded-3xl shadow-2xl mb-10 overflow-hidden border">
+      {/* Imagen destacada */}
+      {props.fotoUrl ? (
+        <img
+          src={URL.createObjectURL(props.fotoUrl)}
+          alt={`Imagen de ${props.name}`}
+          className="w-full h-64 object-cover"
+        />
+      ) : (
+        <div className="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500">
+          Sin imagen disponible
+        </div>
+      )}
+
+      {/* Contenido principal */}
+      <div className="p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">{props.name}</h2>
+        <p className="text-gray-600 mb-4">{props.descripcion}</p>
+
+        {/* Separador */}
+        <hr className="border-t border-white mb-4" />
+
+        {/* Lifestyle */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-gray-800">
+          <div><strong>Tranquilidad:</strong> {props.tranquilidad}</div>
+          <div><strong>Actividad:</strong> {props.actividad}</div>
+          <div><strong>Limpieza:</strong> {props.limpieza}</div>
+          <div><strong>Compartir espacios:</strong> {props.compartir_espacios}</div>
+          <div><strong>Sociabilidad:</strong> {props.sociabilidad}</div>
+        </div>
+
+        {/* Datos adicionales */}
+        <div className="mt-6 text-sm text-gray-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div><strong>Dirección:</strong> {props.direccion}</div>
+          <div><strong>Precio:</strong> {props.precio} €</div>
+          <div><strong>Admin ID:</strong> {props.admin}</div>
+        </div>
+
+        {/* Botones */}
+        <div className="flex flex-wrap gap-4 mt-6">
+          <Button to={`/TFG_COHOUSING/community/profile/${props.name}`} label="Consultar Perfil" />
+          <ButtonFunction label="Solicitar Unión" onClick={handleJoin} />
+        </div>
       </div>
     </div>
   );

@@ -41,12 +41,27 @@ public class Community {
     @Column(name = "admin", nullable = false)
     private Long idAdmin;
 
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
+
+    @Column(name = "direccion")
+    private String direccion;
+
+    @Column(name = "precio")
+    private Double precio;
+
     // Constructor vacío
     public Community() {}
 
     // Constructor completo
     public Community(String name, String descripcion, Long idAdmin, int sociabilidad, int tranquilidad,
-                     int compartirEspacios, int limpieza, int actividad) {
+                     int compartirEspacios, int limpieza, int actividad, String fotoUrl, Double latitud, Double longitud, String direccion, Double precio) {
         this.name = name;
         this.descripcion = descripcion;
         this.idAdmin = idAdmin;
@@ -55,6 +70,11 @@ public class Community {
         this.compartirEspacios = compartirEspacios;
         this.limpieza = limpieza;
         this.actividad = actividad;
+        this.fotoUrl = fotoUrl;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.direccion = direccion;
+        this.precio = precio;
     }
 
     public Long getId() {
@@ -137,4 +157,42 @@ public class Community {
         this.idAdmin = idAdmin;
     }
 
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+    
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
+    
+    public String getDireccion() {
+        return direccion;
+    }
+    
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+    
+    public Double getLatitud() {
+        return latitud;
+    }
+    
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+    
+    public Double getLongitud() {
+        return longitud;
+    }
+    
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
+    public Double getPrecio(){
+        return this.precio;
+    }
+    public void setPrecio(Double precio){
+        this.precio = precio;
+    }
 }

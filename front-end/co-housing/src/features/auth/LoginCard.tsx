@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../users/api/operations';
 import { getRoleFromToken, getUsernameFromToken } from '../authUtils';
-import { useUserContext } from '../ui/Context/UserContext';
+import { useUserContext} from '../ui/Context/UserContext';
 
 export const LoginCard: React.FC = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
+  const { setUsername, setRole } = useUserContext();
 
-  const { setUsername, setRole, fetchUserProfile } = useUserContext(); // añadimos fetchUserProfile
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -36,13 +36,8 @@ export const LoginCard: React.FC = () => {
       if (!username || !role) {
         throw new Error('Token inválido');
       }
-
-      setUsername(username);
+      setUsername(username);  // Al actualizar username, UserProvider carga el perfil
       setRole(role);
-
-      // ⚠️ Cargar perfil explícitamente después de setear username y role
-      await fetchUserProfile();
-
       setSuccess('Inicio de sesión correcto');
       navigate('/TFG_COHOUSING/home');
     } catch (err) {

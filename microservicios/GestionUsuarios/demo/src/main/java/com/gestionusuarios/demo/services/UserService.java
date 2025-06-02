@@ -61,19 +61,21 @@ public class UserService {
             return Optional.of(respuesta);
         }
     }
+
     public String guardarFoto(MultipartFile foto) {
         // Construimos un nombre único para evitar colisiones
         String filename = System.currentTimeMillis() + "_" + foto.getOriginalFilename();
-    
-        // Usamos la carpeta 'uploads' en el directorio home del usuario para evitar problemas de permisos
+
+        // Usamos la carpeta 'uploads' en el directorio home del usuario para evitar
+        // problemas de permisos
         Path uploadsDir = Paths.get("/app/uploads/");
-    
+
         // Ruta completa al archivo
         Path ruta = uploadsDir.resolve(filename);
-    
+
         try {
             System.out.println("Guardando foto en: " + ruta.toAbsolutePath());
-    
+
             // Creamos la carpeta uploads si no existe
             if (!Files.exists(uploadsDir)) {
                 Files.createDirectories(uploadsDir);
@@ -81,19 +83,20 @@ public class UserService {
             } else {
                 System.out.println("Carpeta uploads ya existe");
             }
-    
+
             // Guardamos el archivo
             foto.transferTo(ruta.toFile());
-    
+
             // Devolvemos la ruta relativa para que puedas guardar en DB
             return "/uploads/" + filename;
-    
+
         } catch (IOException e) {
             System.err.println("Error guardando la foto en: " + ruta.toAbsolutePath());
             e.printStackTrace();
             throw new RuntimeException("Error guardando la foto", e);
         }
     }
+
     public void deleteUser(String username) {
 
         Optional<User> userOptional = userRepository.findByUsername(username);
@@ -130,6 +133,20 @@ public class UserService {
             if (user.lifestyleDTO().tranquilidad() != 0)
                 usuario.setTranquilidad(user.lifestyleDTO().tranquilidad());
         }
+
+        if (user.idComunidad() != null) {
+            usuario.setIdComunidad(user.idComunidad());
+        }
+
+        User usuarioUpdate = userRepository.save(usuario);
+        return Optional.of(usuarioUpdate);
+    }
+
+    public Optional<User> addCommunityId(String username, Long idAdmin) {
+        User usuario = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        usuario.setIdComunidad(idAdmin);
 
         User usuarioUpdate = userRepository.save(usuario);
         return Optional.of(usuarioUpdate);

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { getUsernameFromToken, getRoleFromToken } from "../../authUtils";
 import { fetchUserByUsername } from "../../users/api/operations";
 import { UserProfile } from "../../users/api/types";
@@ -19,44 +19,33 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<string | null>(getUsernameFromToken());
   const [role, setRole] = useState<string | null>(getRoleFromToken());
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  // 🔁 Se ejecuta cada vez que cambia el username
-  useEffect(() => {
-    const loadProfile = async () => {
-      if (!username) {
-        setUserProfile(null);
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const profile = await fetchUserByUsername(username);
-        setUserProfile(profile);
-      } catch (error) {
-        console.error("Error al obtener el perfil del usuario:", error);
-        setUserProfile(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadProfile();
-  }, [username]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchUserProfile = async () => {
-    if (!username) return;
+    if (!username) {
+      setUserProfile(null);
+      return;
+    }
     setIsLoading(true);
     try {
       const profile = await fetchUserByUsername(username);
       setUserProfile(profile);
     } catch (error) {
       console.error("Error al obtener el perfil del usuario:", error);
+      setUserProfile(null);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Aquí está el efecto que recarga el perfil cuando cambia username
+  useEffect(() => {
+    if (username) {
+      fetchUserProfile();
+    } else {
+      setUserProfile(null);
+    }
+  }, [username]);
 
   return (
     <UserContext.Provider

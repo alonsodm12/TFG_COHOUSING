@@ -14,56 +14,64 @@ def community_to_dict(community):
         "limpieza": community.limpieza,
         "actividad": community.actividad,
         "admin": community.admin,
-        "integrantes": community.integrantes,
+        "fotoUrl": community.foto_url,
+        "direccion": community.direccion,
+        "precio": community.precio
     }
 
 def recommend_communities_by_user(user, communities, n_recommendations=5):
+    if not communities:
+        return []
+
     # Preprocesar datos
     user_scaled, communities_scaled = preprocess_data(user, communities)
 
-    # Entrenar modelo KMeans con las comunidades
-    kmeans = KMeans(n_clusters=3, random_state=42)
+    if user_scaled is None or communities_scaled is None:
+        raise ValueError("Los datos no se pudieron escalar correctamente.")
+
+    # Ajustar número de clusters según el número de comunidades
+    n_clusters = min(3, len(communities_scaled))
+    if n_clusters == 0:
+        return []
+
+    # Entrenar modelo KMeans
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
     kmeans.fit(communities_scaled)
 
     # Predecir el cluster del usuario
     user_cluster = kmeans.predict(user_scaled)[0]
     communities_clusters = kmeans.predict(communities_scaled)
 
-    # Obtener centroide del cluster del usuario
+    # Centroide del cluster del usuario
     user_center = kmeans.cluster_centers_[user_cluster]
 
-    # Filtrar comunidades en el mismo cluster
-    communities_in_cluster = [
-        (i, communities[i]) for i in range(len(communities))
-        if communities_clusters[i] == user_cluster
-    ]
+    # Calcular distancias al centroide dentro del cluster
+    distances = []
+    for i, community_scaled in enumerate(communities_scaled):
+        if communities_clusters[i] == user_cluster:
+            dist = np.linalg.norm(community_scaled - user_center)
+            distances.append((i, dist))
 
-    # Calcular distancias al centroide
-    distances = [
-        (i, np.linalg.norm(communities_scaled[i] - user_center))
-        for i, _ in communities_in_cluster
-    ]
+    if not distances:
+        return []
 
     max_distance = max((d[1] for d in distances), default=1)
     if max_distance == 0:
         max_distance = 1  # evitar división por cero
 
+    # Calcular afinidad normalizada y limitarla a 0-100
     affinities = []
     for i, dist in distances:
-        if math.isnan(dist) or math.isinf(dist):
-            affinity = 0.0  # valor seguro si dist no es válido
-        else:
-            affinity = 100 * (1 - (dist / max_distance))
-            affinity = max(min(affinity, 100), 0)  # limitar a rango 0-100
-        affinities.append((i, affinity))
+        affinity = 100 * (1 - (dist / max_distance)) if math.isfinite(dist) else 0.0
+        affinities.append((i, round(max(min(affinity, 100), 0), 2)))
 
-    # Ordenar por afinidad descendente
+    # Ordenar por mayor afinidad
     affinities.sort(key=lambda x: x[1], reverse=True)
 
-    # Construir lista de recomendaciones con afinidad
+    # Construir lista de recomendaciones
     recommended = [
-        {**community_to_dict(communities[i]), "affinity": round(aff, 2)}
-        for i, aff in affinities[:n_recommendations]
+        {**community_to_dict(communities[i]), "affinity": affinity}
+        for i, affinity in affinities[:n_recommendations]
     ]
 
     return recommended

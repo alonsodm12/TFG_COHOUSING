@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
@@ -67,13 +70,21 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> crearComunidad(@RequestBody @Valid CommunityDTO communityDTO) {
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> crearComunidad(@RequestPart("community") @Valid CommunityDTO communityDTO,
+            @RequestPart(value = "foto", required = false) MultipartFile foto) {
         try {
 
+            if (foto != null && !foto.isEmpty()) {
+                String fotoUrl = communityServices.guardarFoto(foto);
+                communityDTO = new CommunityDTO(communityDTO.name(), communityDTO.descripcion(), 0L,
+                        communityDTO.lifestyleDTO(), communityDTO.integrantes(), fotoUrl, communityDTO.latitud(),
+                        communityDTO.longitud(), communityDTO.direccion(), communityDTO.precio());
+            }
             Community comunidad = communityServices.registrarComunidad(communityDTO);
+
             return ResponseEntity.status(HttpStatus.ACCEPTED)
-                    .body(Map.of("Comunidad creada con exito: ", comunidad.getId().toString()));
+                    .body(Map.of("message", "Comunidad creada con éxito", "id", comunidad.getId()));
         } catch (Exception e) {
             System.out.println("Error creando la comunidad");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

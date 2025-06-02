@@ -15,7 +15,9 @@ public record UserUpdateDTO(
 
         @Email(message = "Correo inválido") String email,
 
-        LifestyleUpdateDTO lifestyleDTO) implements Serializable
+        LifestyleUpdateDTO lifestyleDTO,
+        
+        Long idComunidad) implements Serializable
 
 {
 }

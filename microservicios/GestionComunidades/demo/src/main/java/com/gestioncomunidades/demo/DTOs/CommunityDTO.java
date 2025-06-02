@@ -10,7 +10,11 @@ public record CommunityDTO(
     @NotBlank(message = "La descripcion de la comunidad no puede estar vacia") String descripcion,
     @NotNull(message = "El admin no puede estar vacio") Long idAdmin,
     LifestyleDTO lifestyleDTO,
-    List<Long> integrantes
-
+    List<Long> integrantes,
+    String fotoUrl,
+    Double latitud,
+    Double longitud,
+    String direccion,
+    Double precio
 ) {
 }

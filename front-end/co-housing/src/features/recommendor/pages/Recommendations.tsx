@@ -4,33 +4,19 @@ import CommunityCard from "../components/CommunityCard";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import { useUserContext } from "../../ui/Context/UserContext";
-
-interface Community {
-  id: number;
-  name: string;
-  descripcion: string;
-  sociabilidad: number;
-  tranquilidad: number;
-  compartir_espacios: number;
-  limpieza: number;
-  actividad: number;
-  integrantes: number[] | null;
-  admin: number;
-  precio: number;
-  distancia: number;
-}
+import { CommunityRecommended } from "../../community/api/type";
 
 const Recommendations: React.FC = () => {
   const { id } = useParams();
   const { username } = useUserContext();
 
-  const [communities, setCommunities] = useState<Community[]>([]);
-  const [filteredCommunities, setFilteredCommunities] = useState<Community[]>([]);
+  const [communities, setCommunities] = useState<CommunityRecommended[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [maxPrecio, setMaxPrecio] = useState<number>(1000);
-  const [maxDistancia, setMaxDistancia] = useState<number>(20);
+  const [maxDistancia, setMaxDistancia] = useState<number>(50);
 
+  // Lógica para cargar las recomendaciones iniciales (sin filtros)
   useEffect(() => {
     if (!id) return;
 
@@ -41,31 +27,38 @@ const Recommendations: React.FC = () => {
         return res.json();
       })
       .then((data) => {
-        const cleaned = data.map((c: Community) => ({
-          ...c,
-          integrantes: c.integrantes ?? [],
-          precio: c.precio ?? 0,
-          distancia: c.distancia ?? 0,
-        }));
-        setCommunities(cleaned);
-        setFilteredCommunities(cleaned);
+        setCommunities(data);
       })
       .catch((err) => {
         console.error("Error fetching recommendations:", err);
         setCommunities([]);
-        setFilteredCommunities([]);
       })
       .finally(() => {
         setIsLoading(false);
       });
   }, [id]);
 
-  useEffect(() => {
-    const filtered = communities.filter(
-      (c) => c.precio <= maxPrecio && c.distancia <= maxDistancia
-    );
-    setFilteredCommunities(filtered);
-  }, [maxPrecio, maxDistancia, communities]);
+  // Función para aplicar los filtros (se llama al pulsar el botón)
+  const aplicarFiltros = () => {
+    if (!id) return;
+
+    setIsLoading(true);
+    fetch(`http://localhost:8000/recommendations-filtered/${id}?precio=${maxPrecio}&distancia=${maxDistancia}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Error en la respuesta del servidor");
+        return res.json();
+      })
+      .then((data) => {
+        setCommunities(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching filtered recommendations:", err);
+        setCommunities([]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div id="root" className="min-h-screen bg-gray-50">
@@ -79,10 +72,7 @@ const Recommendations: React.FC = () => {
         <section className="mb-10 p-3 bg-white rounded-3xl shadow-md flex flex-col sm:flex-row items-center justify-center gap-8">
           {/* Filtro Precio */}
           <div className="flex flex-col items-center w-full sm:w-auto">
-            <label
-              htmlFor="precioRange"
-              className="mb-2 text-gray-700 font-semibold text-lg"
-            >
+            <label htmlFor="precioRange" className="mb-2 text-gray-700 font-semibold text-lg">
               Precio máximo (€)
             </label>
             <input
@@ -100,10 +90,7 @@ const Recommendations: React.FC = () => {
 
           {/* Filtro Distancia */}
           <div className="flex flex-col items-center w-full sm:w-auto">
-            <label
-              htmlFor="distanciaRange"
-              className="mb-2 text-gray-700 font-semibold text-lg"
-            >
+            <label htmlFor="distanciaRange" className="mb-2 text-gray-700 font-semibold text-lg">
               Distancia máxima (km)
             </label>
             <input
@@ -118,13 +105,21 @@ const Recommendations: React.FC = () => {
             />
             <span className="mt-1 text-gray-600 font-medium">{maxDistancia} km</span>
           </div>
+
+          {/* Botón para aplicar filtros */}
+          <button
+            onClick={aplicarFiltros}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-lg shadow"
+          >
+            Aplicar filtros
+          </button>
         </section>
 
         {/* Lista de comunidades */}
         {isLoading ? (
           <p className="text-center text-gray-500 text-lg">Cargando recomendaciones...</p>
-        ) : filteredCommunities.length > 0 ? (
-          filteredCommunities.map((c) => (
+        ) : communities.length > 0 ? (
+          communities.map((c) => (
             <CommunityCard
               key={c.id}
               {...c}
@@ -134,7 +129,7 @@ const Recommendations: React.FC = () => {
           ))
         ) : (
           <p className="text-center text-gray-500 text-lg">
-            No se encontraron recomendaciones que cumplan con los filtros.
+            No se encontraron recomendaciones.
           </p>
         )}
       </main>

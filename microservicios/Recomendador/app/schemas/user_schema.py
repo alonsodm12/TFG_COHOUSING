@@ -1,14 +1,28 @@
-# app/schemas/user_schema.py
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+
 
 class UserBase(BaseModel):
-    preference_1: float
-    preference_2: float
-    preference_3: float
-    preference_4: float
-    preference_5: float
+    username: str
+    email: EmailStr
+    fotoUrl: str
+    latitud: Optional[float]
+    longitud: Optional[float]
+    direccion: Optional[str]
+    enabled: bool
+    role: Optional[str]
+    sociabilidad: Optional[int]
+    tranquilidad: Optional[int]
+    compartir_espacios: Optional[int]
+    limpieza: Optional[int]
+    actividad: Optional[int]
 
-class User(UserBase):
+
+class UserCreate(UserBase):
+    password: str
+
+
+class UserOut(UserBase):
     id: int
 
     class Config:

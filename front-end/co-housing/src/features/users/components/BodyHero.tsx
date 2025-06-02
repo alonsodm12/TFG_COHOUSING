@@ -26,7 +26,7 @@ const BodyHero: React.FC = () => {
       role: "ofertante",
       label: "🏡",
       text: "Crear Comunidad",
-      to: "/TFG_COHOUSING/community/create",
+      to: `/TFG_COHOUSING/community/create/${userProfile.username}`,
       angle: 120,
     },
     {

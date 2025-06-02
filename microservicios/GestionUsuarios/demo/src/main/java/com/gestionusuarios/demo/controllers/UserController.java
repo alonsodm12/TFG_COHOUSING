@@ -63,31 +63,30 @@ public class UserController {
     public ResponseEntity<?> register(@RequestPart("user") @Valid UserDTO userDTO,
             @RequestPart(value = "foto", required = false) MultipartFile foto) {
 
-                try {
+        try {
 
-                    if (foto != null && !foto.isEmpty()) {
-                        String fotoUrl = userService.guardarFoto(foto);
-                        userDTO = new UserDTO(
-                            userDTO.username(),
-                            userDTO.id(),
-                            userDTO.password(),
-                            userDTO.role(),
-                            userDTO.email(),
-                            userDTO.direccion(),
-                            userDTO.latitud(),
-                            userDTO.longitud(),
-                            fotoUrl,
-                            userDTO.lifestyleDTO(),
-                            0L
-                        );
-                    }
-            
-                    User newUser = userService.registerUser(userDTO);
-            
-                    return ResponseEntity.status(HttpStatus.CREATED)
-                            .body(Map.of("Usuario registrado correctamente", newUser.getUsername()));
-            
-                }catch (IllegalArgumentException e) {
+            if (foto != null && !foto.isEmpty()) {
+                String fotoUrl = userService.guardarFoto(foto);
+                userDTO = new UserDTO(
+                        userDTO.username(),
+                        userDTO.id(),
+                        userDTO.password(),
+                        userDTO.role(),
+                        userDTO.email(),
+                        userDTO.direccion(),
+                        userDTO.latitud(),
+                        userDTO.longitud(),
+                        fotoUrl,
+                        userDTO.lifestyleDTO(),
+                        0L);
+            }
+
+            User newUser = userService.registerUser(userDTO);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of("Usuario registrado correctamente", newUser.getUsername()));
+
+        } catch (IllegalArgumentException e) {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("Error durante el registro: ", e.getMessage()));
@@ -147,6 +146,20 @@ public class UserController {
 
     }
 
+    @PatchMapping("/update-admin/{username}/{idAdmin}")
+    public ResponseEntity<?> actualizarAdminId(@PathVariable String username, @PathVariable Long idAdmin) {
+        try {
+  
+            User actualizado = userService.addCommunityId(username,idAdmin).get();
+            return ResponseEntity.status(HttpStatus.OK)
+            .body(Map.of("Usuario Modificado correctamente", actualizado.toString()));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Comunidad no encontrada"));
+        }
+    }
+
     @PatchMapping("/usuario/{username}")
     public ResponseEntity<?> modificarUsuario(@PathVariable String username, @RequestBody UserUpdateDTO usuario) {
 
@@ -167,9 +180,10 @@ public class UserController {
                     usuario.get().getLimpieza(), usuario.get().getCompartirEspacios(), usuario.get().getSociabilidad());
 
             UserDTO userDto = new UserDTO(usuario.get().getUsername(), usuario.get().getId(),
-                    usuario.get().getPassword(), usuario.get().getRole(),usuario.get().getEmail(), usuario.get().getDireccion(),
+                    usuario.get().getPassword(), usuario.get().getRole(), usuario.get().getEmail(),
+                    usuario.get().getDireccion(),
                     usuario.get().getLatitud(), usuario.get().getLongitud(),
-                    usuario.get().getFotoUrl(), lifestyleDTO,usuario.get().getIdComunidad());
+                    usuario.get().getFotoUrl(), lifestyleDTO, usuario.get().getIdComunidad());
 
             return ResponseEntity.status(HttpStatus.OK).body(userDto);
         }

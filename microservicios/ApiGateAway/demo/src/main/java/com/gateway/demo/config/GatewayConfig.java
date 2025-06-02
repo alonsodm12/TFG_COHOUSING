@@ -35,6 +35,7 @@ public class GatewayConfig {
                         "/user/usuarios",
                         "/user/delete/**",
                         "/user/{username}",
+                        "/user/update-admin/**",
                         "/user/profile/edit")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
                         .uri("http://gestion-usuarios:8081"))

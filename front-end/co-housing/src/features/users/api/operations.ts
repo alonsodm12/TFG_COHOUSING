@@ -25,6 +25,31 @@ export const updateUser = async (username: string, data: UpdateUserProfile) => {
   return response.json();
 };
 
+
+//Mete idComunidad a user-admin
+
+
+export const updateAdmin = async (username: string,idAdmin:number) => {
+  const token = localStorage.getItem('token');  // Obtener el token dentro de la función
+
+  if (!token) {
+    throw new Error("Token no disponible. El usuario no está autenticado.");
+  }
+
+  const response = await fetch(`${API_BASE}/update-admin/${username}/${idAdmin}`, {
+    method: "PATCH",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al actualizar al usuario");
+  }
+
+  return response.json();
+};
+
 // Get usuario
 export const fetchUserByUsername = async (username: string | null) => {
   const token = localStorage.getItem('token');  // Obtener el token dentro de la función
