@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,11 +19,17 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gestioncomunidades.demo.DTOs.CommunityDTO;
+import com.gestioncomunidades.demo.DTOs.EventoDTO;
+import com.gestioncomunidades.demo.DTOs.TareaDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
 import com.gestioncomunidades.demo.models.Community;
+import com.gestioncomunidades.demo.models.EstadoTarea;
+import com.gestioncomunidades.demo.models.Evento;
+import com.gestioncomunidades.demo.models.Tarea;
 import com.gestioncomunidades.demo.services.CommunityServices;
 
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 
 @Controller
 @RequestMapping("/comunidades")
@@ -61,8 +68,8 @@ public class CommunityController {
     }
 
     @GetMapping("/id/{communityID}")
-    public ResponseEntity<?> obtenerComunidadId(@PathVariable Long communityId) {
-        Optional<CommunityDTO> comunidad = this.communityServices.obtenerComunidadId(communityId);
+    public ResponseEntity<?> obtenerComunidadId(@PathVariable Long communityID) {
+        Optional<CommunityDTO> comunidad = this.communityServices.obtenerComunidadId(communityID);
 
         if (comunidad.isPresent())
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(comunidad);
@@ -71,13 +78,13 @@ public class CommunityController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> crearComunidad(@RequestPart("community") @Valid CommunityDTO communityDTO,
+    public ResponseEntity<?> crearComunidad(@RequestPart(value = "community") @Valid CommunityDTO communityDTO,
             @RequestPart(value = "foto", required = false) MultipartFile foto) {
         try {
 
             if (foto != null && !foto.isEmpty()) {
                 String fotoUrl = communityServices.guardarFoto(foto);
-                communityDTO = new CommunityDTO(communityDTO.name(), communityDTO.descripcion(), 0L,
+                communityDTO = new CommunityDTO(communityDTO.name(), communityDTO.descripcion(), communityDTO.idAdmin(),
                         communityDTO.lifestyleDTO(), communityDTO.integrantes(), fotoUrl, communityDTO.latitud(),
                         communityDTO.longitud(), communityDTO.direccion(), communityDTO.precio());
             }
@@ -123,6 +130,55 @@ public class CommunityController {
             Map<String, String> error = Map.of("error", "No se pudo procesar la solicitud. Inténtalo más tarde.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
+    }
+
+    @PostMapping("/tarea")
+    public ResponseEntity<?> crearTarea(@RequestBody TareaDTO tareaDTO){
+        try{
+            Tarea tarea = this.communityServices.registrarTarea(tareaDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(tarea);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/tareas/comunidad/{idComunidad}")
+    public ResponseEntity<?> obtenerTareasUsuario(@PathVariable Long idComunidad){
+        try{
+            List<TareaDTO> tareas = communityServices.obtenerTareasComunidad(idComunidad);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(tareas);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/evento")
+    public ResponseEntity<?> crearEvento(@RequestBody EventoDTO eventoDTO){
+        try{
+            Evento evento = this.communityServices.registrarEvento(eventoDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(evento);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PatchMapping("/completarTarea/{idTarea}")
+    public ResponseEntity<?> completarTarea(Long idTarea){
+        try{
+            communityServices.marcarTareaCompletada(idTarea);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/tareas/{idUsuario}")
+    public ResponseEntity<?> getTareasByUsuario(@PathVariable Long idUsuario){
+        List<TareaDTO> tareas = communityServices.obtenerTareasUsuario(idUsuario);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(tareas);
+
     }
 
 }

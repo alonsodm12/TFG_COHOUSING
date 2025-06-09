@@ -1,6 +1,6 @@
 //Inclusion de toda la lógica de llamadas a la API de Usuarios
 
-import { UpdateCommunityProfile, CommunityProfile } from "./type";
+import { UpdateCommunityProfile, CommunityProfile, Tarea } from "./type";
 
 const API_BASE: String = "http://localhost:8084/comunidades";
 const token = localStorage.getItem('token');
@@ -76,3 +76,45 @@ export const deleteCommunity = async (communityname: string) => {
 
   return response.json();
 };
+
+
+export const fetchTareasPorUsuario = async (userId: number): Promise<Tarea[]> => {
+  const response = await fetch(`http://localhost:8084/comunidades/tareas/${userId}`);
+  if (!response.ok) {
+    throw new Error("No se pudieron cargar las tareas del usuario");
+  }
+  return response.json();
+};
+
+export const createTask = async (datosTarea: Tarea) => {
+  const response = await fetch(`${API_BASE}/tarea`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify(datosTarea),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al crear la tarea");
+  }
+
+  return response.json();
+}
+
+export const getUserTask = async (idUsuario: number) => {
+  const response = await fetch(`${API_BASE}/tareas/${idUsuario}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al obtener las tareas del usuario");
+  }
+
+  return response.json();
+}

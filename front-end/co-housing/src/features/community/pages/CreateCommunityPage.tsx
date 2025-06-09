@@ -31,8 +31,8 @@ const CreateCommunityPage = () => {
 
             dataToSend.append("community",communityBlob);
 
-            if (formData.fotoUrl) {
-                dataToSend.append("foto", formData.fotoUrl)
+            if (formData.fotoFile) {
+                dataToSend.append("foto", formData.fotoFile)
             }
 
             // Llamamos a la función createCommunity para enviar los datos al servidor

@@ -15,6 +15,7 @@ import Dudas from './features/ui/Dudas/Dudas';
 import Recommendations from './features/recommendor/pages/Recommendations';
 import SolicitudesPage from './features/solicitudes/pages/SolicitudesPage';
 import { CommunityUserPage } from './features/community/pages/CommunityUserPage';
+import CreateTask from './features/community/pages/CreateTask';
 
 export const App = () => {
   return (
@@ -33,6 +34,7 @@ export const App = () => {
       <Route path="/TFG_COHOUSING/recommendations/:id" element={<Recommendations />} />
       <Route path="/TFG_COHOUSING/solicitudes/:userId" element={<SolicitudesPage />} />
       <Route path="/TFG_COHOUSING/CommunityUserPage/:userId" element={<CommunityUserPage />} />
+      <Route path="/TFG_COHOUSING/CreateTask/:idComunidad" element={<CreateTask />} />
     </Routes>
   );
 

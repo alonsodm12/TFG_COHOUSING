@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.solicitudes.demo.DTOs.NotificacionRepartoDTO;
 import com.solicitudes.demo.DTOs.UnionRequestDTO;
 import com.solicitudes.demo.DTOs.UnionResponseDTO;
 import com.solicitudes.demo.configuration.RabbitMQConfig;
@@ -39,6 +40,15 @@ public class SolicitudesService {
                 "El usuario: " + unionRequestDTO.username() + " ha solicitado unirse a tu comunidad");
         System.out.println("✅ Mensaje procesado correctamente");
     }
+
+    @RabbitListener(queues = RabbitMQConfig.REPARTO_TAREAS_QUEUE)
+    public void crearSolicitudesTareas(NotificacionRepartoDTO notificacionRepartoDTO){
+        System.out.println("Recibida solicitud por RabbitMQ");
+        for (Long usuario : notificacionRepartoDTO.idUsuarios()){
+            guardarRespuesta(usuario, notificacionRepartoDTO.comunidadId(), "¡Se ha realizado el reparto semanal de tareas!");
+        }
+    }
+
 
     public ResponseEntity<?> obtenerSolicitudesUsuario(Long userId) {
         List<Solicitud> solicitudes = solicitudesRepository.findByUserId(userId).get();

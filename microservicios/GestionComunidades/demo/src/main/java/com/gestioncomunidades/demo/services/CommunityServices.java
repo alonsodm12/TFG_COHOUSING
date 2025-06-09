@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -15,14 +16,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gestioncomunidades.demo.DTOs.CommunityDTO;
+import com.gestioncomunidades.demo.DTOs.EventoDTO;
 import com.gestioncomunidades.demo.DTOs.LifestyleDTO;
+import com.gestioncomunidades.demo.DTOs.TareaDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
 import com.gestioncomunidades.demo.DTOs.UnionResponseDTO;
 import com.gestioncomunidades.demo.DTOs.UpdateUserCommunityDTO;
 import com.gestioncomunidades.demo.config.RabbitMQConfig;
 import com.gestioncomunidades.demo.models.Community;
+import com.gestioncomunidades.demo.models.EstadoTarea;
+import com.gestioncomunidades.demo.models.Evento;
+import com.gestioncomunidades.demo.models.Tarea;
 import com.gestioncomunidades.demo.repository.CommunityRepository;
-
+import com.gestioncomunidades.demo.repository.EventoRepository;
+import com.gestioncomunidades.demo.repository.TareaRepository;
+import java.util.stream.Collectors;
 import jakarta.transaction.Transactional;
 
 /*
@@ -33,12 +41,17 @@ import jakarta.transaction.Transactional;
 public class CommunityServices {
 
     private CommunityRepository communityRepository;
+    private TareaRepository tareaRepository;
+    private EventoRepository eventoRepository;
 
     private RabbitTemplate rabbitTemplate;
 
-    public CommunityServices(CommunityRepository communityRepository, RabbitTemplate rabbitTemplate) {
+    public CommunityServices(CommunityRepository communityRepository, RabbitTemplate rabbitTemplate,
+            TareaRepository tareaRepository, EventoRepository eventoRepository) {
         this.communityRepository = communityRepository;
         this.rabbitTemplate = rabbitTemplate;
+        this.tareaRepository = tareaRepository;
+        this.eventoRepository = eventoRepository;
     }
 
     /*
@@ -62,12 +75,17 @@ public class CommunityServices {
                 communityDTO.longitud(),
                 communityDTO.direccion(),
                 communityDTO.precio());
-
+        
+        List<Long> integrantes = new ArrayList<>();
         if (communityDTO.integrantes() != null && !communityDTO.integrantes().isEmpty()) {
-            List<Long> integrantes = new ArrayList<>();
+            integrantes.add(communityDTO.idAdmin());
             for (Long id : communityDTO.integrantes()) {
                 integrantes.add(id);
             }
+            nuevaComunidad.setIntegrantes(integrantes);
+        }
+        else{
+            integrantes.add(communityDTO.idAdmin());
             nuevaComunidad.setIntegrantes(integrantes);
         }
         return communityRepository.save(nuevaComunidad);
@@ -156,19 +174,20 @@ public class CommunityServices {
         }
     }
 
-        public String guardarFoto(MultipartFile foto) {
+    public String guardarFoto(MultipartFile foto) {
         // Construimos un nombre único para evitar colisiones
         String filename = System.currentTimeMillis() + "_" + foto.getOriginalFilename();
-    
-        // Usamos la carpeta 'uploads' en el directorio home del usuario para evitar problemas de permisos
+
+        // Usamos la carpeta 'uploads' en el directorio home del usuario para evitar
+        // problemas de permisos
         Path uploadsDir = Paths.get("/app/uploads/");
-    
+
         // Ruta completa al archivo
         Path ruta = uploadsDir.resolve(filename);
-    
+
         try {
             System.out.println("Guardando foto en: " + ruta.toAbsolutePath());
-    
+
             // Creamos la carpeta uploads si no existe
             if (!Files.exists(uploadsDir)) {
                 Files.createDirectories(uploadsDir);
@@ -176,13 +195,13 @@ public class CommunityServices {
             } else {
                 System.out.println("Carpeta uploads ya existe");
             }
-    
+
             // Guardamos el archivo
             foto.transferTo(ruta.toFile());
-    
+
             // Devolvemos la ruta relativa para que puedas guardar en DB
             return "/uploads/" + filename;
-    
+
         } catch (IOException e) {
             System.err.println("Error guardando la foto en: " + ruta.toAbsolutePath());
             e.printStackTrace();
@@ -309,4 +328,166 @@ public class CommunityServices {
                 payload);
     }
 
+    /**************************************************************************/
+
+    // Funcion para registrar una nueva tarea en el sistema
+
+    public Tarea registrarTarea(TareaDTO tareaDTO) throws Exception {
+
+        Tarea nuevaTarea = new Tarea();
+
+        nuevaTarea.setTitulo(tareaDTO.titulo());
+        nuevaTarea.setDescripcion(tareaDTO.descripcion());
+        nuevaTarea.setFechaTope(tareaDTO.fechaTope());
+        nuevaTarea.setEstado(tareaDTO.estado());
+        nuevaTarea.setDuracion(tareaDTO.duracion());
+        nuevaTarea.setIdComunidad(tareaDTO.idComunidad());
+        nuevaTarea.setNumParticipantes(tareaDTO.numParticipantes());
+
+        if (tareaDTO.usuariosParticipantes() != null && !tareaDTO.usuariosParticipantes().isEmpty()) {
+            List<Long> participantes = new ArrayList<>();
+            for (Long id : tareaDTO.usuariosParticipantes()) {
+                participantes.add(id);
+            }
+            nuevaTarea.setUsuariosParticipantes(participantes);
+        }
+        return this.tareaRepository.save(nuevaTarea);
+
+    }
+
+    // Funcion para registrar un nuevo evento en el sistema
+
+    public Evento registrarEvento(EventoDTO eventoDTO) throws Exception {
+
+        Evento nuevoEvento = new Evento();
+
+        nuevoEvento.setTitulo(eventoDTO.titulo());
+        nuevoEvento.setDescripcion(eventoDTO.descripcion());
+        nuevoEvento.setFechaTope(eventoDTO.fechaTope());
+        nuevoEvento.setLugar(eventoDTO.lugar());
+        nuevoEvento.setHoraInicio(eventoDTO.horaInicio());
+        nuevoEvento.setHoraFinal(eventoDTO.horaFinal());
+        nuevoEvento.setIdComunidad(eventoDTO.idComunidad());
+        nuevoEvento.setNumParticipantes(eventoDTO.numParticipantes());
+
+        if (eventoDTO.usuariosParticipantes() != null && !eventoDTO.usuariosParticipantes().isEmpty()) {
+            List<Long> participantes = new ArrayList<>();
+            for (Long id : eventoDTO.usuariosParticipantes()) {
+                participantes.add(id);
+            }
+            nuevoEvento.setUsuariosParticipantes(participantes);
+        }
+        return this.eventoRepository.save(nuevoEvento);
+
+    }
+
+    public List<TareaDTO> obtenerTareasComunidad(Long idComunidad) {
+        return tareaRepository.findByidComunidad(idComunidad)
+                .stream()
+                .map(this::convertirATareaDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<TareaDTO> obtenerTareasUsuario(Long idUsuario) {
+        return tareaRepository.findByUsuariosParticipantes(idUsuario)
+                .stream()
+                .map(this::convertirATareaDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<EventoDTO> obtenerEventosUsuarioComunidad(Long idUsuario) {
+        return eventoRepository.findByUsuariosParticipantes(idUsuario)
+                .stream()
+                .map(this::convertirAEventoDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<EventoDTO> obtenerEventosComunidad(Long idComunidad) {
+        return eventoRepository.findByidComunidad(idComunidad)
+                .stream()
+                .map(this::convertirAEventoDTO)
+                .collect(Collectors.toList());
+    }
+
+    public TareaDTO obtenerTarea(Long idTarea) {
+        return convertirATareaDTO(tareaRepository.findById(idTarea)
+                .orElseThrow(() -> new RuntimeException("Tarea no encontrada")));
+    }
+
+    public EventoDTO obtenerEvento(Long idEvento) {
+        return convertirAEventoDTO(eventoRepository.findById(idEvento)
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado")));
+    }
+
+    private TareaDTO convertirATareaDTO(Tarea tarea) {
+        return new TareaDTO(
+                tarea.getTitulo(),
+                tarea.getDescripcion(),
+                tarea.getUsuariosParticipantes(), // Ya es List<Long>
+                tarea.getFechaTope(),
+                tarea.getEstado(),
+                tarea.getDuracion(),
+                tarea.getIdComunidad(),
+                tarea.getNumParticipantes());
+    }
+
+    private EventoDTO convertirAEventoDTO(Evento evento) {
+        return new EventoDTO(
+                evento.getTitulo(),
+                evento.getDescripcion(),
+                evento.getUsuariosParticipantes(), // Ya es List<Long>
+                evento.getFechaTope(),
+                evento.getLugar(),
+                evento.getHoraInicio(),
+                evento.getHoraFinal(),
+                evento.getIdComunidad(), evento.getNumParticipantes());
+    }
+
+    public boolean marcarTareaCompletada(Long idTarea) {
+        Optional<Tarea> tarea = tareaRepository.findById(idTarea);
+        if (tarea.isPresent()) {
+            Tarea tareaCompletada = tarea.get();
+
+            tareaCompletada.setEstado(EstadoTarea.COMPLETADA);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean marcarTareaProgreso(Long idTarea) {
+        Optional<Tarea> tarea = tareaRepository.findById(idTarea);
+        if (tarea.isPresent()) {
+            Tarea tareaCompletada = tarea.get();
+
+            tareaCompletada.setEstado(EstadoTarea.EN_PROGRESO);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean deleteTarea(Long idComunidad) throws Exception {
+        try {
+            tareaRepository.deleteById(idComunidad);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void asignarTareaUsuario(Long idTarea, Long idUsuario) {
+        Optional<Tarea> tarea = tareaRepository.findById(idTarea);
+        if (tarea.isPresent()) {
+            Tarea tareaAsignada = tarea.get();
+
+            List<Long> usuarios = tareaAsignada.getUsuariosParticipantes();
+            usuarios.add(idUsuario);
+
+            tareaRepository.save(tareaAsignada);
+        }
+    }
 }

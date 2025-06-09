@@ -6,6 +6,8 @@ import { Footer } from "../../ui/Footer/Footer";
 import { useUserContext } from "../../ui/Context/UserContext";
 import { CommunityRecommended } from "../../community/api/type";
 
+// ...importaciones
+
 const Recommendations: React.FC = () => {
   const { id } = useParams();
   const { username } = useUserContext();
@@ -16,7 +18,11 @@ const Recommendations: React.FC = () => {
   const [maxPrecio, setMaxPrecio] = useState<number>(1000);
   const [maxDistancia, setMaxDistancia] = useState<number>(50);
 
-  // Lógica para cargar las recomendaciones iniciales (sin filtros)
+  // Función para eliminar comunidad del listado tras unión
+  const handleCommunityJoined = (joinedId: number) => {
+    setCommunities((prev) => prev.filter((c) => c.id !== joinedId));
+  };
+
   useEffect(() => {
     if (!id) return;
 
@@ -38,12 +44,13 @@ const Recommendations: React.FC = () => {
       });
   }, [id]);
 
-  // Función para aplicar los filtros (se llama al pulsar el botón)
   const aplicarFiltros = () => {
     if (!id) return;
 
     setIsLoading(true);
-    fetch(`http://localhost:8000/recommendations-filtered/${id}?precio=${maxPrecio}&distancia=${maxDistancia}`)
+    fetch(
+      `http://localhost:8000/recommendations-filtered/${id}?precio=${maxPrecio}&distancia=${maxDistancia}`
+    )
       .then((res) => {
         if (!res.ok) throw new Error("Error en la respuesta del servidor");
         return res.json();
@@ -70,9 +77,11 @@ const Recommendations: React.FC = () => {
 
         {/* Barra de filtros */}
         <section className="mb-10 p-3 bg-white rounded-3xl shadow-md flex flex-col sm:flex-row items-center justify-center gap-8">
-          {/* Filtro Precio */}
           <div className="flex flex-col items-center w-full sm:w-auto">
-            <label htmlFor="precioRange" className="mb-2 text-gray-700 font-semibold text-lg">
+            <label
+              htmlFor="precioRange"
+              className="mb-2 text-gray-700 font-semibold text-lg"
+            >
               Precio máximo (€)
             </label>
             <input
@@ -85,12 +94,17 @@ const Recommendations: React.FC = () => {
               onChange={(e) => setMaxPrecio(Number(e.target.value))}
               className="w-full sm:w-64 h-3 bg-gradient-to-r from-green-400 via-yellow-300 to-red-500 rounded-lg appearance-none cursor-pointer"
             />
-            <span className="mt-1 text-gray-600 font-medium">{maxPrecio} €</span>
+            <span className="mt-1 text-gray-600 font-medium">
+              {maxPrecio} €
+            </span>
           </div>
 
           {/* Filtro Distancia */}
           <div className="flex flex-col items-center w-full sm:w-auto">
-            <label htmlFor="distanciaRange" className="mb-2 text-gray-700 font-semibold text-lg">
+            <label
+              htmlFor="distanciaRange"
+              className="mb-2 text-gray-700 font-semibold text-lg"
+            >
               Distancia máxima (km)
             </label>
             <input
@@ -103,10 +117,10 @@ const Recommendations: React.FC = () => {
               onChange={(e) => setMaxDistancia(Number(e.target.value))}
               className="w-full sm:w-64 h-3 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500 rounded-lg appearance-none cursor-pointer"
             />
-            <span className="mt-1 text-gray-600 font-medium">{maxDistancia} km</span>
+            <span className="mt-1 text-gray-600 font-medium">
+              {maxDistancia} km
+            </span>
           </div>
-
-          {/* Botón para aplicar filtros */}
           <button
             onClick={aplicarFiltros}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-lg shadow"
@@ -117,7 +131,9 @@ const Recommendations: React.FC = () => {
 
         {/* Lista de comunidades */}
         {isLoading ? (
-          <p className="text-center text-gray-500 text-lg">Cargando recomendaciones...</p>
+          <p className="text-center text-gray-500 text-lg">
+            Cargando recomendaciones...
+          </p>
         ) : communities.length > 0 ? (
           communities.map((c) => (
             <CommunityCard
@@ -125,6 +141,7 @@ const Recommendations: React.FC = () => {
               {...c}
               userId={id ? parseFloat(id) : 0}
               username={username}
+              onJoinSuccess={handleCommunityJoined} // Aquí avisamos al padre
             />
           ))
         ) : (
