@@ -9,6 +9,8 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 
 @Configuration
@@ -17,6 +19,11 @@ public class RabbitMQConfig {
     public static final String QUEUE_NAME = "comunidad.join.queue";
     public static final String EXCHANGE_NAME = "comunidad.exchange";
     public static final String ROUTING_KEY = "comunidad.join";
+
+
+    //EVENTO ENVIAR A USUARIOS EL REPARTO DE TAREAS
+    public static final String REPARTO_TAREAS_QUEUE = "usuario.comunidad.repartoTareas.queue";
+    public static final String REPARTO_TAREAS_ROUTING_KEY = "usuario.comunidad.repartoTareas";
 
     @Bean
     public MessageConverter jsonMessageConverter() {
@@ -36,6 +43,16 @@ public class RabbitMQConfig {
     @Bean
     public Binding binding(Queue queue, TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+    }
+
+    @Bean
+    public Queue tareasqueue(){
+        return new Queue(REPARTO_TAREAS_QUEUE,false);
+    }
+
+    @Bean
+    public Binding Tareasbinding(Queue tareasqueue,TopicExchange exchange){
+        return BindingBuilder.bind(tareasqueue).to(exchange).with(REPARTO_TAREAS_ROUTING_KEY);
     }
 
     @Bean

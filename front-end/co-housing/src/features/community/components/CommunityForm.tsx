@@ -17,7 +17,7 @@ function buildInitialFormData(
     descripcion: overrides?.descripcion ?? "",
     idAdmin: overrides?.idAdmin ?? userId ?? 0,
     lifestyleDTO: {
-      tranquilo: overrides?.lifestyleDTO?.tranquilo ?? 1,
+      tranquilidad: overrides?.lifestyleDTO?.tranquilidad ?? 1,
       actividad: overrides?.lifestyleDTO?.actividad ?? 1,
       limpieza: overrides?.lifestyleDTO?.limpieza ?? 1,
       compartirEspacios: overrides?.lifestyleDTO?.compartirEspacios ?? 1,
@@ -206,7 +206,8 @@ export const CommunityForm = ({
             if (file) {
               setFormData((prev) => ({
                 ...prev,
-                foto: file, // lo guardas como File
+                fotoFile: file, // archivo real para enviar
+                fotoUrl: URL.createObjectURL(file), // URL para vista previa
               }));
             }
           }}

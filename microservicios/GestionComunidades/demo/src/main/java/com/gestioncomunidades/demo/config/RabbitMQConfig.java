@@ -32,6 +32,11 @@ public class RabbitMQConfig {
     public static final String USER_COMMUNITY_UPDATE_QUEUE = "usuario.comunidad.update.queue";
     public static final String USER_COMMUNITY_UPDATE_ROUTING_KEY = "usuario.comunidad.update";
 
+
+    //EVENTO ENVIAR A USUARIOS EL REPARTO DE TAREAS
+    public static final String REPARTO_TAREAS_QUEUE = "usuario.comunidad.repartoTareas.queue";
+    public static final String REPARTO_TAREAS_ROUTING_KEY = "usuario.comunidad.repartoTareas";
+
     /**************************************************************************/
     
     //BEAN PARA CONVERTIR DTOs A JSON
@@ -97,6 +102,20 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(userCommunityUpdateQueue).to(exchange).with(USER_COMMUNITY_UPDATE_ROUTING_KEY);
     } 
 
+    /**************************************************************************/
+
+    //COLA EVENTO ENVIAR A USUARIOS EL REPARTO DE TAREAS
+
+    @Bean
+    public Queue userRepartoTareasQueue() {
+        return new Queue(REPARTO_TAREAS_QUEUE, false);
+    }
+
+    // NUEVO binding para la cola de actualización de comunidad
+    @Bean
+    public Binding userRepartoTareasBinding(Queue userRepartoTareasQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(userRepartoTareasQueue).to(exchange).with(REPARTO_TAREAS_ROUTING_KEY);
+    } 
 
     
 }
