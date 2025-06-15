@@ -16,6 +16,9 @@ import Recommendations from './features/recommendor/pages/Recommendations';
 import SolicitudesPage from './features/solicitudes/pages/SolicitudesPage';
 import { CommunityUserPage } from './features/community/pages/CommunityUserPage';
 import CreateTask from './features/community/pages/CreateTask';
+import { TaskListPage } from './features/community/pages/TaskListPage';
+import { EventoListPage } from './features/community/pages/EventoListPage';
+import CreateEvent from './features/community/pages/CreateEvent';
 
 export const App = () => {
   return (
@@ -35,6 +38,9 @@ export const App = () => {
       <Route path="/TFG_COHOUSING/solicitudes/:userId" element={<SolicitudesPage />} />
       <Route path="/TFG_COHOUSING/CommunityUserPage/:userId" element={<CommunityUserPage />} />
       <Route path="/TFG_COHOUSING/CreateTask/:idComunidad" element={<CreateTask />} />
+      <Route path="/TFG_COHOUSING/CreateEvent/:idComunidad" element={<CreateEvent />} />
+      <Route path="/TFG_COHOUSING/TaskListPage/:userId" element={<TaskListPage />} />
+      <Route path="/TFG_COHOUSING/EventoListPage/:userId" element={<EventoListPage />} />
     </Routes>
   );
 

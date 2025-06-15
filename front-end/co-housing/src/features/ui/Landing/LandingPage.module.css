@@ -4,6 +4,9 @@
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
+  /* Degradado oscuro azul/gris */
+  background: linear-gradient(to bottom, #1e1e2f, #121212);
+  color: #ddd; /* texto claro pero suave */
 }
 
 /* ================= Header ================== */
@@ -32,7 +35,7 @@
 
 .headerText h1,
 .headerText p {
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   position: relative;
   transition: color 0.3s ease;
 }
@@ -64,7 +67,7 @@
 
 .image, .image2 {
   width: 100%;
-  max-width: 350px;
+  max-width: 750px;
   border-radius: 10px;
   transition: transform 0.3s ease, filter 0.3s ease;
   cursor: pointer;
@@ -78,7 +81,7 @@
 .caption {
   margin-top: 10px;
   font-size: 16px;
-  color: #555;
+  color: #aaa; /* gris claro para buen contraste */
 }
 
 /* ============== Botón =============== */
@@ -86,7 +89,7 @@
 .button {
   margin-top: 2rem;
   padding: 0.8rem 2rem;
-  background-color: #0c1841;
+  background-color: #143d6b; /* azul oscuro */
   color: white;
   border: none;
   border-radius: 8px;
@@ -96,19 +99,18 @@
 }
 
 .button:hover {
-  background-color: #1e2e68;
+  background-color: #1e57a3; /* azul más claro */
 }
 
 /* ============= Tarjetas ============== */
 
 .cardsWrapper {
-  background-color: #ebe9fd;
-  color: #000000;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  background-color: #222831; /* gris muy oscuro */
+  color: #eee; /* texto claro */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
   margin: 40px auto;
   width: 100%;
   max-width: 1200px;
-
   padding: 2rem 1rem;
   border-radius: 20px;
   text-align: center;
@@ -125,8 +127,6 @@
 .typingP {
   font-size: 30px;
 }
-
-
 
 /* ============ Responsive ============== */
 
@@ -156,5 +156,149 @@
   .headerText {
     margin-top: 60px;
     margin-bottom: 30px;
+  }
+}
+
+.carouselSection {
+  width: 100%;
+  max-width: 900px;
+  margin: 3rem auto;
+  overflow: hidden;
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  /* Degradado mismo que container */
+  background: linear-gradient(135deg, #1c1c1c 0%, #0d1a2a 100%);
+  padding: 1rem 0;
+}
+
+.carouselTrack {
+  display: flex;
+  width: 400%; /* 4 imágenes */
+  animation: slideCenter 20s ease-in-out infinite;
+  /* centramos con padding para que se vean los bordes */
+  padding-left: 12.5%;
+}
+
+.carouselImage {
+  flex: 0 0 25%; /* cada imagen ocupa 25% del track */
+  max-width: 25%;
+  margin: 0 10px;
+  border-radius: 12px;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+  filter: brightness(0.7);
+  transition: transform 0.5s ease, filter 0.5s ease, box-shadow 0.5s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Imagen destacada (centrada) - se ilumina y crece */
+.carouselTrack img:nth-child(1) {
+  filter: brightness(1);
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
+}
+
+/* Animación para que la imagen destacada vaya rotando */
+
+@keyframes slideCenter {
+  0% {
+    transform: translateX(0%);
+  }
+  20% {
+    transform: translateX(0%);
+  }
+  25% {
+    transform: translateX(-25%);
+  }
+  45% {
+    transform: translateX(-25%);
+  }
+  50% {
+    transform: translateX(-50%);
+  }
+  70% {
+    transform: translateX(-50%);
+  }
+  75% {
+    transform: translateX(-75%);
+  }
+  95% {
+    transform: translateX(-75%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+/* Cambiar la imagen destacada durante la animación */
+
+.carouselTrack img:nth-child(1) {
+  animation: highlight1 20s infinite;
+}
+
+.carouselTrack img:nth-child(2) {
+  animation: highlight2 20s infinite;
+}
+
+.carouselTrack img:nth-child(3) {
+  animation: highlight3 20s infinite;
+}
+
+.carouselTrack img:nth-child(4) {
+  animation: highlight4 20s infinite;
+}
+
+/* Animaciones para cambiar brillo y escala de la imagen destacada */
+
+@keyframes highlight1 {
+  0%, 20%, 100% {
+    filter: brightness(1);
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
+  }
+  21%, 99% {
+    filter: brightness(0.7);
+    transform: scale(1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@keyframes highlight2 {
+  0%, 24%, 44%, 100% {
+    filter: brightness(0.7);
+    transform: scale(1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  25%, 45% {
+    filter: brightness(1);
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
+  }
+}
+
+@keyframes highlight3 {
+  0%, 49%, 69%, 100% {
+    filter: brightness(0.7);
+    transform: scale(1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  50%, 70% {
+    filter: brightness(1);
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
+  }
+}
+
+@keyframes highlight4 {
+  0%, 74%, 94%, 100% {
+    filter: brightness(0.7);
+    transform: scale(1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  75%, 95% {
+    filter: brightness(1);
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
   }
 }

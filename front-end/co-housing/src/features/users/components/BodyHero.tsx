@@ -1,5 +1,4 @@
 import { useUserContext } from "../../ui/Context/UserContext";
-import Button from "../../ui/Button/Button";
 
 const BodyHero: React.FC = () => {
   const { userProfile, isLoading } = useUserContext();
@@ -46,14 +45,14 @@ const BodyHero: React.FC = () => {
     {
       role: null,
       label: "⚙️",
-      text: "Ajustes",
-      to: "TFG_COHOUSING",
+      text: "Dudas",
+      to: "/TFG_COHOUSING/Dudas",
       angle: 300,
     },
   ];
 
   return (
-    <div className="pt-24 pb-12 text-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-500 min-h-screen flex flex-col items-center justify-start px-4">
+    <div className="pt-24 pb-12 text-center bg-gradient-to-br from-indigo-100 via-white-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-500 min-h-screen flex flex-col items-center justify-start px-4">
       <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-2">
         ¡Hola {userProfile.username}! 👋
       </h1>
@@ -98,7 +97,7 @@ const BodyHero: React.FC = () => {
             <button
               key={index}
               onClick={() => (window.location.href = item.to)}
-              className={`absolute w-28 h-28 rounded-full ${bgColor} shadow-lg hover:shadow-2xl transform hover:scale-110 transition-all duration-300 flex flex-col items-center justify-center text-gray-700 dark:text-gray-900 font-semibold cursor-pointer select-none focus:outline-none focus:ring-4 focus:ring-indigo-400`}
+              className={`absolute w-28 h-28 rounded-full ${bgColor} border-4 border-white-500 shadow-lg hover:shadow-2xl transform hover:scale-110 transition-all duration-300 flex flex-col items-center justify-center text-gray-700 dark:text-gray-900 font-semibold cursor-pointer select-none focus:outline-none focus:ring-4 focus:ring-indigo-400`}
               style={{
                 top: `calc(50% + ${y}px - 56px)`,
                 left: `calc(50% + ${x}px - 56px)`,
@@ -112,17 +111,6 @@ const BodyHero: React.FC = () => {
             </button>
           );
         })}
-      </div>
-
-      {/* Ayuda */}
-      <div className="mt-16 max-w-md mx-auto">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-          ¿Tienes dudas?
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">
-          Explora nuestra sección de ayuda
-        </p>
-        <Button to="/TFG_COHOUSING/Dudas" label="Ver Ayuda" />
       </div>
     </div>
   );
