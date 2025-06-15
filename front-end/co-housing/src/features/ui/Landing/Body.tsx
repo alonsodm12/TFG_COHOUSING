@@ -5,35 +5,71 @@ import Card from "../Card";
 import Button from "../Button/Button";
 
 export const Body: React.FC = () => {
-
   return (
     <section className={styles.container}>
       <div className={styles.headerText}>
         <h1 className={styles.typingH1}>SHARE-SPACE</h1>
-        <p className={styles.typingP}>TU ESPACIO COMPARTIDO PARA CREAR Y GESTIONAR TU NUEVA VIDA</p>
+        <p className={styles.typingP}>
+          TU ESPACIO COMPARTIDO PARA CREAR Y GESTIONAR TU NUEVA VIDA
+        </p>
       </div>
 
       <div className={styles.imagecontainer}>
         <div className={styles.imageWrapper}>
-          <img src="/TFG_COHOUSING/images/izquierda-usando3.png" alt="Imagen 1" className={styles.image2} />
+          <img
+            src="/TFG_COHOUSING/images/foto-landing2.png"
+            alt="Imagen 1"
+            className={styles.image2}
+          />
           <p className={styles.caption}>🏘️¿Buscas una nueva comunidad?</p>
         </div>
-        <div className={styles.imageWrapper}>
-          <img src="/TFG_COHOUSING/images/derecha-usando.png" alt="Imagen 2" className={styles.image} />
-          <p className={styles.caption}>🧍¿Buscas un nuevo miembro?</p>
-        </div>
-
-
       </div>
-      <section className="w-full text-black py-20 px-6 text-center ">
-        <h1 className="text-5xl font-bold mb-4">Vive en comunidad. Encuentra tu lugar.</h1>
-        <p className="text-lg mb-8">Una plataforma para conectar buscadores y creadores de comunidades de cohousing.</p>
+      <section className="w-full text-white py-20 px-6 text-center ">
+        <h1 className="text-5xl font-bold mb-4">
+          Vive en comunidad. Encuentra tu lugar.
+        </h1>
+        <p className="text-lg mb-8">
+          Una plataforma para conectar buscadores y creadores de comunidades de
+          cohousing.
+        </p>
         <div className="flex justify-center gap-4 flex-wrap">
-          <a href="/buscar" className="btn">🔍 Buscar Comunidad</a>
-          <a href="/ofrecer" className="btn btn-outline">📤 Publicar Comunidad</a>
+          <a href="/buscar" className="btn">
+            🔍 Buscar Comunidad
+          </a>
+          <a href="/ofrecer" className="btn btn-outline">
+            📤 Publicar Comunidad
+          </a>
         </div>
       </section>
       <Button label="EMPEZAR YA" to="/TFG_COHOUSING/registro" />
+      {/* Carrusel de imágenes estáticas */}
+      <h1 className="w-full text-white py-16 text-center text-5xl font-bold">
+          ¡Descubre todo lo que ofrece ShareHouse!
+        </h1>
+      <section className={styles.carouselSection}>
+        <div className={styles.carouselTrack}>
+          <img
+            src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80"
+            alt="Gestión fácil"
+            className={styles.carouselImage}
+          />
+          <img
+            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80"
+            alt="Eventos compartidos"
+            className={styles.carouselImage}
+          />
+          <img
+            src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=600&q=80"
+            alt="Comunicación fluida"
+            className={styles.carouselImage}
+          />
+          <img
+            src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=600&q=80"
+            alt="Soporte 24/7"
+            className={styles.carouselImage}
+          />
+        </div>
+      </section>
       <div className={styles.cardsWrapper}>
         <h1 className={styles.typingP}>Lo que dicen nuestros usuarios</h1>
         <div className="flex gap-6 justify-center flex-wrap mt-4">
@@ -64,6 +100,5 @@ export const Body: React.FC = () => {
         </div>
       </div>
     </section>
-
   );
 };

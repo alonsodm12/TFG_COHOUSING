@@ -74,7 +74,7 @@ public class ActividadesService {
         }
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 0 1 * *")
     @Transactional
     public void repartirTareasSemanalmente() {
         List<Community> comunidades = communityRepository.findAll();

@@ -1,6 +1,6 @@
 //Inclusion de toda la lógica de llamadas a la API de Usuarios
 
-import { UpdateCommunityProfile, CommunityProfile, Tarea } from "./type";
+import { UpdateCommunityProfile, CommunityProfile, Tarea, Evento } from "./type";
 
 const API_BASE: String = "http://localhost:8084/comunidades";
 const token = localStorage.getItem('token');
@@ -86,6 +86,13 @@ export const fetchTareasPorUsuario = async (userId: number): Promise<Tarea[]> =>
   return response.json();
 };
 
+export const fetchEventosPorUsuario = async (userId:number): Promise<Evento[]> => {
+  const response = await fetch(`http://localhost:8084/comunidades/eventos/${userId}`);
+  if(!response.ok)
+    throw new Error("No se pudieron cargar los eventos del usuario");
+  return response.json();
+}
+
 export const createTask = async (datosTarea: Tarea) => {
   const response = await fetch(`${API_BASE}/tarea`, {
     method: "POST",
@@ -98,6 +105,23 @@ export const createTask = async (datosTarea: Tarea) => {
 
   if (!response.ok) {
     throw new Error("Error al crear la tarea");
+  }
+
+  return response.json();
+}
+
+export const createEvent = async (datosEvento: Evento) => {
+  const response = await fetch(`${API_BASE}/evento`,{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(datosEvento),
+  });
+
+  if(!response.ok) {
+    throw new Error("Error al crear el evento");
   }
 
   return response.json();

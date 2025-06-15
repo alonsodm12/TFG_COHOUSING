@@ -67,7 +67,7 @@ export const UserProfilePage = () => {
             </div>
           )}
 
-          <div className="text-gray-800 dark:text-gray-300 text-left space-y-3 mb-8">
+          <div className="text-gray-800 dark:text-gray-300 text-center space-y-3 mb-8">
             <p>
               <strong>Nombre:</strong> {userProfile.username}
             </p>
@@ -77,14 +77,17 @@ export const UserProfilePage = () => {
             <p>
               <strong>Rol:</strong> {userProfile.role}
             </p>
+            <p>
+              <strong>Dirección:</strong> {userProfile.direccion}
+            </p>
           </div>
 
           {userProfile.lifestyleDTO && (
             <>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 text-left">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 text-center">
                 Estilo de vida
               </h3>
-              <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 text-left mb-8 space-y-1 text-sm">
+              <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 text-center mb-8 space-y-1 text-sm">
                 <li>Tranquilo: {userProfile.lifestyleDTO.tranquilidad}</li>
                 <li>Actividad: {userProfile.lifestyleDTO.actividad}</li>
                 <li>Limpieza: {userProfile.lifestyleDTO.limpieza}</li>
@@ -99,7 +102,6 @@ export const UserProfilePage = () => {
               label="Editar perfil"
               to="/TFG_COHOUSING/user/profile/edit"
               state={userProfile}
-              className="w-full sm:w-auto"
             />
             <ButtonFunction
               label="Eliminar usuario"

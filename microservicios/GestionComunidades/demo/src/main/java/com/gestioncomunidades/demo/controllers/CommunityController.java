@@ -153,6 +153,16 @@ public class CommunityController {
         }
     }
 
+    @GetMapping("/eventos/comunidad/{idComunidad}")
+    public ResponseEntity<?> obtenerEventosComunidad(@PathVariable Long idComunidad){
+        try{
+            List<EventoDTO> eventos = communityServices.obtenerEventosComunidad(idComunidad);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(eventos);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @PostMapping("/evento")
     public ResponseEntity<?> crearEvento(@RequestBody EventoDTO eventoDTO){
         try{
@@ -179,6 +189,13 @@ public class CommunityController {
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(tareas);
 
+    }
+
+    @GetMapping("/eventos/{idUsuario}")
+    public ResponseEntity<?> getEventosByUsuario(@PathVariable Long idUsuario){
+        List<EventoDTO> eventos = communityServices.obtenerEventosUsuarioComunidad(idUsuario);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(eventos);
     }
 
 }
