@@ -6,6 +6,7 @@ import java.util.List;
 import com.gestioncomunidades.demo.models.EstadoTarea;
 
 public record TareaDTO (
+    Long id,
     String titulo,
     String descripcion,
     List<Long> usuariosParticipantes,

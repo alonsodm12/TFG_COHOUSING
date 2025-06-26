@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,7 +29,6 @@ import com.gestioncomunidades.demo.models.Tarea;
 import com.gestioncomunidades.demo.services.CommunityServices;
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 
 @Controller
 @RequestMapping("/comunidades")
@@ -174,9 +173,18 @@ public class CommunityController {
     }
 
     @PatchMapping("/completarTarea/{idTarea}")
-    public ResponseEntity<?> completarTarea(Long idTarea){
+    public ResponseEntity<?> completarTarea(@PathVariable Long idTarea){
         try{
             communityServices.marcarTareaCompletada(idTarea);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PatchMapping("/enProgresoTarea/{idTarea}")
+    public ResponseEntity<?> enProgresoTarea(@PathVariable Long idTarea){
+        try{
+            communityServices.marcarTareaProgreso(idTarea);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -196,6 +204,18 @@ public class CommunityController {
         List<EventoDTO> eventos = communityServices.obtenerEventosUsuarioComunidad(idUsuario);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(eventos);
+    }
+
+    @GetMapping("tarea/{idTarea}")
+    public ResponseEntity<?> consultarTarea(@PathVariable Long idTarea){
+        TareaDTO tarea = communityServices.obtenerTarea(idTarea);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(tarea);
+    }
+
+    @GetMapping("evento/{idEvento}")
+    public ResponseEntity<?> consultarEvento(@PathVariable Long idEvento){
+        EventoDTO evento = communityServices.obtenerEvento(idEvento);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(evento);
     }
 
 }

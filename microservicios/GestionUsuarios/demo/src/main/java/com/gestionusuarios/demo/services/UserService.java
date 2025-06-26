@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gestionusuarios.demo.DTOs.DatosPerfilDTO;
 import com.gestionusuarios.demo.DTOs.UpdateUserCommunityDTO;
 import com.gestionusuarios.demo.DTOs.UserDTO;
 import com.gestionusuarios.demo.DTOs.UserUpdateDTO;
@@ -179,5 +180,46 @@ public class UserService {
         } else {
             System.out.println("Error uniendo al usuario a la comunidad");
         }
+    }
+
+    public User findOrCreateUsuario(String email, String name) {
+        return userRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    User nuevo = new User();
+                    nuevo.setEmail(email);
+                    nuevo.setUsername(name);
+                    nuevo.setRole(""); // o el rol que quieras por defecto
+                    return userRepository.save(nuevo);
+                });
+    }
+
+        public User completarPerfil(String email, DatosPerfilDTO datosPerfil) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if (optionalUser.isEmpty()) {
+            throw new RuntimeException("Usuario no encontrado con email: " + email);
+        }
+
+        User user = optionalUser.get();
+        user.setDireccion(datosPerfil.getDireccion());
+        user.setLatitud(datosPerfil.getLatitud());
+        user.setLongitud(datosPerfil.getLongitud());
+        user.setLimpieza(datosPerfil.getLimpieza());
+        user.setCompartirEspacios(datosPerfil.getCompartirEspacios());
+        user.setActividad(datosPerfil.getActividad());
+        user.setTranquilidad(datosPerfil.getTranquilidad());
+        user.setSociabilidad(datosPerfil.getSociabilidad());
+
+        return userRepository.save(user);
+    }
+    public void actualizarDireccionUsuario(Long idUser, String direccion, Double latitud, Double longitud) {
+        User usuario = userRepository.findById(idUser)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setDireccion(direccion);
+        usuario.setLatitud(latitud);
+        usuario.setLongitud(longitud);
+
+        userRepository.save(usuario);
     }
 }

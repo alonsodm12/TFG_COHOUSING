@@ -2,7 +2,7 @@ import React from "react";
 
 interface CardProps {
   title: string;
-  description: string;
+  description: React.ReactNode;
   emoji: string;
   additionalText: string;
   photoUrl: string;

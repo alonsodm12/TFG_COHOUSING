@@ -52,7 +52,7 @@ const BodyHero: React.FC = () => {
   ];
 
   return (
-    <div className="pt-24 pb-12 text-center bg-gradient-to-br from-indigo-100 via-white-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-500 min-h-screen flex flex-col items-center justify-start px-4">
+    <div className="pt-20 pb-12 text-center bg-gradient-to-br from-indigo-100 via-white-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-500 min-h-screen flex flex-col items-center justify-start px-4">
       <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-2">
         ¡Hola {userProfile.username}! 👋
       </h1>

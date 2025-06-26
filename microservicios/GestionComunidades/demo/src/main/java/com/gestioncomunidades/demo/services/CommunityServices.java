@@ -421,6 +421,7 @@ public class CommunityServices {
 
     private TareaDTO convertirATareaDTO(Tarea tarea) {
         return new TareaDTO(
+                tarea.getId(),
                 tarea.getTitulo(),
                 tarea.getDescripcion(),
                 tarea.getUsuariosParticipantes(), // Ya es List<Long>
@@ -433,6 +434,7 @@ public class CommunityServices {
 
     private EventoDTO convertirAEventoDTO(Evento evento) {
         return new EventoDTO(
+                evento.getId(),
                 evento.getTitulo(),
                 evento.getDescripcion(),
                 evento.getUsuariosParticipantes(), // Ya es List<Long>
@@ -449,7 +451,7 @@ public class CommunityServices {
             Tarea tareaCompletada = tarea.get();
 
             tareaCompletada.setEstado(EstadoTarea.COMPLETADA);
-
+            tareaRepository.save(tareaCompletada);
             return true;
         } else {
             return false;
@@ -459,10 +461,10 @@ public class CommunityServices {
     public boolean marcarTareaProgreso(Long idTarea) {
         Optional<Tarea> tarea = tareaRepository.findById(idTarea);
         if (tarea.isPresent()) {
-            Tarea tareaCompletada = tarea.get();
+            Tarea tareaEnProgreso = tarea.get();
 
-            tareaCompletada.setEstado(EstadoTarea.EN_PROGRESO);
-
+            tareaEnProgreso.setEstado(EstadoTarea.EN_PROGRESO);
+            tareaRepository.save(tareaEnProgreso);
             return true;
         } else {
             return false;

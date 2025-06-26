@@ -30,7 +30,7 @@ export const UpdateUserForm = ({ user }: Props) => {
         password: user.password ?? "",
         role: user.role ?? "",
         lifestyleDTO: {
-          tranquilo: user.lifestyleDTO?.tranquilo ?? 3,
+          tranquilo: user.lifestyleDTO?.tranquilidad ?? 3,
           actividad: user.lifestyleDTO?.actividad ?? 3,
           limpieza: user.lifestyleDTO?.limpieza ?? 3,
           compartirEspacios: user.lifestyleDTO?.compartirEspacios ?? 3,

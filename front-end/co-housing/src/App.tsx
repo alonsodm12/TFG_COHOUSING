@@ -19,6 +19,7 @@ import CreateTask from './features/community/pages/CreateTask';
 import { TaskListPage } from './features/community/pages/TaskListPage';
 import { EventoListPage } from './features/community/pages/EventoListPage';
 import CreateEvent from './features/community/pages/CreateEvent';
+import { TaskProfilePage } from './features/community/pages/TaskProfilePage';
 
 export const App = () => {
   return (
@@ -41,6 +42,7 @@ export const App = () => {
       <Route path="/TFG_COHOUSING/CreateEvent/:idComunidad" element={<CreateEvent />} />
       <Route path="/TFG_COHOUSING/TaskListPage/:userId" element={<TaskListPage />} />
       <Route path="/TFG_COHOUSING/EventoListPage/:userId" element={<EventoListPage />} />
+      <Route path="/TFG_COHOUSING/Tarea/:taskId" element={<TaskProfilePage />} />
     </Routes>
   );
 

@@ -1,6 +1,5 @@
 package com.gestionusuarios.demo.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,36 +15,34 @@ import com.gestionusuarios.demo.security.CustomAuthenticationProvider;
 import com.gestionusuarios.demo.security.filters.JwtAuthenticationFilter;
 import com.gestionusuarios.demo.services.CustomUserDetailsService;
 import com.gestionusuarios.demo.utils.JwtUtil;
+import com.gestionusuarios.demo.config.CustomOAuth2SuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final CustomAuthenticationProvider authenticationProvider;
 
-    public SecurityConfig(CustomAuthenticationProvider authenticationProvider) {
+    private final CustomAuthenticationProvider authenticationProvider;
+    private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+
+    public SecurityConfig(CustomAuthenticationProvider authenticationProvider,
+                          CustomOAuth2SuccessHandler customOAuth2SuccessHandler) {
         this.authenticationProvider = authenticationProvider;
+        this.customOAuth2SuccessHandler = customOAuth2SuccessHandler;
     }
 
-    /*
-     * securityFilterChain
-     * 
-     * Se encarga de definir un filtro de seguridad estableciendo rutas a las que
-     * se puede acceder sin token y añadiendo a la cadena de filtro
-     * el filtro generado para la autenticacion por jwt
-     * 
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
             throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/user/login", "/user/register",
-                                "/uploads/**", "/user/delete")
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/public/**", "/user/login", "/user/register", "/uploads/**", "/user/delete")
                         .permitAll()
+                        .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/user/usuarios").hasRole("buscador")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2Login(oauth -> oauth.successHandler(customOAuth2SuccessHandler))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -62,4 +59,5 @@ public class SecurityConfig {
             CustomUserDetailsService customUserDetailsService) {
         return new JwtAuthenticationFilter(jwtUtil, customUserDetailsService);
     }
+
 }

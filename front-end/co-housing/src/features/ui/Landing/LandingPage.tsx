@@ -8,7 +8,6 @@ const LandingPage: React.FC = () => {
     <div id="root">
       <HeaderLanding />
         <Body />
-
       <Footer />
     </div>
   );
