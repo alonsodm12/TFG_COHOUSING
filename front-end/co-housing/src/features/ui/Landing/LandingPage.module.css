@@ -5,7 +5,7 @@
   justify-content: center;
   padding: 2rem 1rem;
   /* Degradado oscuro azul/gris */
-  background: linear-gradient(to bottom, #1e1e2f, #121212);
+  background: url("/TFG_COHOUSING/images/Background.jpg") repeat-y;
   color: #ddd; /* texto claro pero suave */
 }
 
@@ -16,6 +16,7 @@
   border-radius: 50px;
   display: inline-block;
   border-width: 6px;
+  border-color: #000000;
   text-align: center;
   transition: border-color 0.4s ease, box-shadow 0.4s ease;
   box-shadow: 0 0 10px rgba(243, 243, 243, 0.2);
@@ -35,7 +36,7 @@
 
 .headerText h1,
 .headerText p {
-  color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
   position: relative;
   transition: color 0.3s ease;
 }

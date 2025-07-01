@@ -57,9 +57,9 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
 
       {/* Contenido principal */}
       <div className="p-6">
-        <p className="text-gray-600 mb-4">{props.affinity}</p>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">{props.name}</h2>
-        <p className="text-gray-600 mb-4">{props.descripcion}</p>
+        <p className="text-red-500 font-bold mb-2">{props.affinity}</p>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">{props.name}</h2>
+        <p className="text-gray-600 mb-4 text-center">{props.descripcion}</p>
 
         <hr className="border-t border-white mb-4" />
 

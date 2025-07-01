@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,7 +77,7 @@ public class CommunityServices {
                 communityDTO.longitud(),
                 communityDTO.direccion(),
                 communityDTO.precio());
-        
+
         List<Long> integrantes = new ArrayList<>();
         if (communityDTO.integrantes() != null && !communityDTO.integrantes().isEmpty()) {
             integrantes.add(communityDTO.idAdmin());
@@ -83,8 +85,7 @@ public class CommunityServices {
                 integrantes.add(id);
             }
             nuevaComunidad.setIntegrantes(integrantes);
-        }
-        else{
+        } else {
             integrantes.add(communityDTO.idAdmin());
             nuevaComunidad.setIntegrantes(integrantes);
         }
@@ -338,7 +339,10 @@ public class CommunityServices {
 
         nuevaTarea.setTitulo(tareaDTO.titulo());
         nuevaTarea.setDescripcion(tareaDTO.descripcion());
-        nuevaTarea.setFechaTope(tareaDTO.fechaTope());
+
+        if (tareaDTO.fechaTope() == null){
+            nuevaTarea.setFechaTope(LocalDateTime.now().plusDays(7));
+        }
         nuevaTarea.setEstado(tareaDTO.estado());
         nuevaTarea.setDuracion(tareaDTO.duracion());
         nuevaTarea.setIdComunidad(tareaDTO.idComunidad());
@@ -352,6 +356,42 @@ public class CommunityServices {
             nuevaTarea.setUsuariosParticipantes(participantes);
         }
         return this.tareaRepository.save(nuevaTarea);
+
+    }
+
+    // Funcion para modificar la Fecha de una tarea concreta por parte del usuario
+
+    public void establecerFechaTarea(Long idTarea, LocalDateTime date) throws Exception {
+
+        try {
+            Tarea tarea = tareaRepository.findById(idTarea).get();
+            tarea.setFechaTope(date);
+            tareaRepository.save(tarea);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+    }
+
+    // Funcion para encontrar al usuario dentro de una comunidad con el menor numero
+    // de tareas asignadas
+
+    public Long usuarioMenosTareas(Long communityId) throws Exception {
+        Community comunidad = communityRepository.findById(communityId).get();
+
+        List<Long> usuarios = comunidad.getIntegrantes();
+        Long usuarioAasignar = 0L;
+        int usuarioMinTareas = 0;
+        int usuarioTareas = 0;
+        for (Long usuario : usuarios) {
+            usuarioTareas = tareaRepository.findByUsuariosParticipantes(usuario).size();
+            if (usuarioTareas <= usuarioMinTareas)
+                usuarioAasignar = usuario;
+        }
+
+        return usuarioAasignar;
 
     }
 

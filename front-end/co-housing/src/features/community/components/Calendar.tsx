@@ -1,28 +1,15 @@
-// src/components/Calendar.tsx
-import { Calendar as BigCalendar, dateFnsLocalizer } from "react-big-calendar";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { format, parse, startOfWeek, getDay, addHours } from "date-fns";
-import { es } from "date-fns/locale";
-import { useEffect, useState } from "react";
+// src/components/Calendario.tsx
+import React, { useEffect, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import esLocale from "@fullcalendar/core/locales/es";
+import { addHours } from "date-fns";
 import { getUserTask } from "../api/operations";
 
-const locales = {
-  es: es,
-};
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
-type CalendarProps = {
-  userId: number;
-};
-export const Calendar = ({ userId }: CalendarProps) => {
-
-  const [events, setEvents] = useState([]);
+export const Calendario = ({ userId }: { userId: number }) => {
+  const [eventos, setEventos] = useState([]);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -31,7 +18,7 @@ export const Calendar = ({ userId }: CalendarProps) => {
 
         const formattedEvents = tareas.map((tarea: any) => {
           const start = new Date(tarea.fechaTope);
-          const end = addHours(start, tarea.duracion || 1); // Añade duración o 1h por defecto
+          const end = addHours(start, tarea.duracion || 1);
 
           return {
             title: tarea.titulo,
@@ -40,7 +27,7 @@ export const Calendar = ({ userId }: CalendarProps) => {
           };
         });
 
-        setEvents(formattedEvents);
+        setEventos(formattedEvents);
       } catch (error) {
         console.error("Error cargando tareas", error);
       }
@@ -49,27 +36,23 @@ export const Calendar = ({ userId }: CalendarProps) => {
     fetchTasks();
   }, [userId]);
 
-
-
   return (
-    <div style={{ height: "600px", margin: "2rem" }}>
-      <BigCalendar
-        localizer={localizer}
-        events={events} // Calendario vacío de momento
-        startAccessor="start"
-        endAccessor="end"
-        defaultView="week"
-        views={["month", "week", "day"]}
-        messages={{
-          next: "Sig.",
-          previous: "Ant.",
-          today: "Hoy",
-          month: "Mes",
-          week: "Semana",
-          day: "Día",
+    <div style={{ margin: "2rem" }}>
+      <FullCalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="timeGridWeek"
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
-        onSelectEvent={(event: any) => {
-          alert(`Tarea: ${event.title}`);
+        locale={esLocale}
+        events={eventos}
+        height="600px"
+        slotMinTime="08:00:00"
+        slotMaxTime="20:00:00"
+        eventClick={(info) => {
+          alert(`Tarea: ${info.event.title}`);
         }}
       />
     </div>

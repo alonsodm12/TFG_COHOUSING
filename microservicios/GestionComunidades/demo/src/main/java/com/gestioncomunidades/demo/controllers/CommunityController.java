@@ -1,11 +1,12 @@
 package com.gestioncomunidades.demo.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
-
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -216,6 +217,18 @@ public class CommunityController {
     public ResponseEntity<?> consultarEvento(@PathVariable Long idEvento){
         EventoDTO evento = communityServices.obtenerEvento(idEvento);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(evento);
+    }
+
+    @PatchMapping("tarea/modificarFecha/{idTarea}")
+    public ResponseEntity<?> modificarFecha(@PathVariable Long idTarea, @RequestBody LocalDateTime time){
+        
+        try{
+            communityServices.establecerFechaTarea(idTarea, time);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        
     }
 
 }

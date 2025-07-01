@@ -37,7 +37,7 @@ body {
   flex: 1;
   display: flex;
   padding-top: 4rem;
-  background: linear-gradient(to bottom, #1e1e2f, #121212);
+  background: url("/TFG_COHOUSING/images/Background.jpg") repeat-y;
   background-size: cover;
   flex-direction: column;
   align-items: center;

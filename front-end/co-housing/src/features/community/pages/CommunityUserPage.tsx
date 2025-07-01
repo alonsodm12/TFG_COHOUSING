@@ -10,8 +10,9 @@ import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import { useUserContext } from "../../ui/Context/UserContext";
 import { CommunityProfile, Evento, Tarea } from "../api/type";
-import { Calendar } from "../components/Calendar";
+import { Calendario } from "../components/Calendar";
 import { Link } from "react-router-dom";
+import ButtonFunction from "../../ui/Button/ButtonFunction";
 
 export const CommunityUserPage = () => {
   const { userProfile, isLoading: isUserLoading } = useUserContext();
@@ -170,6 +171,12 @@ export const CommunityUserPage = () => {
             >
               Crear Evento
             </button>
+            <ButtonFunction
+              label="Administrar Tus Tareas"
+              onClick={() =>
+                navigate(`/TFG_COHOUSING/AdministrarTareas/${userProfile?.id}`)
+              }
+            />
           </section>
 
           {/* Tareas */}
@@ -278,7 +285,7 @@ export const CommunityUserPage = () => {
           {/* Calendario */}
           <section className="bg-white rounded-xl shadow-lg p-8 text-gray-800">
             <h2 className="text-3xl font-semibold mb-4">Calendario</h2>
-            <Calendar userId={userProfile?.id!} />
+            <Calendario userId={userProfile?.id!} />
           </section>
 
           {/* Mensaje de respuesta */}

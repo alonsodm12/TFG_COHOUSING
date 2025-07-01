@@ -225,7 +225,7 @@ const Recommendations: React.FC = () => {
               key={c.id}
               {...c}
               userId={id ? parseFloat(id) : 0}
-              username={username}
+              username={username ? username : "null"}
               onJoinSuccess={handleCommunityJoined}
             />
           ))

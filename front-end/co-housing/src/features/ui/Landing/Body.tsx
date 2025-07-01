@@ -25,7 +25,7 @@ export const Body: React.FC = () => {
           <p className={styles.caption}>🏘️¿Buscas una nueva comunidad?</p>
         </div>
       </div>
-      <section className="w-full text-white py-20 px-6 text-center ">
+      <section className="w-full text-black py-20 px-6 text-center ">
         <h1 className="text-5xl font-bold mb-4">
           Vive en comunidad. Encuentra tu lugar.
         </h1>
@@ -82,7 +82,7 @@ export const Body: React.FC = () => {
         </div>
       </section>
       {/* Carrusel de imágenes estáticas */}
-      <h1 className="w-full text-white py-16 text-center text-5xl font-bold">
+      <h1 className="w-full text-black py-16 text-center text-5xl font-bold">
         ¡Descubre todo lo que ofrece ShareHouse!
       </h1>
       <section className={styles.carouselSection}>

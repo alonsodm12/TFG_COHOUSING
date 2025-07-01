@@ -71,7 +71,7 @@ const TaskForm: React.FC<Props> = ({ task, setTask, onSubmit }) => {
           Fecha límite
         </label>
         <input
-          type="date"
+          type="datetime-local"
           id="fechaTope"
           name="fechaTope"
           value={task.fechaTope}

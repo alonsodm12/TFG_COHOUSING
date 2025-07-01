@@ -1,5 +1,6 @@
 package com.gestioncomunidades.demo.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,44 +36,42 @@ public class ActividadesService {
 
     @Transactional
     public void repartirTareasCiclico(Long idComunidad) {
-        List<Long> usuarios = communityRepository.findById(idComunidad).map(Community::getIntegrantes)
-                .orElse(Collections.emptyList());
+        List<Long> usuarios = communityRepository.findById(idComunidad)
+            .map(Community::getIntegrantes)
+            .orElse(Collections.emptyList());
         if (usuarios.isEmpty()) return;
 
         List<Tarea> tareas = tareaRepository.findByidComunidad(idComunidad);
 
         for (Tarea tarea : tareas) {
-            //El error es porque esto esta vacio la primera vez
             List<Long> usuariosAsignados = tarea.getUsuariosParticipantes();
-
             List<Long> nuevosUsuariosAsignados = new ArrayList<>();
 
-            if (usuariosAsignados == null || usuariosAsignados.isEmpty()){
-
+            if (usuariosAsignados == null || usuariosAsignados.isEmpty()) {
                 int cantidad = Math.min(tarea.getNumParticipantes(), usuarios.size());
                 nuevosUsuariosAsignados.addAll(usuarios.subList(0, cantidad));
-            } else{
-                for (Long usuario : usuariosAsignados){
+            } else {
+                for (Long usuario : usuariosAsignados) {
                     int indiceActual = usuarios.indexOf(usuario);
-    
                     int indiceSiguiente = (indiceActual == -1) ? 0 : (indiceActual + 1) % usuarios.size();
-    
                     Long siguienteUsuario = usuarios.get(indiceSiguiente);
-    
                     nuevosUsuariosAsignados.add(siguienteUsuario);
-                }    
+                }
             }
-            
+
             tarea.setUsuariosParticipantes(nuevosUsuariosAsignados);
-            Date fechaActual = tarea.getFechaTope();
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(fechaActual);
-            cal.add(Calendar.DAY_OF_MONTH, 7);
-            tarea.setFechaTope(cal.getTime());
+
+            // ✅ Usar LocalDateTime para sumar 7 días
+            LocalDateTime fechaActual = tarea.getFechaTope();
+            if (fechaActual == null) {
+                fechaActual = LocalDateTime.now(); // si es null, usar ahora como base
+            }
+            tarea.setFechaTope(fechaActual.plusDays(7));
 
             tareaRepository.save(tarea);
         }
     }
+
 
     @Scheduled(cron = "0 0 0 1 * *")
     @Transactional
