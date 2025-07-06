@@ -36,6 +36,10 @@ export interface CommunityRecommended {
   direccion: string;
   precio: number;
   affinity: number;
+  integrantes: number[];
+  latitud: number;
+  longitud: number;
+
 }
 export type EstadoTarea = "PENDIENTE" | "EN_PROGRESO" | "COMPLETADA";
 
@@ -49,9 +53,11 @@ export interface Tarea {
   numParticipantes: number;
   estado: EstadoTarea;
   duracion: number;
+  asignacion: string;
 }
 
 export interface Evento {
+  id: number;
   titulo: string;
   descripcion: string;
   usuariosParticipantes: number[];

@@ -1,7 +1,9 @@
 package com.gestioncomunidades.demo.models;
 
 import jakarta.persistence.*;
-import java.util.Date;
+
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Entity
@@ -24,8 +26,7 @@ public abstract class Actividad {
     @Column(name = "usuario_id")
     private List<Long> usuariosParticipantes;
 
-    @Temporal(TemporalType.DATE)
-    private Date fechaTope;
+    private LocalDateTime fechaTope;
 
     private Long idComunidad;
 
@@ -75,11 +76,11 @@ public abstract class Actividad {
         this.usuariosParticipantes = usuariosParticipantes;
     }
 
-    public Date getFechaTope() {
+    public LocalDateTime getFechaTope() {
         return fechaTope;
     }
 
-    public void setFechaTope(Date fechaTope) {
+    public void setFechaTope(LocalDateTime fechaTope) {
         this.fechaTope = fechaTope;
     }
 }

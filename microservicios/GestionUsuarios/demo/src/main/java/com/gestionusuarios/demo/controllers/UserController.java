@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.gestionusuarios.demo.DTOs.AuthRequest;
 import com.gestionusuarios.demo.DTOs.AuthResponse;
+import com.gestionusuarios.demo.DTOs.DatosPerfilDTO;
 import com.gestionusuarios.demo.DTOs.LifestyleDTO;
 import com.gestionusuarios.demo.DTOs.UserDTO;
 import com.gestionusuarios.demo.DTOs.UserUpdateDTO;
@@ -78,7 +79,8 @@ public class UserController {
                         userDTO.longitud(),
                         fotoUrl,
                         userDTO.lifestyleDTO(),
-                        0L);
+                        0L,
+                        userDTO.comunidadesGuardadas());
             }
 
             User newUser = userService.registerUser(userDTO);
@@ -149,10 +151,10 @@ public class UserController {
     @PatchMapping("/update-admin/{username}/{idAdmin}")
     public ResponseEntity<?> actualizarAdminId(@PathVariable String username, @PathVariable Long idAdmin) {
         try {
-  
-            User actualizado = userService.addCommunityId(username,idAdmin).get();
+
+            User actualizado = userService.addCommunityId(username, idAdmin).get();
             return ResponseEntity.status(HttpStatus.OK)
-            .body(Map.of("Usuario Modificado correctamente", actualizado.toString()));
+                    .body(Map.of("Usuario Modificado correctamente", actualizado.toString()));
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -183,12 +185,74 @@ public class UserController {
                     usuario.get().getPassword(), usuario.get().getRole(), usuario.get().getEmail(),
                     usuario.get().getDireccion(),
                     usuario.get().getLatitud(), usuario.get().getLongitud(),
-                    usuario.get().getFotoUrl(), lifestyleDTO, usuario.get().getIdComunidad());
+                    usuario.get().getFotoUrl(), lifestyleDTO, usuario.get().getIdComunidad(),usuario.get().getComunidadesGuardadas());
 
             return ResponseEntity.status(HttpStatus.OK).body(userDto);
         }
 
         return ResponseEntity.ofNullable("Error en la consulta del usuario");
+
+    }
+
+    @PostMapping("/completarPerfil")
+    public ResponseEntity<?> completarPerfil(@RequestBody DatosPerfilDTO datos, Authentication auth) {
+        String username = auth.getName();
+        userService.completarPerfil(username, datos);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/modificarDireccion/{idUser}")
+    public ResponseEntity<?> modificarDireccion(@PathVariable Long idUser,
+    @RequestBody Map<String, Object> payload) {
+        try {
+            String direccion = (String) payload.get("direccion");
+            Double latitud = payload.get("latitud") instanceof Number 
+                ? ((Number) payload.get("latitud")).doubleValue() 
+                : null;
+            Double longitud = payload.get("longitud") instanceof Number 
+                ? ((Number) payload.get("longitud")).doubleValue() 
+                : null;
+
+            if (direccion == null || latitud == null || longitud == null) {
+                return ResponseEntity.badRequest().body("Faltan campos obligatorios");
+            }
+
+            userService.actualizarDireccionUsuario(idUser, direccion, latitud, longitud);
+
+            return ResponseEntity.ok("Dirección actualizada correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al modificar la dirección: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/addComunidadGuardada/{userId}/{idComunidad}")
+    public ResponseEntity<?> addComunidad(@PathVariable Long userId,@PathVariable Long idComunidad){
+        try{
+            userService.addComunidadGuardada(userId, idComunidad);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    @PostMapping("/removeComunidadGuardada/{userId}/{idComunidad}")
+    public ResponseEntity<?> removeComunidad(@PathVariable Long userId,@PathVariable Long idComunidad){
+        try{
+            userService.eliminarComunidadGuardada(userId, idComunidad);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);    
+        }
+    }
+
+    @GetMapping("/obtenerComunidadesGuardadas/{userId}")
+    public ResponseEntity<?> obtenerComunidadesGuardadas(@PathVariable Long userId){
+        try{
+            List<Long> lista = userService.obtenerComunidadesGuardadas(userId);
+            return ResponseEntity.status(HttpStatus.OK).body(lista);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);    
+        }
 
     }
 

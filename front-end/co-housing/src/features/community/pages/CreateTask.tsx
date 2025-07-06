@@ -18,6 +18,7 @@ const CreateTask = () => {
         numParticipantes: 0,
         estado: 'PENDIENTE',
         duracion: 0,
+        asignacion: ""
     });
 
     const handleTaskSubmit = async (e: React.FormEvent) => {
@@ -36,7 +37,7 @@ const CreateTask = () => {
         <div id="root">
             <Header />
             <main className="page">
-                <TaskForm task={task} setTask={setTask} onSubmit={handleTaskSubmit} />
+                <TaskForm task={task} setTask={setTask} onSubmit={handleTaskSubmit}/>
             </main>
             <Footer/>
         </div>

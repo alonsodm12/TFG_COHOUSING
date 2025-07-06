@@ -142,3 +142,85 @@ export const getUserTask = async (idUsuario: number) => {
 
   return response.json();
 }
+
+export const getTask = async ( idTarea:number ) => {
+  const response = await fetch(`${API_BASE}/tarea/${idTarea}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al obtener la tarea");
+  }
+
+  return response.json();
+}
+
+export const getEvent = async ( idEvento: number ) => {
+  const response = await fetch(`${API_BASE}/evento/${idEvento}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Error al obtener el evento");
+  }
+
+  return response.json();
+}
+
+export const enProgresoTarea = async ( idTarea: number ) => {
+  const response = await fetch(`${API_BASE}/enProgresoTarea/${idTarea}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Error al marcar la tarea como En Progreso");
+  }
+
+  return;
+}
+
+export const completarTarea = async ( idTarea: number ) => {
+  const response = await fetch(`${API_BASE}/completarTarea/${idTarea}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Error al marcar la tarea como Completada");
+  }
+
+  return;
+}
+
+export const updateDateTarea = async ( idTarea: number, fecha: string ) => {
+  const response = await fetch(`${API_BASE}/tarea/modificarFecha/${idTarea}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({fecha}),
+  });
+  if (!response.ok) {
+    throw new Error("Error al actualizar la fecha de la tarea")
+  }
+}
+
+export const formatLocalDateTime = (date: Date): string => {
+  const pad = (n: number) => (n < 10 ? `0${n}` : n);
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};

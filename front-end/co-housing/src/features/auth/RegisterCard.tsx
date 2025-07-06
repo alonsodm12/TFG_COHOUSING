@@ -167,8 +167,8 @@ export const RegisterCard: React.FC = () => {
       {step === 4 && (
         <>
           <h3 className="text-lg font-semibold">Ubicación</h3>
-          <input name="direccion" value={formData.direccion} onChange={handleChange} placeholder="Zona o dirección" className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <ButtonFunction label="Buscar Coordenadas" onClick={handleGeocode} />
+          <input name="direccion" value={formData.direccion} onChange={handleChange} placeholder="Introduce la ciudad donde quieras buscar" className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <ButtonFunction label="Buscar Ciudad" onClick={handleGeocode} />
         </>
       )}
 

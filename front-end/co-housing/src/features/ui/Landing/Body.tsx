@@ -3,6 +3,7 @@ import styles from "./LandingPage.module.css";
 import Card from "../Card";
 
 import Button from "../Button/Button";
+import CardHorizontal from "../CardHorizontal";
 
 export const Body: React.FC = () => {
   return (
@@ -21,10 +22,10 @@ export const Body: React.FC = () => {
             alt="Imagen 1"
             className={styles.image2}
           />
-          <p className={styles.caption}>🏘️¿Buscas una nueva comunidad?</p>
+          
         </div>
       </div>
-      <section className="w-full text-white py-20 px-6 text-center ">
+      <section className="w-full text-black py-20 px-6 text-center ">
         <h1 className="text-5xl font-bold mb-4">
           Vive en comunidad. Encuentra tu lugar.
         </h1>
@@ -42,19 +43,57 @@ export const Body: React.FC = () => {
         </div>
       </section>
       <Button label="EMPEZAR YA" to="/TFG_COHOUSING/registro" />
+      <section className="w-full py-20 px-6 text-center bg-white-100 dark:bg-gray-800 rounded-lg mt-16">
+        <h2 className="text-4xl font-bold mb-10 text-gray-900 dark:text-white">
+          Conoce las características de cada rol
+        </h2>
+        <div className="flex flex-col items-center gap-10">
+          {/* Tarjeta Usuario Buscador */}
+          <CardHorizontal
+            photoUrl="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=150&q=80"
+            title="Usuario Buscador"
+            description={
+              <>
+                <ul className="list-disc ml-5 mt-2 space-y-1">
+                  <li>Buscar comunidades activas.</li>
+                  <li>Filtrar por ubicación, tamaño y servicios.</li>
+                  <li>Contactar con creadores y miembros.</li>
+                  <li>Guardar comunidades favoritas.</li>
+                </ul>
+              </>
+            }
+          />
+
+          {/* Tarjeta Usuario Ofertante */}
+          <CardHorizontal
+            photoUrl="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=150&q=80"
+            title="Usuario Ofertante"
+            description={
+              <>
+                <ul className="list-disc ml-5 mt-2 space-y-1">
+                  <li>Publicar nuevas comunidades.</li>
+                  <li>Gestionar solicitudes y miembros.</li>
+                  <li>Organizar eventos y actividades.</li>
+                  <li>Actualizar información y servicios.</li>
+                </ul>
+              </>
+            }
+          />
+        </div>
+      </section>
       {/* Carrusel de imágenes estáticas */}
-      <h1 className="w-full text-white py-16 text-center text-5xl font-bold">
-          ¡Descubre todo lo que ofrece ShareHouse!
-        </h1>
+      <h1 className="w-full text-black py-16 text-center text-5xl font-bold">
+        ¡Descubre todo lo que ofrece ShareHouse!
+      </h1>
       <section className={styles.carouselSection}>
         <div className={styles.carouselTrack}>
           <img
-            src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80"
+            src="/TFG_COHOUSING/images/pruebilla.png"
             alt="Gestión fácil"
             className={styles.carouselImage}
           />
           <img
-            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80"
+            src="/TFG_COHOUSING/images/pruebon.png"
             alt="Eventos compartidos"
             className={styles.carouselImage}
           />
@@ -70,6 +109,7 @@ export const Body: React.FC = () => {
           />
         </div>
       </section>
+
       <div className={styles.cardsWrapper}>
         <h1 className={styles.typingP}>Lo que dicen nuestros usuarios</h1>
         <div className="flex gap-6 justify-center flex-wrap mt-4">

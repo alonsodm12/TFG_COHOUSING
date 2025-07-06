@@ -1,5 +1,6 @@
 package com.gestioncomunidades.demo.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.DTOs.EventoDTO;
+import com.gestioncomunidades.demo.DTOs.FechaDTO;
 import com.gestioncomunidades.demo.DTOs.TareaDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
 import com.gestioncomunidades.demo.models.Community;
@@ -29,7 +31,6 @@ import com.gestioncomunidades.demo.models.Tarea;
 import com.gestioncomunidades.demo.services.CommunityServices;
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 
 @Controller
 @RequestMapping("/comunidades")
@@ -174,9 +175,18 @@ public class CommunityController {
     }
 
     @PatchMapping("/completarTarea/{idTarea}")
-    public ResponseEntity<?> completarTarea(Long idTarea){
+    public ResponseEntity<?> completarTarea(@PathVariable Long idTarea){
         try{
             communityServices.marcarTareaCompletada(idTarea);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PatchMapping("/enProgresoTarea/{idTarea}")
+    public ResponseEntity<?> enProgresoTarea(@PathVariable Long idTarea){
+        try{
+            communityServices.marcarTareaProgreso(idTarea);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -196,6 +206,41 @@ public class CommunityController {
         List<EventoDTO> eventos = communityServices.obtenerEventosUsuarioComunidad(idUsuario);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(eventos);
+    }
+
+    @GetMapping("tarea/{idTarea}")
+    public ResponseEntity<?> consultarTarea(@PathVariable Long idTarea){
+        TareaDTO tarea = communityServices.obtenerTarea(idTarea);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(tarea);
+    }
+
+    @GetMapping("evento/{idEvento}")
+    public ResponseEntity<?> consultarEvento(@PathVariable Long idEvento){
+        EventoDTO evento = communityServices.obtenerEvento(idEvento);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(evento);
+    }
+
+    @PatchMapping("tarea/modificarFecha/{idTarea}")
+    public ResponseEntity<?> modificarFecha(@PathVariable Long idTarea, @RequestBody FechaDTO fecha){
+        
+        try{
+            communityServices.establecerFechaTarea(idTarea, fecha.getFecha());
+            communityServices.marcarTareaProgreso(idTarea);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        
+    }
+
+    @PostMapping("/filterPorId")
+    public ResponseEntity<?> obtenerComunidadesIds(@RequestBody List<Long> idsComunidades) {
+        try {
+            List<CommunityDTO> comunidades = communityServices.obtenerComunidadesIds(idsComunidades);
+            return ResponseEntity.status(HttpStatus.OK).body(comunidades);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }

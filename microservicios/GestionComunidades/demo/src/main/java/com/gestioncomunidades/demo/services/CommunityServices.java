@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,7 +77,7 @@ public class CommunityServices {
                 communityDTO.longitud(),
                 communityDTO.direccion(),
                 communityDTO.precio());
-        
+
         List<Long> integrantes = new ArrayList<>();
         if (communityDTO.integrantes() != null && !communityDTO.integrantes().isEmpty()) {
             integrantes.add(communityDTO.idAdmin());
@@ -83,8 +85,7 @@ public class CommunityServices {
                 integrantes.add(id);
             }
             nuevaComunidad.setIntegrantes(integrantes);
-        }
-        else{
+        } else {
             integrantes.add(communityDTO.idAdmin());
             nuevaComunidad.setIntegrantes(integrantes);
         }
@@ -338,7 +339,10 @@ public class CommunityServices {
 
         nuevaTarea.setTitulo(tareaDTO.titulo());
         nuevaTarea.setDescripcion(tareaDTO.descripcion());
-        nuevaTarea.setFechaTope(tareaDTO.fechaTope());
+
+        //if (tareaDTO.fechaTope() == null){
+            //nuevaTarea.setFechaTope(LocalDateTime.now().plusDays(7));
+        //}
         nuevaTarea.setEstado(tareaDTO.estado());
         nuevaTarea.setDuracion(tareaDTO.duracion());
         nuevaTarea.setIdComunidad(tareaDTO.idComunidad());
@@ -351,7 +355,52 @@ public class CommunityServices {
             }
             nuevaTarea.setUsuariosParticipantes(participantes);
         }
+
+        if (tareaDTO.asignacion().equals("ahora")){
+            List<Long> participantes = new ArrayList<>();
+            for(int i =0;i<tareaDTO.numParticipantes();i++){
+                Long user = this.usuarioMenosTareas(tareaDTO.idComunidad());
+                participantes.add(user);
+            }
+        }
+
         return this.tareaRepository.save(nuevaTarea);
+
+    }
+
+    // Funcion para modificar la Fecha de una tarea concreta por parte del usuario
+
+    public void establecerFechaTarea(Long idTarea, LocalDateTime date) throws Exception {
+
+        try {
+            Tarea tarea = tareaRepository.findById(idTarea).get();
+            tarea.setFechaTope(date);
+            tareaRepository.save(tarea);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+    }
+
+    // Funcion para encontrar al usuario dentro de una comunidad con el menor numero
+    // de tareas asignadas
+
+    public Long usuarioMenosTareas(Long communityId) throws Exception {
+        Community comunidad = communityRepository.findById(communityId).get();
+
+        List<Long> usuarios = comunidad.getIntegrantes();
+        Long usuarioAasignar = 0L;
+        int usuarioMinTareas = 0;
+        int usuarioTareas = 0;
+        for (Long usuario : usuarios) {
+            usuarioTareas = tareaRepository.findByUsuariosParticipantes(usuario).size();
+            if (usuarioTareas <= usuarioMinTareas)
+                usuarioAasignar = usuario;
+        }
+
+        return usuarioAasignar;
 
     }
 
@@ -421,6 +470,7 @@ public class CommunityServices {
 
     private TareaDTO convertirATareaDTO(Tarea tarea) {
         return new TareaDTO(
+                tarea.getId(),
                 tarea.getTitulo(),
                 tarea.getDescripcion(),
                 tarea.getUsuariosParticipantes(), // Ya es List<Long>
@@ -428,11 +478,13 @@ public class CommunityServices {
                 tarea.getEstado(),
                 tarea.getDuracion(),
                 tarea.getIdComunidad(),
-                tarea.getNumParticipantes());
+                tarea.getNumParticipantes(),
+                "AHORA");
     }
 
     private EventoDTO convertirAEventoDTO(Evento evento) {
         return new EventoDTO(
+                evento.getId(),
                 evento.getTitulo(),
                 evento.getDescripcion(),
                 evento.getUsuariosParticipantes(), // Ya es List<Long>
@@ -449,7 +501,7 @@ public class CommunityServices {
             Tarea tareaCompletada = tarea.get();
 
             tareaCompletada.setEstado(EstadoTarea.COMPLETADA);
-
+            tareaRepository.save(tareaCompletada);
             return true;
         } else {
             return false;
@@ -459,10 +511,10 @@ public class CommunityServices {
     public boolean marcarTareaProgreso(Long idTarea) {
         Optional<Tarea> tarea = tareaRepository.findById(idTarea);
         if (tarea.isPresent()) {
-            Tarea tareaCompletada = tarea.get();
+            Tarea tareaEnProgreso = tarea.get();
 
-            tareaCompletada.setEstado(EstadoTarea.EN_PROGRESO);
-
+            tareaEnProgreso.setEstado(EstadoTarea.EN_PROGRESO);
+            tareaRepository.save(tareaEnProgreso);
             return true;
         } else {
             return false;
@@ -489,5 +541,27 @@ public class CommunityServices {
 
             tareaRepository.save(tareaAsignada);
         }
+    }
+
+    public List<CommunityDTO> obtenerComunidadesIds(List<Long> idsComunidades){
+        return communityRepository.findAllById(idsComunidades)
+                .stream()
+                .map(this::convertirACommunityDTO)
+                .collect(Collectors.toList());
+    }
+
+    private CommunityDTO convertirACommunityDTO(Community community) {
+        LifestyleDTO lifestyleDTO = new LifestyleDTO(community.getSociabilidad(), community.getTranquilidad(), community.getCompartirEspacios(), community.getLimpieza(), community.getActividad());
+        return new CommunityDTO(
+                community.getName(),
+                community.getDescripcion(),
+                community.getIdAdmin(),
+                lifestyleDTO,
+                community.getIntegrantes(),
+                community.getFotoUrl(),
+                community.getLatitud(),
+                community.getLongitud(),
+                community.getDireccion(),
+                community.getPrecio());
     }
 }

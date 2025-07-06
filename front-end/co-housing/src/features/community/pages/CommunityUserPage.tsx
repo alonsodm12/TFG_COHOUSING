@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUsernameFromToken } from "../../authUtils";
-import { fetchCommunityById, fetchEventosPorUsuario, fetchTareasPorUsuario } from "../api/operations";
+import {
+  fetchCommunityById,
+  fetchEventosPorUsuario,
+  fetchTareasPorUsuario,
+} from "../api/operations";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import { useUserContext } from "../../ui/Context/UserContext";
 import { CommunityProfile, Evento, Tarea } from "../api/type";
-import { Calendar } from "../components/Calendar";
+import { Calendario } from "../components/Calendar";
+import { Link } from "react-router-dom";
+import ButtonFunction from "../../ui/Button/ButtonFunction";
 
 export const CommunityUserPage = () => {
   const { userProfile, isLoading: isUserLoading } = useUserContext();
@@ -56,7 +62,6 @@ export const CommunityUserPage = () => {
         console.error("Error al cargar tareas", err);
       });
   }, [userProfile]);
-
 
   useEffect(() => {
     if (!userProfile?.id) return;
@@ -128,44 +133,66 @@ export const CommunityUserPage = () => {
         <div className="max-w-6xl mx-auto space-y-12">
           {/* Comunidad */}
           <section className="bg-white rounded-xl shadow-lg p-8 text-gray-800">
-            <h1 className="text-4xl font-bold mb-4">¡Bienvenido a tu Comunidad!</h1>
+            <h1 className="text-4xl font-bold mb-4">
+              ¡Bienvenido a tu Comunidad!
+            </h1>
             <img
               src={`http://localhost:8082${community?.fotoUrl}`}
               alt={`Imagen de ${community?.name}`}
               className="w-full h-64 object-cover rounded-lg mb-6"
             />
-            <p className="text-xl mb-2"><strong>Nombre:</strong> {community?.name}</p>
-            <p className="text-gray-700"><strong>Descripción:</strong> {community?.descripcion}</p>
+            <p className="text-xl mb-2">
+              <strong>Nombre:</strong> {community?.name}
+            </p>
+            <p className="text-gray-700">
+              <strong>Descripción:</strong> {community?.descripcion}
+            </p>
           </section>
-  
+
           {/* Acciones */}
           <section className="flex flex-wrap gap-4 justify-center">
             <button
-              onClick={() => navigate(`/TFG_COHOUSING/CreateTask/${userProfile?.idComunidad}`)}
+              onClick={() =>
+                navigate(
+                  `/TFG_COHOUSING/CreateTask/${userProfile?.idComunidad}`
+                )
+              }
               className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg shadow-md transition"
             >
               Crear Tarea
             </button>
             <button
-              onClick={() => navigate(`/TFG_COHOUSING/CreateEvent/${userProfile?.idComunidad}`)}
+              onClick={() =>
+                navigate(
+                  `/TFG_COHOUSING/CreateEvent/${userProfile?.idComunidad}`
+                )
+              }
               className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-lg shadow-md transition"
             >
               Crear Evento
             </button>
+            <ButtonFunction
+              label="Administrar Tus Tareas"
+              onClick={() =>
+                navigate(`/TFG_COHOUSING/AdministrarTareas/${userProfile?.id}`)
+              }
+            />
           </section>
-  
+
           {/* Tareas */}
           <section className="bg-white rounded-xl shadow-lg p-8 text-gray-800">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-3xl font-semibold">Tareas asignadas</h2>
               <button
-                onClick={() => navigate(`/TFG_COHOUSING/TaskListPage/${userProfile?.id}`)}
+                onClick={() =>
+                  navigate(`/TFG_COHOUSING/TaskListPage/${userProfile?.id}`)
+                }
                 className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow"
               >
                 Ver todas
               </button>
             </div>
-  
+
             {tasks.length === 0 ? (
               <p className="text-gray-600">No tienes tareas asignadas.</p>
             ) : (
@@ -177,19 +204,22 @@ export const CommunityUserPage = () => {
                 >
                   ◀
                 </button>
-  
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
                   {visibleTasks.map((task) => (
-                    <div
+                    <Link
+                      to={`/TFG_COHOUSING/Tarea/${task.id}`}
                       key={task.id}
-                      className="bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl"
+                      className="bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl hover:bg-gray-200 block rounded-lg"
                     >
-                      <h3 className="font-bold text-lg text-blue-700 mb-2">{task.titulo}</h3>
+                      <h3 className="font-bold text-lg text-blue-700 mb-2">
+                        {task.titulo}
+                      </h3>
                       <p className="text-gray-700">{task.descripcion}</p>
-                    </div>
+                    </Link>
                   ))}
                 </div>
-  
+
                 <button
                   onClick={handleNext}
                   disabled={taskIndex + 2 >= tasks.length}
@@ -206,13 +236,15 @@ export const CommunityUserPage = () => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-3xl font-semibold">Eventos asignados</h2>
               <button
-                onClick={() => navigate(`/TFG_COHOUSING/EventosListPage/${userProfile?.id}`)}
+                onClick={() =>
+                  navigate(`/TFG_COHOUSING/EventosListPage/${userProfile?.id}`)
+                }
                 className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow"
               >
                 Ver todos
               </button>
             </div>
-  
+
             {eventos.length === 0 ? (
               <p className="text-gray-600">No tienes eventos asignadas.</p>
             ) : (
@@ -224,19 +256,21 @@ export const CommunityUserPage = () => {
                 >
                   ◀
                 </button>
-  
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
                   {visibleTasks.map((evento) => (
                     <div
                       key={evento.id}
                       className="bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl"
                     >
-                      <h3 className="font-bold text-lg text-blue-700 mb-2">{evento.titulo}</h3>
+                      <h3 className="font-bold text-lg text-blue-700 mb-2">
+                        {evento.titulo}
+                      </h3>
                       <p className="text-gray-700">{evento.descripcion}</p>
                     </div>
                   ))}
                 </div>
-  
+
                 <button
                   onClick={handleNext}
                   disabled={eventoIndex + 2 >= eventos.length}
@@ -247,13 +281,13 @@ export const CommunityUserPage = () => {
               </div>
             )}
           </section>
-  
+
           {/* Calendario */}
           <section className="bg-white rounded-xl shadow-lg p-8 text-gray-800">
             <h2 className="text-3xl font-semibold mb-4">Calendario</h2>
-            <Calendar userId={userProfile?.id!} />
+            <Calendario userId={userProfile?.id!} />
           </section>
-  
+
           {/* Mensaje de respuesta */}
           {responseMessage && (
             <div className="p-4 bg-green-100 text-green-800 rounded-md shadow">
@@ -265,5 +299,4 @@ export const CommunityUserPage = () => {
       <Footer />
     </div>
   );
-  
 };

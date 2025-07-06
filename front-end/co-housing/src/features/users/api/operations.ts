@@ -3,7 +3,7 @@ const API_BASE: String = "http://localhost:8084/user";
 
 // Patch usuario
 export const updateUser = async (username: string, data: UpdateUserProfile) => {
-  const token = localStorage.getItem('token');  // Obtener el token dentro de la función
+  const token = localStorage.getItem("token"); // Obtener el token dentro de la función
 
   if (!token) {
     throw new Error("Token no disponible. El usuario no está autenticado.");
@@ -13,7 +13,7 @@ export const updateUser = async (username: string, data: UpdateUserProfile) => {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -25,23 +25,24 @@ export const updateUser = async (username: string, data: UpdateUserProfile) => {
   return response.json();
 };
 
-
 //Mete idComunidad a user-admin
 
-
-export const updateAdmin = async (username: string,idAdmin:number) => {
-  const token = localStorage.getItem('token');  // Obtener el token dentro de la función
+export const updateAdmin = async (username: string, idAdmin: number) => {
+  const token = localStorage.getItem("token"); // Obtener el token dentro de la función
 
   if (!token) {
     throw new Error("Token no disponible. El usuario no está autenticado.");
   }
 
-  const response = await fetch(`${API_BASE}/update-admin/${username}/${idAdmin}`, {
-    method: "PATCH",
-    headers: {
-      "Authorization": `Bearer ${token}`,
+  const response = await fetch(
+    `${API_BASE}/update-admin/${username}/${idAdmin}`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
-  });
+  );
 
   if (!response.ok) {
     throw new Error("Error al actualizar al usuario");
@@ -52,18 +53,18 @@ export const updateAdmin = async (username: string,idAdmin:number) => {
 
 // Get usuario
 export const fetchUserByUsername = async (username: string | null) => {
-  const token = localStorage.getItem('token');  // Obtener el token dentro de la función
+  const token = localStorage.getItem("token"); // Obtener el token dentro de la función
 
   if (!token) {
     throw new Error("Token no disponible. El usuario no está autenticado.");
   }
-  console.log("token: ",token);
-  
+  console.log("token: ", token);
+
   const response = await fetch(`${API_BASE}/${username}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -88,7 +89,6 @@ export const createUser = async (data: FormData) => {
   return response.json();
 };
 
-
 // Login usuario
 export const loginUser = async (data: UserLogin) => {
   const response = await fetch(`${API_BASE}/login`, {
@@ -108,7 +108,7 @@ export const loginUser = async (data: UserLogin) => {
 
 // Delete usuario
 export const deleteUser = async (username: string | null) => {
-  const token = localStorage.getItem('token');  // Obtener el token dentro de la función
+  const token = localStorage.getItem("token"); // Obtener el token dentro de la función
 
   if (!token) {
     throw new Error("Token no disponible. El usuario no está autenticado.");
@@ -118,12 +118,67 @@ export const deleteUser = async (username: string | null) => {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 
   if (!response.ok) {
     throw new Error("Error al borrar al usuario");
+  }
+
+  return response.json();
+};
+
+export const modificarDireccion = async (
+  direccion: string,
+  latitud: number,
+  longitud: number,
+  idUser: number
+) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Token no disponible. El usuario no está autenticado.");
+  }
+
+  const response = await fetch(`${API_BASE}/modificarDireccion/${idUser}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      direccion,
+      latitud,
+      longitud,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al modificar la dirección del usuario");
+  }
+
+  return response.json();
+};
+
+export const obtenerComunidadesGuardadas = async (comunidadesIds: number[]) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Token no disponible. El usuario no está autenticado.");
+  }
+
+  const response = await fetch("http://localhost:8084/comunidades/filterPorId", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(comunidadesIds),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al obtener comunidades");
   }
 
   return response.json();

@@ -16,7 +16,9 @@ def community_to_dict(community):
         "admin": community.admin,
         "fotoUrl": community.foto_url,
         "direccion": community.direccion,
-        "precio": community.precio
+        "precio": community.precio,
+        "latitud": community.latitud,
+        "longitud": community.longitud
     }
 
 def recommend_communities_by_user(user, communities, n_recommendations=5):

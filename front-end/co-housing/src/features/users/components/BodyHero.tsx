@@ -52,11 +52,11 @@ const BodyHero: React.FC = () => {
   ];
 
   return (
-    <div className="pt-24 pb-12 text-center bg-gradient-to-br from-indigo-100 via-white-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-500 min-h-screen flex flex-col items-center justify-start px-4">
-      <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-2">
+    <div className="pt-20 pb-12 text-center min-h-screen">
+      <h1 className="text-5xl font-bold text-gray-900 dark:text-black mb-2">
         ¡Hola {userProfile.username}! 👋
       </h1>
-      <p className="text-lg text-gray-700 dark:text-gray-500 mb-12 max-w-xl mx-auto">
+      <p className="text-lg text-gray-700 dark:text-gray-500">
         ¿Listo para conectar con tu comunidad?
       </p>
 
@@ -78,6 +78,7 @@ const BodyHero: React.FC = () => {
           if ((item.role && item.role !== userProfile.role) ||
           (item.text === "Crear Comunidad" && userProfile.idComunidad)) return null;
 
+          console.log(userProfile.idComunidad);
           const radius = 180; // radio del círculo
           const angleRad = (item.angle * Math.PI) / 180;
           const x = radius * Math.cos(angleRad);

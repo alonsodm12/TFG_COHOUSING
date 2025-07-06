@@ -17,7 +17,8 @@ class CommunitySchema(BaseModel):
     direccion: Optional[str] = None
     precio: Optional[float] = None
     affinity: Optional[float] = None  # np.float64 también es compatible como float
-    integrantes: Optional[List[CommunityIntegranteSchema]] = None
+    latitud : Optional[float]
+    longitud : Optional[float]
 
     class Config:
         orm_mode = True

@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ public class UserServiceTest {
             40.4168,
             -3.7038,
             "http://foto.url",
-            new LifestyleDTO(2, 2, 2, 2, 2),0L
+            new LifestyleDTO(2, 2, 2, 2, 2),0L,new ArrayList<>()
         );
 
         // Stubbing para que no lance la excepción por email duplicado

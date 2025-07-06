@@ -1,45 +1,47 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../users/api/operations';
-import { getRoleFromToken, getUsernameFromToken } from '../authUtils';
-import { useUserContext} from '../ui/Context/UserContext';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../users/api/operations";
+import { getRoleFromToken, getUsernameFromToken } from "../authUtils";
+import { useUserContext } from "../ui/Context/UserContext";
 
 export const LoginCard: React.FC = () => {
-  const [formData, setFormData] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
   const { setUsername, setRole } = useUserContext();
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8084/oauth2/authorization/google";
+  };
 
-  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const enviar = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
       const response = await loginUser(formData);
       if (!response || !response["Login correcto: "]?.token) {
-        throw new Error('Credenciales inválidas');
+        throw new Error("Credenciales inválidas");
       }
 
       const token = response["Login correcto: "].token;
-      localStorage.setItem('token', token);
+      localStorage.setItem("token", token);
 
       const username = getUsernameFromToken();
       const role = getRoleFromToken();
 
       if (!username || !role) {
-        throw new Error('Token inválido');
+        throw new Error("Token inválido");
       }
-      setUsername(username);  // Al actualizar username, UserProvider carga el perfil
+      setUsername(username); // Al actualizar username, UserProvider carga el perfil
       setRole(role);
-      setSuccess('Inicio de sesión correcto');
-      navigate('/TFG_COHOUSING/home');
+      setSuccess("Inicio de sesión correcto");
+      navigate("/TFG_COHOUSING/home");
     } catch (err) {
       console.error(err);
       setError((err as Error).message);
@@ -54,7 +56,9 @@ export const LoginCard: React.FC = () => {
         </h2>
 
         {error && <div className="text-red-600 text-center mb-4">{error}</div>}
-        {success && <div className="text-green-600 text-center mb-4">{success}</div>}
+        {success && (
+          <div className="text-green-600 text-center mb-4">{success}</div>
+        )}
 
         <form onSubmit={enviar} className="space-y-4">
           <div>
@@ -93,12 +97,21 @@ export const LoginCard: React.FC = () => {
 
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
-            ¿No tienes cuenta?{' '}
-            <a href="/TFG_COHOUSING/registro" className="text-blue-500 hover:underline">
+            ¿No tienes cuenta?{" "}
+            <a
+              href="/TFG_COHOUSING/registro"
+              className="text-blue-500 hover:underline"
+            >
               Regístrate
             </a>
           </p>
         </div>
+        <button
+          onClick={handleGoogleLogin}
+          className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+        >
+          Iniciar sesión con Google
+        </button>
       </div>
     </div>
   );
