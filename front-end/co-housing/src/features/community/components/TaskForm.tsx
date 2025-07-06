@@ -67,22 +67,8 @@ const TaskForm: React.FC<Props> = ({ task, setTask, onSubmit }) => {
       </div>
 
       <div>
-        <label htmlFor="fechaTope" className="block font-medium mb-1">
-          Fecha límite
-        </label>
-        <input
-          type="datetime-local"
-          id="fechaTope"
-          name="fechaTope"
-          value={task.fechaTope}
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-      </div>
-      <div>
         <label htmlFor="numParticipantes" className="block font-medium mb-1">
-          Numero de Participantes
+          Número de Participantes
         </label>
         <input
           name="numParticipantes"
@@ -94,6 +80,7 @@ const TaskForm: React.FC<Props> = ({ task, setTask, onSubmit }) => {
           className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
+
       <div>
         <label htmlFor="duracion" className="block font-medium mb-1">
           Duración (horas)
@@ -107,6 +94,22 @@ const TaskForm: React.FC<Props> = ({ task, setTask, onSubmit }) => {
           required
           className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
+      </div>
+
+      <div>
+        <label htmlFor="asignacion" className="block font-medium mb-1">
+          ¿Cuándo quieres asignar la tarea?
+        </label>
+        <select
+          id="asignacion"
+          name="asignacion"
+          value={task.asignacion}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          <option value="ahora">Asignar ahora</option>
+          <option value="proxima">Asignar la próxima semana</option>
+        </select>
       </div>
 
       <button

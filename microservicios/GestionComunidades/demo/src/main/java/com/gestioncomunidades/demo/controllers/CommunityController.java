@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.DTOs.EventoDTO;
+import com.gestioncomunidades.demo.DTOs.FechaDTO;
 import com.gestioncomunidades.demo.DTOs.TareaDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
 import com.gestioncomunidades.demo.models.Community;
@@ -220,15 +221,26 @@ public class CommunityController {
     }
 
     @PatchMapping("tarea/modificarFecha/{idTarea}")
-    public ResponseEntity<?> modificarFecha(@PathVariable Long idTarea, @RequestBody LocalDateTime time){
+    public ResponseEntity<?> modificarFecha(@PathVariable Long idTarea, @RequestBody FechaDTO fecha){
         
         try{
-            communityServices.establecerFechaTarea(idTarea, time);
+            communityServices.establecerFechaTarea(idTarea, fecha.getFecha());
+            communityServices.marcarTareaProgreso(idTarea);
             return ResponseEntity.status(HttpStatus.OK).build();
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         
+    }
+
+    @PostMapping("/filterPorId")
+    public ResponseEntity<?> obtenerComunidadesIds(@RequestBody List<Long> idsComunidades) {
+        try {
+            List<CommunityDTO> comunidades = communityServices.obtenerComunidadesIds(idsComunidades);
+            return ResponseEntity.status(HttpStatus.OK).body(comunidades);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }

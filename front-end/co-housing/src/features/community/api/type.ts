@@ -53,6 +53,7 @@ export interface Tarea {
   numParticipantes: number;
   estado: EstadoTarea;
   duracion: number;
+  asignacion: string;
 }
 
 export interface Evento {

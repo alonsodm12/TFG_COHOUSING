@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -151,6 +152,42 @@ public class UserService {
 
         User usuarioUpdate = userRepository.save(usuario);
         return Optional.of(usuarioUpdate);
+    }
+
+    public void addComunidadGuardada(Long userdId,Long idComunidad){
+        User usuario = userRepository.findById(userdId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+                System.out.println("idComunidad recibido: " + idComunidad);
+        System.out.println(usuario.getComunidadesGuardadas());
+        if(usuario.getComunidadesGuardadas() == null){
+            usuario.setComunidadesGuardadas(new ArrayList<>());
+        }
+        
+        if(!usuario.getComunidadesGuardadas().contains(idComunidad))
+            usuario.getComunidadesGuardadas().add(idComunidad);
+
+        System.out.println(usuario.getComunidadesGuardadas());
+        userRepository.save(usuario);
+    }
+
+    public void eliminarComunidadGuardada(Long userId, Long idComunidad){
+        User usuario = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    
+        if (usuario.getComunidadesGuardadas() != null) {
+            usuario.getComunidadesGuardadas().remove(idComunidad);
+        }
+    
+        userRepository.save(usuario);
+    }
+
+    public List<Long> obtenerComunidadesGuardadas(Long userId){
+        User usuario = userRepository.findById(userId)
+        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        return usuario.getComunidadesGuardadas();
+
     }
 
     public Optional<User> findByUsername(String username) {

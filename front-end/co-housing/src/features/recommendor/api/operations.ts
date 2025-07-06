@@ -43,3 +43,35 @@ export const UnirseComuniadad = async (data: UnionRequestDTO) => {
 
   return response.json();
 };
+
+export const addComunidad = async (userId: number,idComunidad: number) => {
+  const response = await fetch(`http://localhost:8084/user/addComunidadGuardada/${userId}/${idComunidad}`,{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // Asegúrate de que `token` esté accesible
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Error al guardar la comunidad");
+  }
+
+  return;
+
+}
+
+export const removeComunidad = async (userId: number,idComunidad: number) => {
+  const response = await fetch(`http://localhost:8084/user/removeComunidadGuardada/${userId}/${idComunidad}`,{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // Asegúrate de que `token` esté accesible
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Error al eliminar la comunidad");
+  }
+
+  return;
+
+}

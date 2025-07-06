@@ -44,7 +44,7 @@ export const CommunityProfilePage = () => {
       className="min-h-screen flex flex-col bg-gray-50 text-gray-800"
     >
       <Header />
-      <main className="page flex-grow max-w-4xl mx-auto p-6">
+      <main className="page">
         <h1 className="text-4xl font-bold mb-8 text-center text-indigo-700">
           Perfil de Comunidad
         </h1>
@@ -53,7 +53,7 @@ export const CommunityProfilePage = () => {
           <img
             src={`http://localhost:8082${community?.fotoUrl}`}
             alt={`Foto de ${community?.name}`}
-            className="w-full h-72 object-cover rounded-lg shadow-md mb-6 border border-gray-300"
+            className="w-3/4 h-72 object-cover rounded-lg shadow-md mb-6 border border-gray-300"
           />
         ) : (
           <div className="w-full h-72 bg-gray-200 flex items-center justify-center text-gray-400 rounded-lg mb-6 border border-dashed border-gray-300">

@@ -20,6 +20,7 @@ export interface UserProfile {
     fotoUrl?: File | null; // <-- Añade esta propiedad?: string; // Se podría usar para mostrar la imagen después del registro
     lifestyleDTO: LifestyleDTO;
     idComunidad: number | null;
+    comunidadesGuardadas: number[] | null;
 }
 
 export interface UserLogin {

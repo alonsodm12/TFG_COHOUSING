@@ -3,6 +3,7 @@ package com.gestioncomunidades.demo.DTOs;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gestioncomunidades.demo.models.EstadoTarea;
 
 public record TareaDTO (
@@ -14,6 +15,7 @@ public record TareaDTO (
     EstadoTarea estado,
     Double duracion,
     Long idComunidad,
-    int numParticipantes
+    int numParticipantes,
+    String asignacion
     
 ) {}

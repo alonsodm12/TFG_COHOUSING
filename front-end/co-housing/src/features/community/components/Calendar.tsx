@@ -47,10 +47,11 @@ export const Calendario = ({ userId }: { userId: number }) => {
           right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
         locale={esLocale}
+        timeZone="local"
         events={eventos}
         height="600px"
-        slotMinTime="08:00:00"
-        slotMaxTime="20:00:00"
+        slotMinTime="07:00:00"
+        slotMaxTime="22:00:00"
         eventClick={(info) => {
           alert(`Tarea: ${info.event.title}`);
         }}

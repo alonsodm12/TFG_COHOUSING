@@ -109,7 +109,10 @@ export const UserProfilePage = () => {
               className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white"
             />
           </div>
-
+          <Button
+            label="Comunidades Guardadas"
+            to="/TFG_COHOUSING/user/comunidadesGuardadas"
+          />
           {error && <p className="text-red-600 mt-6">{error}</p>}
           {message && <p className="text-green-600 mt-6">{message}</p>}
         </div>

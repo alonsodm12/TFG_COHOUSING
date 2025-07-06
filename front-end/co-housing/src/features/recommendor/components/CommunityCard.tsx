@@ -1,19 +1,37 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { CommunityRecommended } from "../../community/api/type";
 import Button from "../../ui/Button/Button";
 import ButtonFunction from "../../ui/Button/ButtonFunction";
-import { UnirseComuniadad } from "../api/operations";
+import {
+  addComunidad,
+  removeComunidad,
+  UnirseComuniadad,
+} from "../api/operations";
 import { CommunityMap } from "../../community/components/CommunityMap";
 
 interface CommunityCardProps extends CommunityRecommended {
   userId: number;
   username: string;
-  onJoinSuccess?: (joinedCommunityId: number) => void; // Nueva prop para avisar éxito
+  onJoinSuccess?: (joinedCommunityId: number) => void;
+  comunidadesGuardadas?: number[] | null;
 }
 
 const CommunityCard: React.FC<CommunityCardProps> = (props) => {
-  const [hasRequestedJoin, setHasRequestedJoin] = useState(false);
+  console.log(props.comunidadesGuardadas);
 
+  const [hasRequestedJoin, setHasRequestedJoin] = useState(false);
+  const isFavoriteInitial =
+    props.comunidadesGuardadas?.includes(props.id) || false;
+
+  console.log(isFavoriteInitial);
+  const [isFavorite, setIsFavorite] = useState(isFavoriteInitial);
+  const [loadingFav, setLoadingFav] = useState(false);
+
+  useEffect(() => {
+    const fav = props.comunidadesGuardadas?.includes(props.id) || false;
+    setIsFavorite(fav);
+  }, [props.comunidadesGuardadas, props.id]);
+  
   const handleJoin = async () => {
     if (!props.username) {
       alert("No se pudo obtener el nombre de usuario.");
@@ -28,20 +46,53 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
         idAdmin: props.admin,
       });
 
-      setHasRequestedJoin(true); // Cambia estado interno para desactivar botón
+      setHasRequestedJoin(true);
       alert("Solicitud de unión enviada correctamente.");
 
       if (props.onJoinSuccess) {
-        props.onJoinSuccess(props.id); // Avisamos al padre para eliminar comunidad
+        props.onJoinSuccess(props.id);
       }
     } catch (error) {
       console.error("Error al unirse a la comunidad:", error);
       alert("Error al enviar la solicitud.");
     }
   };
+  
+
+  const toggleFavorite = async () => {
+    if (loadingFav) return; // evitar clicks rápidos
+
+    setLoadingFav(true);
+    try {
+      if (isFavorite) await removeComunidad(props.userId, props.id);
+      else await addComunidad(props.userId, props.id);
+
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      alert("Error al cambiar favorito.");
+    } finally {
+      setLoadingFav(false);
+    }
+  };
 
   return (
-    <div className="bg-white rounded-3xl shadow-2xl mb-10 overflow-hidden border">
+    <div className="relative bg-white rounded-3xl shadow-2xl mb-10 overflow-hidden border">
+      {/* Corazón arriba derecha */}
+      <button
+        onClick={toggleFavorite}
+        aria-label={isFavorite ? "Quitar de favoritos" : "Añadir a favoritos"}
+        className="absolute top-4 right-4 text-3xl transition-colors duration-300"
+        style={{
+          userSelect: "none",
+          cursor: loadingFav ? "not-allowed" : "pointer",
+          background: "none",
+          border: "none",
+        }}
+      >
+        {isFavorite ? "❤️" : "🤍"}
+      </button>
+
       {/* Imagen destacada */}
       {props.fotoUrl ? (
         <img
@@ -57,8 +108,12 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
 
       {/* Contenido principal */}
       <div className="p-6">
-        <p className="text-red-500 font-bold mb-2">{props.affinity}</p>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">{props.name}</h2>
+        <p className="text-red-500 font-bold mb-2">
+          Afinidad: {props.affinity}%
+        </p>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
+          {props.name}
+        </h2>
         <p className="text-gray-600 mb-4 text-center">{props.descripcion}</p>
 
         <hr className="border-t border-white mb-4" />

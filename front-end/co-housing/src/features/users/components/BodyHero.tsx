@@ -78,6 +78,7 @@ const BodyHero: React.FC = () => {
           if ((item.role && item.role !== userProfile.role) ||
           (item.text === "Crear Comunidad" && userProfile.idComunidad)) return null;
 
+          console.log(userProfile.idComunidad);
           const radius = 180; // radio del círculo
           const angleRad = (item.angle * Math.PI) / 180;
           const x = radius * Math.cos(angleRad);

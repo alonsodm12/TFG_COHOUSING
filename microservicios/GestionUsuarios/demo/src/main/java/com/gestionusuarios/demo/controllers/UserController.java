@@ -79,7 +79,8 @@ public class UserController {
                         userDTO.longitud(),
                         fotoUrl,
                         userDTO.lifestyleDTO(),
-                        0L);
+                        0L,
+                        userDTO.comunidadesGuardadas());
             }
 
             User newUser = userService.registerUser(userDTO);
@@ -184,7 +185,7 @@ public class UserController {
                     usuario.get().getPassword(), usuario.get().getRole(), usuario.get().getEmail(),
                     usuario.get().getDireccion(),
                     usuario.get().getLatitud(), usuario.get().getLongitud(),
-                    usuario.get().getFotoUrl(), lifestyleDTO, usuario.get().getIdComunidad());
+                    usuario.get().getFotoUrl(), lifestyleDTO, usuario.get().getIdComunidad(),usuario.get().getComunidadesGuardadas());
 
             return ResponseEntity.status(HttpStatus.OK).body(userDto);
         }
@@ -193,7 +194,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/api/usuarios/complete")
+    @PostMapping("/completarPerfil")
     public ResponseEntity<?> completarPerfil(@RequestBody DatosPerfilDTO datos, Authentication auth) {
         String username = auth.getName();
         userService.completarPerfil(username, datos);
@@ -223,6 +224,36 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al modificar la dirección: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/addComunidadGuardada/{userId}/{idComunidad}")
+    public ResponseEntity<?> addComunidad(@PathVariable Long userId,@PathVariable Long idComunidad){
+        try{
+            userService.addComunidadGuardada(userId, idComunidad);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    @PostMapping("/removeComunidadGuardada/{userId}/{idComunidad}")
+    public ResponseEntity<?> removeComunidad(@PathVariable Long userId,@PathVariable Long idComunidad){
+        try{
+            userService.eliminarComunidadGuardada(userId, idComunidad);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);    
+        }
+    }
+
+    @GetMapping("/obtenerComunidadesGuardadas/{userId}")
+    public ResponseEntity<?> obtenerComunidadesGuardadas(@PathVariable Long userId){
+        try{
+            List<Long> lista = userService.obtenerComunidadesGuardadas(userId);
+            return ResponseEntity.status(HttpStatus.OK).body(lista);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);    
+        }
+
     }
 
 }

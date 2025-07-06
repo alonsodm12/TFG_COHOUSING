@@ -340,9 +340,9 @@ public class CommunityServices {
         nuevaTarea.setTitulo(tareaDTO.titulo());
         nuevaTarea.setDescripcion(tareaDTO.descripcion());
 
-        if (tareaDTO.fechaTope() == null){
-            nuevaTarea.setFechaTope(LocalDateTime.now().plusDays(7));
-        }
+        //if (tareaDTO.fechaTope() == null){
+            //nuevaTarea.setFechaTope(LocalDateTime.now().plusDays(7));
+        //}
         nuevaTarea.setEstado(tareaDTO.estado());
         nuevaTarea.setDuracion(tareaDTO.duracion());
         nuevaTarea.setIdComunidad(tareaDTO.idComunidad());
@@ -355,6 +355,15 @@ public class CommunityServices {
             }
             nuevaTarea.setUsuariosParticipantes(participantes);
         }
+
+        if (tareaDTO.asignacion().equals("ahora")){
+            List<Long> participantes = new ArrayList<>();
+            for(int i =0;i<tareaDTO.numParticipantes();i++){
+                Long user = this.usuarioMenosTareas(tareaDTO.idComunidad());
+                participantes.add(user);
+            }
+        }
+
         return this.tareaRepository.save(nuevaTarea);
 
     }
@@ -469,7 +478,8 @@ public class CommunityServices {
                 tarea.getEstado(),
                 tarea.getDuracion(),
                 tarea.getIdComunidad(),
-                tarea.getNumParticipantes());
+                tarea.getNumParticipantes(),
+                "AHORA");
     }
 
     private EventoDTO convertirAEventoDTO(Evento evento) {
@@ -531,5 +541,27 @@ public class CommunityServices {
 
             tareaRepository.save(tareaAsignada);
         }
+    }
+
+    public List<CommunityDTO> obtenerComunidadesIds(List<Long> idsComunidades){
+        return communityRepository.findAllById(idsComunidades)
+                .stream()
+                .map(this::convertirACommunityDTO)
+                .collect(Collectors.toList());
+    }
+
+    private CommunityDTO convertirACommunityDTO(Community community) {
+        LifestyleDTO lifestyleDTO = new LifestyleDTO(community.getSociabilidad(), community.getTranquilidad(), community.getCompartirEspacios(), community.getLimpieza(), community.getActividad());
+        return new CommunityDTO(
+                community.getName(),
+                community.getDescripcion(),
+                community.getIdAdmin(),
+                lifestyleDTO,
+                community.getIntegrantes(),
+                community.getFotoUrl(),
+                community.getLatitud(),
+                community.getLongitud(),
+                community.getDireccion(),
+                community.getPrecio());
     }
 }

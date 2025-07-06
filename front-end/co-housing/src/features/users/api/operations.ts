@@ -160,3 +160,26 @@ export const modificarDireccion = async (
 
   return response.json();
 };
+
+export const obtenerComunidadesGuardadas = async (comunidadesIds: number[]) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Token no disponible. El usuario no está autenticado.");
+  }
+
+  const response = await fetch("http://localhost:8084/comunidades/filterPorId", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(comunidadesIds),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al obtener comunidades");
+  }
+
+  return response.json();
+};

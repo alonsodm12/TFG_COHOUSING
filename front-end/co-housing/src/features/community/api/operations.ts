@@ -203,3 +203,24 @@ export const completarTarea = async ( idTarea: number ) => {
 
   return;
 }
+
+export const updateDateTarea = async ( idTarea: number, fecha: string ) => {
+  const response = await fetch(`${API_BASE}/tarea/modificarFecha/${idTarea}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({fecha}),
+  });
+  if (!response.ok) {
+    throw new Error("Error al actualizar la fecha de la tarea")
+  }
+}
+
+export const formatLocalDateTime = (date: Date): string => {
+  const pad = (n: number) => (n < 10 ? `0${n}` : n);
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};

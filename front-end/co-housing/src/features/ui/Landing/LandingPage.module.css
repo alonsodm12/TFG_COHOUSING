@@ -59,7 +59,7 @@
   gap: 20px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .imageWrapper {
@@ -81,8 +81,8 @@
 
 .caption {
   margin-top: 10px;
-  font-size: 16px;
-  color: #aaa; /* gris claro para buen contraste */
+  font-size: 20px;
+  color: #000000; /* gris claro para buen contraste */
 }
 
 /* ============== Botón =============== */

@@ -22,7 +22,7 @@ export const Body: React.FC = () => {
             alt="Imagen 1"
             className={styles.image2}
           />
-          <p className={styles.caption}>🏘️¿Buscas una nueva comunidad?</p>
+          
         </div>
       </div>
       <section className="w-full text-black py-20 px-6 text-center ">
@@ -43,7 +43,7 @@ export const Body: React.FC = () => {
         </div>
       </section>
       <Button label="EMPEZAR YA" to="/TFG_COHOUSING/registro" />
-      <section className="w-full py-20 px-6 text-center bg-gray-100 dark:bg-gray-800 rounded-lg mt-16">
+      <section className="w-full py-20 px-6 text-center bg-white-100 dark:bg-gray-800 rounded-lg mt-16">
         <h2 className="text-4xl font-bold mb-10 text-gray-900 dark:text-white">
           Conoce las características de cada rol
         </h2>

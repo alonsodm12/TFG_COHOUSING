@@ -61,19 +61,12 @@ public class ActividadesService {
 
             tarea.setUsuariosParticipantes(nuevosUsuariosAsignados);
 
-            // ✅ Usar LocalDateTime para sumar 7 días
-            LocalDateTime fechaActual = tarea.getFechaTope();
-            if (fechaActual == null) {
-                fechaActual = LocalDateTime.now(); // si es null, usar ahora como base
-            }
-            tarea.setFechaTope(fechaActual.plusDays(7));
-
             tareaRepository.save(tarea);
         }
     }
 
 
-    @Scheduled(cron = "0 0 0 1 * *")
+    @Scheduled(cron = "0 */3 * * * *")
     @Transactional
     public void repartirTareasSemanalmente() {
         List<Community> comunidades = communityRepository.findAll();

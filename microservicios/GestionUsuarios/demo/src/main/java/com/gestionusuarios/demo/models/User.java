@@ -1,7 +1,9 @@
 package com.gestionusuarios.demo.models;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.GeneratedValue;
@@ -19,27 +22,6 @@ import jakarta.persistence.Table;
 @Table(name = "users")
 @Entity
 public class User implements UserDetails {
-
-    public User(String username, String email, String password, String fotoUrl, Double latitud,
-            Double longitud, String direccion, String role, int sociabilidad, int tranquilidad,
-            int compartirEspacios, int limpieza, int actividad) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.fotoUrl = fotoUrl;
-        this.latitud = latitud;
-        this.longitud = longitud;
-        this.direccion = direccion;
-        this.enabled = true;
-        this.role = role;
-        this.sociabilidad = sociabilidad;
-        this.tranquilidad = tranquilidad;
-        this.compartirEspacios = compartirEspacios;
-        this.limpieza = limpieza;
-        this.actividad = actividad;
-        this.idComunidad = 0L;
-    }
-
 
     @Schema(description = "ID del usuario")
     @Id
@@ -94,6 +76,32 @@ public class User implements UserDetails {
 
     @Column(name = "idComunidad")
     Long idComunidad;
+
+    @ElementCollection
+    @Column(name = "comunidadesGuardadas")
+    private List<Long> comunidadesGuardadas;
+
+
+
+
+    public User(String username, String email, String password, String fotoUrl, Double latitud,
+            Double longitud, String direccion,String role, int sociabilidad, int tranquilidad,
+            int compartirEspacios, int limpieza, int actividad) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.fotoUrl = fotoUrl;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.direccion = direccion;
+        this.role = role;
+        this.sociabilidad = sociabilidad;
+        this.tranquilidad = tranquilidad;
+        this.compartirEspacios = compartirEspacios;
+        this.limpieza = limpieza;
+        this.actividad = actividad;
+        this.comunidadesGuardadas = new ArrayList<>();
+    }
 
 
     public User() {
@@ -232,6 +240,15 @@ public class User implements UserDetails {
         this.longitud = longitud;
     }
 
+    public List<Long> getComunidadesGuardadas() {
+        return comunidadesGuardadas;
+    }
+
+
+    public void setComunidadesGuardadas(List<Long> comunidadesGuardadas) {
+        this.comunidadesGuardadas = comunidadesGuardadas;
+    }
+
 
     @Override
     public String toString() {
@@ -239,10 +256,11 @@ public class User implements UserDetails {
                 + ", fotoUrl=" + fotoUrl + ", latitud=" + latitud + ", longitud=" + longitud + ", direccion="
                 + direccion + ", enabled=" + enabled + ", role=" + role + ", sociabilidad=" + sociabilidad
                 + ", tranquilidad=" + tranquilidad + ", compartirEspacios=" + compartirEspacios + ", limpieza="
-                + limpieza + ", actividad=" + actividad + ", idComunidad=" + idComunidad + "]";
+                + limpieza + ", actividad=" + actividad + ", idComunidad=" + idComunidad + ", comunidadesGuardadas="
+                + comunidadesGuardadas + "]";
     }
-    
 
+    
 
 
 }

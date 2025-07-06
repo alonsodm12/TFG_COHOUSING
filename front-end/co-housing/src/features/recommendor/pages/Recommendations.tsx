@@ -9,7 +9,7 @@ import { modificarDireccion } from "../../users/api/operations";
 
 const Recommendations: React.FC = () => {
   const { id } = useParams();
-  const { username } = useUserContext();
+  const { userProfile } = useUserContext();
 
   const [communities, setCommunities] = useState<CommunityRecommended[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -225,8 +225,10 @@ const Recommendations: React.FC = () => {
               key={c.id}
               {...c}
               userId={id ? parseFloat(id) : 0}
-              username={username ? username : "null"}
+              username={userProfile?.username || ""}
               onJoinSuccess={handleCommunityJoined}
+              comunidadesGuardadas = {userProfile?.comunidadesGuardadas || null}
+
             />
           ))
         ) : (
