@@ -10,9 +10,9 @@ export const UserHomePage = () => {
   return (
     <div id="root">
       <Header />
-      <main className="page">
-        <BodyHero />
-      </main>
+        <main className="page">
+          <BodyHero />
+        </main>
       <Footer />
     </div>
   );

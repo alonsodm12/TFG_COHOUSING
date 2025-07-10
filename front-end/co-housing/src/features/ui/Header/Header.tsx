@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import styles from "./HeaderLanding.module.css";
 import { Link } from "react-router-dom";
+import { useUserContext } from "../../ui/Context/UserContext";
 
 export const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const { userProfile, isLoading } = useUserContext();
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   return (
@@ -15,8 +16,8 @@ export const Header: React.FC = () => {
       {/* Navegación */}
       <nav className={styles.nav}>
       <Link to="/TFG_COHOUSING/home" className="hover:text-blue-600 transition-colors">Home</Link>
-      <Link to="/busqueda" className="hover:text-blue-600 transition-colors">Búsqueda</Link>
-      <Link to="/comunidad" className="hover:text-blue-600 transition-colors">Comunidad</Link>
+      <Link to={"/busqueda"} className="hover:text-blue-600 transition-colors">Búsqueda</Link>
+      <Link to={`/TFG_COHOUSING/CommunityUserPage/${userProfile?.id}`} className="hover:text-blue-600 transition-colors">Comunidad</Link>
       <Link to="/notificaciones" className="hover:text-blue-600 transition-colors">Notificaciones</Link>
     </nav>
 

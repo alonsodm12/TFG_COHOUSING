@@ -1,7 +1,9 @@
 package com.gestionusuarios.demo.models;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.GeneratedValue;
@@ -38,6 +41,18 @@ public class User implements UserDetails {
     @Column(unique = false, nullable = false)
     private String password;
 
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
+
+    @Column(name = "direccion")
+    private String direccion;
+
     @Column(nullable = false)
     private boolean enabled = true;
 
@@ -62,24 +77,37 @@ public class User implements UserDetails {
     @Column(name = "idComunidad")
     Long idComunidad;
 
-    public User() {
-    }
+    @ElementCollection
+    @Column(name = "comunidadesGuardadas")
+    private List<Long> comunidadesGuardadas;
 
-    public User(String username, String email, String password, boolean enabled, String role, int sociabilidad,
-            int tranquilidad, int compartirEspacios, int limpieza, int actividad) {
+
+
+
+    public User(String username, String email, String password, String fotoUrl, Double latitud,
+            Double longitud, String direccion,String role, int sociabilidad, int tranquilidad,
+            int compartirEspacios, int limpieza, int actividad) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.enabled = enabled;
+        this.fotoUrl = fotoUrl;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.direccion = direccion;
         this.role = role;
-        this.actividad = actividad;
+        this.sociabilidad = sociabilidad;
+        this.tranquilidad = tranquilidad;
         this.compartirEspacios = compartirEspacios;
         this.limpieza = limpieza;
-        this.tranquilidad = tranquilidad;
-        this.sociabilidad = sociabilidad;
-        this.idComunidad = 0L;
+        this.actividad = actividad;
+        this.comunidadesGuardadas = new ArrayList<>();
     }
 
+
+    public User() {
+    }
+
+ 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
@@ -172,13 +200,67 @@ public class User implements UserDetails {
     public void setActividad(int actividad) {
         this.actividad = actividad;
     }
+    public Long getIdComunidad() {
+        return idComunidad;
+    }
+
+    public void setIdComunidad(Long idComunidad) {
+        this.idComunidad = idComunidad;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+    
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
+    
+    public String getDireccion() {
+        return direccion;
+    }
+    
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+    
+    public Double getLatitud() {
+        return latitud;
+    }
+    
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+    
+    public Double getLongitud() {
+        return longitud;
+    }
+    
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
+    public List<Long> getComunidadesGuardadas() {
+        return comunidadesGuardadas;
+    }
+
+
+    public void setComunidadesGuardadas(List<Long> comunidadesGuardadas) {
+        this.comunidadesGuardadas = comunidadesGuardadas;
+    }
+
 
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
-                + ", enabled=" + enabled + ", role=" + role + ", sociabilidad=" + sociabilidad + ", tranquilidad="
-                + tranquilidad + ", compartirEspacios=" + compartirEspacios + ", limpieza=" + limpieza + ", actividad="
-                + actividad + "]";
+                + ", fotoUrl=" + fotoUrl + ", latitud=" + latitud + ", longitud=" + longitud + ", direccion="
+                + direccion + ", enabled=" + enabled + ", role=" + role + ", sociabilidad=" + sociabilidad
+                + ", tranquilidad=" + tranquilidad + ", compartirEspacios=" + compartirEspacios + ", limpieza="
+                + limpieza + ", actividad=" + actividad + ", idComunidad=" + idComunidad + ", comunidadesGuardadas="
+                + comunidadesGuardadas + "]";
     }
+
+    
+
 
 }

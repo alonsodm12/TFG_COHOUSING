@@ -1,10 +1,10 @@
 # app/crud/user.py
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.models.community import Community
+from app.models.community import CommunityBase
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
 def get_all_communities(db: Session):
-    return db.query(Community).all()
+    return db.query(CommunityBase).all()

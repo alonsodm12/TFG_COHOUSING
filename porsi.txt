@@ -1,0 +1,486 @@
+\chapter{Implementación} \label{diseño}
+
+A continuación se detallarán las funcionalidades más representativas dentro del sistema, explicando su lógica, implementación y estructura. Además se hará una presentación de las herramientas que han complementado el desarrollo de la aplicación de forma profesional y eficiente.
+
+\section{Herramientas}
+
+Durante todo el ciclo de vida del proyecto se han utilizado diversas herramientas que han complementado las distintas fases de desarrollo, desde la construcción de código hasta la integración continua (CI/CD), control de versiones y contenedorización.
+
+\subsection{VSCode IDE}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.2\textwidth]{fotos/vs.png}
+  \caption{Logo IDE VSCode}
+\end{figure}
+Como entorno de desarrollo integrado (IDE) se ha utilizado Visual Studio Code (VSCode), un editor de código fuente desarrollado por Microsoft. VSCode ha sido escogido por el gran número de extensiones gratuitas que ofrece, permitiendo trabajar con múltiples tecnologías y lenguajes de programación simultáneamente. Su integración con sistemas de control de versiones(GitHub) y herramientas de desarrollo como linters lo convierte en una gran opción para proyectos modernos.
+
+\subsection{GitHub}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\textwidth]{fotos/github.jpg}
+  \caption{Logo GitHub}
+\end{figure}
+GitHub ha desempeñado un papel central durante el desarrollo del proyecto, no solo como plataforma de control de versiones, sino también como una herramienta clave para automatizar el desarrollo mediante GitHub Actions y su sistema de integración y entrega continua (CI/CD). Gracias a estas funcionalidades, ha sido posible estructurar y automatizar el ciclo de vida del desarrollo de forma organizada y eficiente.
+
+\subsubsection{Flujo de desarrollo}
+
+El repositorio cuenta con tres ramas principales permitiendo una gestión organizada del desarrollo:
+
+\begin{itemize}
+    \item \textbf{main}: Rama de producción, en ella se integran las iteraciones finalizadas que representan versiones estables y listas para ser desplegadas.
+    \item \textbf{develop}: Rama de desarrollo, en ella se integran las tareas y las historias de usuario completadas, sirviendo como base para futuras versiones.
+    \item \textbf{feature/\textit{<nombre-funcionalidad>}}: Ramas individuales para el desarrollo de cada historia de usuario o funcionalidad específica.
+\end{itemize}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{fotos/ramas.png}
+  \caption{Flujo de ramas en el proyecto}
+\end{figure}
+Cada una de estas ramas dispone de su propio flujo CI/CD configurado con GitHub Actions. Al realizar un \textit{push}, se ejecutan automáticamente diferentes tareas y comprobaciones, como compilación, tests y análisis de código, garantizando la calidad y estabilidad del proyecto.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fotos/githubActions.png}
+  \caption{Flujo de desarrollo github actions}
+\end{figure}
+
+\section{Workflow para ramas \texttt{feature/*}}
+
+Este workflow se activa con \texttt{push} a cualquier rama que empiece por \texttt{feature/} y con Pull Requests dirigidos a \texttt{develop}. Las acciones que realiza son :
+
+\begin{itemize}
+  \item Compilación de microservicios en Spring Boot
+  \item Instalación de dependencias Python.
+  \item Instalación de dependencias Node.js.
+  \item Construcción del frontend para validar que no haya errores.
+\end{itemize}
+\section{Workflow para la rama \texttt{develop}}
+
+Este workflow se activa con cada \texttt{push} a la rama \texttt{develop}. Su objetivo principal es ejecutar pruebas automatizadas y medir la cobertura del código.
+
+\begin{itemize}
+  \item Configuración del entorno con Ubuntu y Java 17.
+  \item Restauración de la caché de dependencias Maven.
+  \item Construcción del frontend para validar que no haya errores.
+  \item Ejecución de tests en todos los microservicios Java con generación de reportes Jacoco.
+  \item Ejecución de tests en Python para microservicios específicos.
+  \item Envío de los reportes de cobertura a Codecov.
+\end{itemize}
+
+
+
+\section{Workflow para la rama \texttt{main}}
+
+Este workflow se activa al hacer \texttt{push} a la rama \texttt{main} y realiza el despliegue de la aplicacion:
+
+\begin{itemize}
+  \item Compilación completa de microservicios Java y construcción de imágenes Docker.
+  \item Construcción y despliegue del frontend en GitHub Pages.
+  \item Construcción del microservicio en Python.
+  \item Login en Docker Hub para subir imágenes Docker de los microservicios Java y Python.
+\end{itemize}
+\vspace{0.5em}
+Cada \textit{issue}, ya sea una historia de usuario o una tarea, se ha gestionado directamente en GitHub, lo que ha permitido asociar de manera clara el desarrollo de cada funcionalidad con su seguimiento y control.
+
+A continuación, se muestra una imagen del tablero Kanban de GitHub que refleja los distintos estados de las tareas, organizadas en iteraciones tal y como se explicó en capítulos anteriores.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{fotos/kgit.png}
+    \caption{Tablero Kanban de GitHub mostrando el flujo de tareas del proyecto.}
+    \label{fig:kanban-github}
+\end{figure}
+
+\subsection{Contenerización con Docker}
+
+Cada microservicio dispone de su propio Dockerfile, en él se configuran los recursos necesarios y se ejecuta en un entorno controlado con sus dependencias necesarias.
+Esto permite crear un sistema modular con cada microservicio ejecutandose de forma aislada en su contenedor específico.
+A continuación vamos a ver el Dockerfile para los microservicios de Java.
+\begin{verbatim}
+FROM openjdk:17-jdk-slim
+COPY target/demo.jar app.jar
+EXPOSE 8081
+ENTRYPOINT ["java","-jar","/app.jar"]
+\end{verbatim}
+
+
+\subsection{Orquestación con Docker Compose}
+
+Se emplea un fichero \texttt{docker-compose.yml} para levantar todo el ecosistema de servicios que componen la aplicación. En general la estructura del archivo es la siguiente
+\begin{itemize}
+  \item Construcción de microservicios desde sus contextos.
+  \item Definición de bases de datos PostgreSQL y servicio RabbitMQ.
+  \item Red interna \texttt{cohousing} para comunicación entre contenedores.
+  \item Uso de \texttt{depends\_on} para gestionar el orden de arranque.
+\end{itemize}
+
+Finalmente para poder ejecutar la aplicación se levanta el entorno completo, esto permite ejecutar en local todos los servicios simultáneamente, para ello se ejecutará el siguiente comando.
+
+\begin{verbatim}
+docker-compose up --build -d
+\end{verbatim}
+
+Esta configuración permite una gestión modular, escalable y replicable de la aplicación, facilitando tanto el desarrollo local como el despliegue en entornos productivos.
+
+
+\section{Funcionalidades clave del sistema}
+
+A continuación se procederá a explicar las diferentes funcionalidades más representativas del sistema, mostrando su lógica y flujo de desarrollo.
+
+\subsection{Inicio de sesión y Registro}
+Con el objetivo de garantizar la seguridad dentro de la aplicación y asegurar la autenticación y autorización se ha aplicado un sistema de inicio de sesión basado en JWT (JSON Web Token). El flujo de esta funcionalidad es el siguiente:
+
+\begin{itemize}
+  \item El usuario envía sus credenciales al \textit{API Gateway}.
+  \item El gateway se comunica con el microservicio de gestión de usuarios para autenticar y generar un JWT.
+  \item Este token es enviado al cliente y se utiliza en las peticiones posteriores para validar la sesión.
+  \item En el backend, un filtro personalizado de Spring Security intercepta cada solicitud y valida la autenticidad del JWT.
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Diagrama:} Flujo de autenticación a través del API Gateway.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fotos/login-explicado.png}
+    \caption{Login implementacion}
+    \label{fig:capas}
+\end{figure}
+
+Para implementar el esquema de autenticación basado en JWT en una aplicación con Spring Boot, serán necesarios los siguientes componentes:
+\vspace{0.5em}
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Filtro de seguridad en la API Gateway:} \\
+    Se debe definir un filtro de seguridad que se inserte en la cadena de filtros de Spring Security. Este filtro será responsable de comprobar la validez del token JWT en cada solicitud y establecerá los requisitos de seguridad correspondientes para cada ruta definida.
+
+    \item \textbf{Generación del token JWT:} \\
+    Cuando los datos proporcionados por el usuario durante el proceso de inicio de sesión sean correctos, se procederá a generar un token JWT que contendrá la información de autenticación del usuario.
+
+    \item \textbf{Controlador de autenticación:} \\
+    Se deberá definir un controlador REST que gestione las peticiones de autenticación. Este controlador validará las credenciales del usuario y, en caso de ser válidas, devolverá el token JWT en la respuesta.
+\end{enumerate}
+
+A continuación se va mostrar la implementación de dichos componentes mediante pseudocódigo simplificado:
+
+\newtcblisting{codebox}{
+  listing only,
+  colback=backcolour,
+  colframe=codegreen,
+  listing options={
+    basicstyle=\ttfamily\footnotesize,
+    commentstyle=\color{codegreen}\ttfamily,
+    keywordstyle=\bfseries,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    language=Java
+  },
+  sharp corners,
+  boxrule=1pt,
+  leftrule=3pt,
+  right=2pt,
+  top=2pt,
+  bottom=2pt
+}
+
+% Uso en el documento
+\begin{codebox}
+// Funcion que crea la cadena de filtros para la seguridad del sistema, todas las peticiones deberan pasar el filtro o recibiran error 404.
+function crearCadenaFiltrosSeguridad(http, filtroJwt) throws Exception {
+
+    // Definimos reglas de acceso
+    http.definirAutorizacion(autorizar -> {
+        autorizar.permitirRutaSinAutorizacion("/public/**")
+        autorizar.permitirRutaSinAutorizacion("/user/login", "/user/register")
+        autorizar.exigirRol("/user/usuarios", "buscador")
+        autorizar.cualquierOtraRutaRequiereAutenticacion()
+    })
+
+    // Agregamos filtro JWT antes del filtro estandar de autenticacion
+    http.agregarFiltroAntes(filtroJwt, "UsernamePasswordAuthenticationFilter")
+
+    // Construir y retornar la configuracion final
+    return http.construirCadenaFiltros()
+}
+\end{codebox}
+
+\vspace{0.5em}
+Esta función configura una cadena de filtros para asegurar el acceso a las rutas de una aplicación. Las rutas públicas se permiten explícitamente, mientras que el resto requiere autenticación mediante JWT.
+
+
+
+La función que genera el token se realiza de la siguiente forma
+\begin{codebox}
+// Función que genera un token JWT para un usuario con su rol
+function generarToken(usuario, rol):
+    // Construir token JWT con:
+    // - sujeto: usuario
+    // - claim "role": rol
+    // - fecha de emisión: ahora
+    // - fecha de expiración: ahora + tiempo configurado
+    // - firma usando clave secreta y algoritmo HS256
+    token = JwtBuilder()
+                .setSujeto(usuario)
+                .agregarClaim("role", rol)
+                .fechaEmision(fechaActual())
+                .fechaExpiracion(fechaActual() + tiempoExpiracion)
+                .firmar(claveSecreta, algoritmoHS256)
+                .compactar()
+    return token
+end
+\end{codebox}
+Funcion explicando el controlador
+\begin{codebox}
+// Controlador que maneja la peticion POST /login para autenticar usuario
+function login(peticionLogin):
+    try:
+        // Intentar autenticar con username y password recibidos
+        autenticacion = autenticador.autenticar(
+            nuevoTokenAutenticacion(peticionLogin.usuario, peticionLogin.contraseña)
+        )
+
+        // Obtener detalles del usuario autenticado
+        usuario = autenticacion.obtenerPrincipal()
+
+
+        // Generar token JWT con usuario y rol encontrado
+        jwt = generarToken(usuario.obtenerNombre(), usuario.rolUsuario)
+
+        // Devolver respuesta HTTP 200 con token dentro del body
+        return respuestaHttp(200, {"Login correcto": nuevoAuthResponse(jwt)})
+
+    catch ErrorAutenticacion:
+        // Si falla la autenticacion, devolver error 400 con mensaje
+        return respuestaHttp(400, {"Error durante el login": "Credenciales inválidas"})
+end
+
+\end{codebox}
+
+
+En el frontend se rellena el formulario de inicio de sesión, enviándo los datos necesarios para autenticarse.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{fotos/login.png}
+  \caption{Pantalla del login en el front-end}
+\end{figure}
+
+
+\subsection{Recomendación de Comunidades}
+
+
+Toda la lógica e implementación relacionada con la recomendación de comunidades a usuarios se ha encapsulado en un microservicio independiente denominado \textbf{Recomendaciones}. Esta decisión se basa en que el módulo presenta suficientes reglas de negocio como para ser considerado una entidad lógica separada dentro del sistema.
+
+\vspace{0.5em}
+Para la implementación del microservicio se ha utilizado el lenguaje de programación \textbf{Python}, apoyado en las siguientes librerías:
+
+\begin{itemize}
+    \item \texttt{pandas}, para el tratamiento y análisis de datos.
+    \item \texttt{FastAPI}, para la creación y exposición de la API REST.
+\end{itemize}
+
+\section*{Algoritmo de recomendación}
+
+El enfoque adoptado para la recomendación se basa en técnicas de \textit{clustering}, lo que ha permitido agrupar usuarios en función de parámetros de afinidad y calcular centroides representativos de cada grupo.
+
+La lógica general del sistema se puede resumir del siguiente modo:
+
+\begin{itemize}
+    \item Los usuarios se agrupan en \textit{clusters} basados en sus características individuales.
+    \item Para cada \textit{cluster}, se calcula un centroide que representa el perfil promedio del grupo.
+    \item A partir del \textit{cluster} al que pertenece un usuario, se le recomiendan comunidades con un alto grado de similitud.
+\end{itemize}
+
+\section*{Procedimiento de recomendación}
+
+El proceso seguido por el microservicio para generar las recomendaciones ha sido el siguiente:
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Se recuperan los datos del usuario objetivo y de las comunidades desde la base de datos.
+    \item Se normalizan los parámetros de afinidad tanto del usuario como de las comunidades.
+    \item Se aplica un algoritmo de \textit{clustering} para dividir las comunidades en grupos afines.
+    \item Se calcula la distancia del usuario al centroide de cada grupo.
+    \item Finalmente, se determina un porcentaje de similitud mediante una normalización de distancias, que permite ofrecer recomendaciones personalizadas con un valor cuantitativo de afinidad.
+\end{enumerate}
+
+Este enfoque modular y basado en datos mejora tanto la escalabilidad como la precisión de las recomendaciones ofrecidas por la plataforma.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{fotos/explicacion-recomendador.png}
+  \caption{Explicacion obtener recomendaciones para usuario}
+\end{figure}
+\vspace{0.5em}
+A continuación se mostrará en pseudocódigo la función que permite calcular las comunidades recomendadas para el usuario específico.
+\begin{codebox}
+    // Funcion que recomienda comunidades compatibles a un usuario
+
+function recomendar_comunidades_por_usuario(usuario, comunidades, n=5):
+
+    // Paso 1: Entrenar modelo de clustering K-Means
+    modelo = KMeans(n_clusters=3, semilla=42)
+    modelo.entrenar(comunidades_escaladas)
+
+    // Paso 2: Predecir el cluster al que pertenece el usuario
+    cluster_usuario = modelo.predecir(usuario_escalado)
+
+    // Paso 3: Calcular el centroide del cluster del usuario
+    centroide_usuario = modelo.centroides[cluster_usuario]
+
+    // Paso 4: Calcular distancias de cada comunidad al centroide
+    distancias = []
+    para cada comunidad en comunidades_mismo_cluster:
+        distancia = norma(comunidad_escalada - centroide_usuario)
+        distancias.agregar(distancia)
+
+    // Paso 5: Convertir distancias a afinidad (0-100)
+    max_dist = máximo(distancias)
+    si max_dist == 0:
+        max_dist = 1  // evitar división por cero
+
+    afinidades = []
+    para cada (i, dist) en distancias:
+        si dist no es válida:
+            afinidad = 0
+        sino:
+            afinidad = 100 * (1 - dist / max_dist)
+        limitar afinidad entre 0 y 100
+        afinidades.agregar((i, afinidad))
+
+    // Paso 6: Ordenar comunidades por afinidad descendente
+    afinidades.ordenar_desc()
+
+    // Paso 7: Construir lista de recomendaciones
+    recomendaciones = []
+    para i en los n primeros elementos de afinidades:
+        comunidad = comunidades[i]
+        recomendaciones.agregar(comunidad + afinidad)
+
+    return recomendaciones
+\end{codebox}
+
+Finalmente observamos la vista correspondiente con las comunidades recomendadas al usuario.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fotos/frontend-recomendador.png}
+  \caption{Pantalla de recomendaciones en el front-end}
+\end{figure}
+
+\subsection{Proceso de Unión a una Comunidad}
+
+El proceso de unión de un usuario a una comunidad involucra la interacción de varios de los microservicios que componen el sistema entre ellos los microservicios de \textit{Comunidad}, \textit{Solicitudes} y \textit{GestionUsuarios}.
+
+El flujo para realizar esta operación dentro del sistema es el siguiente:
+
+\begin{enumerate}
+  \item El usuario solicita unirse a una comunidad a través de la llamada al endpoint unirse-comunidad del microservicio \textit{GestionComunidades}.
+  \item Este microservicio genera un evento y lo publica en RabbitMQ.
+  \item El microservicio de \textit{Solicitudes} escucha el evento, registra la solicitud y la notifica al administrador de la comunidad.
+  \item El administrador puede aceptar o rechazar la solicitud mediante el microservicio de \textit{Solicitudes}. Al aceptar o rechazar el microservicio genera un evento y lo publica en RabbitMQ
+  \item El microservicio de \textit{GestionComunidades} escucha el evento y si el admin ha aceptado une al usuario a la comunidad, finalmente este microservicio emite un evento y lo publica en RabbitMQ.
+  \item El microservicio de \textit{Solicitudes} escucha el evento, registra la respuesta y la notifica al usuario buscador.
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Diagrama:} Comunicación entre microservicios mediante RabbitMQ.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{fotos/usuarioUneComunidad.png}
+  \caption{Explicacion flujo para obtener recomendaciones para usuario}
+\end{figure}
+
+
+
+\subsection{Comunicación Asíncrona entre Microservicios}
+
+Para garantizar la resiliencia e independencia entre los distintos microservicios que componen el sistema, es fundamental que la comunicación entre ellos sea asíncrona. De lo contrario, podrían producirse cuellos de botella, retrasos innecesarios o incluso la pérdida de operatividad del sistema ante la caída de alguno de los servicios.
+
+Con el objetivo de implementar este tipo de comunicación, se ha integrado el broker de mensajería \textbf{RabbitMQ}, que actúa como intermediario en el intercambio de mensajes entre microservicios.
+
+\section*{Flujo de comunicación}
+
+El flujo seguido para establecer esta arquitectura de mensajería es el siguiente:
+
+\begin{itemize}
+    \item Los microservicios publican eventos relevantes en colas específicas gestionadas por RabbitMQ.
+    \item Otros microservicios se suscriben a dichas colas, reaccionando ante los mensajes recibidos.
+    \item Esta arquitectura desacopla los servicios, lo que permite una mayor escalabilidad, tolerancia a fallos y resiliencia.
+\end{itemize}
+
+\section*{Funcionamiento del sis\vspace{0.5em}tema}
+
+La lógica general de funcionamiento se basa en los siguientes pasos:
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item El microservicio que genera un evento registra una cola específica en RabbitMQ.
+    \item Al producirse el evento, se lanza un mensaje que contiene los datos relevantes, el cual se publica en dicha cola.
+    \item Los microservicios consumidores definen \textit{listeners} (funciones observadoras) que se mantienen a la escucha.
+    \item Cuando el mensaje llega a la cola correspondiente, el \textit{listener} lo recibe, extrae los datos y ejecuta una lógica específica en respuesta al evento.
+\end{enumerate}
+
+Este patrón de comunicación promueve un diseño desacoplado, reactivo y preparado para entornos distribuidos y de alta disponibilidad.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fotos/rabbit.png}
+  \caption{Flujo de eventos y comunicación entre microservicios usando RabbitMQ}
+\end{figure}
+\begin{codebox}
+    // Configuración de RabbitMQ para el microservicio de gestión de comunidades
+
+definimos CONSTANTES:
+    NOMBRE_EXCHANGE = "comunidad.exchange"
+    NOMBRE_COLA_SOLICITUD = "comunidad.join.queue"
+    CLAVE_ENRUTAMIENTO_SOLICITUD = "comunidad.join"
+
+    NOMBRE_COLA_RESPUESTA = "comunidad.response.queue"
+    CLAVE_ENRUTAMIENTO_RESPUESTA = "comunidad.response"
+
+    NOMBRE_COLA_ACTUALIZAR_USUARIO = "usuario.comunidad.update.queue"
+    CLAVE_ENRUTAMIENTO_ACTUALIZAR_USUARIO = "usuario.comunidad.update"
+
+
+// Conversor de mensajes: de objetos a formato JSON
+function crearConversorJSON():
+    return conversor Jackson2JsonMessageConverter
+
+
+// Plantilla para enviar mensajes
+function crearRabbitTemplate(conexion, conversor):
+    plantilla = nueva RabbitTemplate(conexion)
+    plantilla.setConversor(conversor)
+    return plantilla
+
+
+// Exchange tipo topic que centraliza los eventos
+function crearExchange():
+    return TopicExchange(NOMBRE_EXCHANGE)
+\end{codebox}
+\begin{codebox}
+    // Cuando se recibe un mensaje en la cola de respuesta, se procesa
+// y se envía un nuevo mensaje al microservicio de usuarios
+
+@escuchar_mensajes(cola = NOMBRE_COLA_RESPUESTA)
+function al_recibir_respuesta(payload):
+
+    // Enviar mensaje al microservicio de usuarios
+    rabbitTemplate.enviar(
+        exchange = NOMBRE_EXCHANGE,
+        routing_key = CLAVE_ENRUTAMIENTO_ACTUALIZAR_USUARIO,
+        mensaje = payload
+    )
+\end{codebox}
+
+\subsection{Asignación de Tareas}
+
+La funcionalidad de asignación de tareas dentro de las comunidades se realiza mediante un microservicio específico, que permite:
+
+\begin{itemize}
+  \item Crear tareas vinculadas \vspace{0.5em}a una comunidad.
+  \item Asignar tareas a usuarios específicos.
+  \item Gestionar el estado y progreso de las tareas.
+  \item Notificar a los usuarios asignados mediante eventos en RabbitMQ.
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Diagrama y pseudocódigo} de este microservicio pueden añadirse para explicar en detalle la lógica interna.
+

@@ -40,20 +40,15 @@ jobs:
         run: |
           for dir in microservicios/*/; do
             echo "Compilando $dir"
-            cd "$dir/demo"
-            if [ -f pom.xml ]; then
-                mvn clean package || exit 1
+            if [ -f "$dir/demo/pom.xml" ]; then
+                cd "$dir/demo"
+                mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
             else
                 echo "No se encontró pom.xml en $dir/demo, saltando..."
             fi
             cd - > /dev/null
           done
 
-      - name: Ejecutar tests y generar cobertura Python
-        run: |
-          cd microservicios/Recomendador
-          coverage run -m pytest
-          coverage xml
 
       - name: Set up Node
         uses: actions/setup-node@v3

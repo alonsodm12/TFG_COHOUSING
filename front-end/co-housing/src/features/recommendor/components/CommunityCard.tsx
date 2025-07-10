@@ -1,25 +1,37 @@
-// src/components/CommunityCard.tsx
-import ButtonFunction from '../../ui/Button/ButtonFunction';
-import Button from '../../ui/Button/Button';
-import React from 'react';
-import { UnirseComuniadad } from '../api/operations';
+import React, { useState,useEffect } from "react";
+import { CommunityRecommended } from "../../community/api/type";
+import Button from "../../ui/Button/Button";
+import ButtonFunction from "../../ui/Button/ButtonFunction";
+import {
+  addComunidad,
+  removeComunidad,
+  UnirseComuniadad,
+} from "../api/operations";
+import { CommunityMap } from "../../community/components/CommunityMap";
 
-interface CommunityCardProps {
-  id: number;
-  name: string;
-  descripcion: string;
-  sociabilidad: number;
-  tranquilidad: number;
-  compartir_espacios: number;
-  limpieza: number;
-  actividad: number;
-  integrantes: number[] | null;
-  admin: number;
+interface CommunityCardProps extends CommunityRecommended {
   userId: number;
-  username: string | null;
+  username: string;
+  onJoinSuccess?: (joinedCommunityId: number) => void;
+  comunidadesGuardadas?: number[] | null;
 }
 
 const CommunityCard: React.FC<CommunityCardProps> = (props) => {
+  console.log(props.comunidadesGuardadas);
+
+  const [hasRequestedJoin, setHasRequestedJoin] = useState(false);
+  const isFavoriteInitial =
+    props.comunidadesGuardadas?.includes(props.id) || false;
+
+  console.log(isFavoriteInitial);
+  const [isFavorite, setIsFavorite] = useState(isFavoriteInitial);
+  const [loadingFav, setLoadingFav] = useState(false);
+
+  useEffect(() => {
+    const fav = props.comunidadesGuardadas?.includes(props.id) || false;
+    setIsFavorite(fav);
+  }, [props.comunidadesGuardadas, props.id]);
+  
   const handleJoin = async () => {
     if (!props.username) {
       alert("No se pudo obtener el nombre de usuario.");
@@ -31,31 +43,128 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
         userId: props.userId,
         username: props.username,
         communityId: props.id,
-        idAdmin: props.admin
+        idAdmin: props.admin,
       });
+
+      setHasRequestedJoin(true);
       alert("Solicitud de unión enviada correctamente.");
+
+      if (props.onJoinSuccess) {
+        props.onJoinSuccess(props.id);
+      }
     } catch (error) {
       console.error("Error al unirse a la comunidad:", error);
       alert("Error al enviar la solicitud.");
     }
   };
+  
+
+  const toggleFavorite = async () => {
+    if (loadingFav) return; // evitar clicks rápidos
+
+    setLoadingFav(true);
+    try {
+      if (isFavorite) await removeComunidad(props.userId, props.id);
+      else await addComunidad(props.userId, props.id);
+
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      alert("Error al cambiar favorito.");
+    } finally {
+      setLoadingFav(false);
+    }
+  };
 
   return (
-    <div className="border rounded-xl p-4 shadow-lg mb-4">
-      <h2 className="text-xl font-bold">{props.name}</h2>
-      <p className="text-gray-600 mb-2">{props.descripcion}</p>
-      <ul className="text-sm text-gray-800">
-        <li><strong>Sociabilidad:</strong> {props.sociabilidad}</li>
-        <li><strong>Tranquilidad:</strong> {props.tranquilidad}</li>
-        <li><strong>Compartir espacios:</strong> {props.compartir_espacios}</li>
-        <li><strong>Limpieza:</strong> {props.limpieza}</li>
-        <li><strong>Actividad:</strong> {props.actividad}</li>
-        <li><strong>Integrantes:</strong> {(props.integrantes ?? []).join(', ')}</li>
-        <li><strong>Admin:</strong> {props.admin}</li>
-      </ul>
-      <div className="flex gap-4 mt-4">
-        <Button to={`/TFG_COHOUSING/community/profile/${props.name}`} label="Consultar Perfil" />
-        <ButtonFunction label="Solicitar Unión" onClick={handleJoin} />
+    <div className="relative bg-white rounded-3xl shadow-2xl mb-10 overflow-hidden border">
+      {/* Corazón arriba derecha */}
+      <button
+        onClick={toggleFavorite}
+        aria-label={isFavorite ? "Quitar de favoritos" : "Añadir a favoritos"}
+        className="absolute top-4 right-4 text-3xl transition-colors duration-300"
+        style={{
+          userSelect: "none",
+          cursor: loadingFav ? "not-allowed" : "pointer",
+          background: "none",
+          border: "none",
+        }}
+      >
+        {isFavorite ? "❤️" : "🤍"}
+      </button>
+
+      {/* Imagen destacada */}
+      {props.fotoUrl ? (
+        <img
+          src={`http://localhost:8082${props?.fotoUrl}`}
+          alt={`Imagen de ${props.name}`}
+          className="w-full h-64 object-cover"
+        />
+      ) : (
+        <div className="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500">
+          Sin imagen disponible
+        </div>
+      )}
+
+      {/* Contenido principal */}
+      <div className="p-6">
+        <p className="text-red-500 font-bold mb-2">
+          Afinidad: {props.affinity}%
+        </p>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
+          {props.name}
+        </h2>
+        <p className="text-gray-600 mb-4 text-center">{props.descripcion}</p>
+
+        <hr className="border-t border-white mb-4" />
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-gray-800">
+          <div>
+            <strong>Tranquilidad:</strong> {props.tranquilidad}
+          </div>
+          <div>
+            <strong>Actividad:</strong> {props.actividad}
+          </div>
+          <div>
+            <strong>Limpieza:</strong> {props.limpieza}
+          </div>
+          <div>
+            <strong>Compartir espacios:</strong> {props.compartir_espacios}
+          </div>
+          <div>
+            <strong>Sociabilidad:</strong> {props.sociabilidad}
+          </div>
+        </div>
+
+        <div className="mt-6 text-sm text-gray-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <strong>Precio:</strong> {props.precio} €
+          </div>
+          <div>
+            <strong>Admin ID:</strong> {props.admin}
+          </div>
+        </div>
+        {props?.latitud && props?.longitud ? (
+          <CommunityMap
+            latitude={props.latitud}
+            longitude={props.longitud}
+            address={props.direccion}
+          />
+        ) : (
+          <div>No hay ubicación disponible</div>
+        )}
+
+        <div className="flex flex-wrap gap-4 mt-6">
+          <Button
+            to={`/TFG_COHOUSING/community/profile/${props.name}`}
+            label="Consultar Perfil"
+          />
+          <ButtonFunction
+            label={hasRequestedJoin ? "Solicitud enviada" : "Solicitar Unión"}
+            onClick={handleJoin}
+            disabled={hasRequestedJoin}
+          />
+        </div>
       </div>
     </div>
   );

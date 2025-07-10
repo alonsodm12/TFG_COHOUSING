@@ -1,5 +1,7 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Union
+
+from app.schemas.communityIntegrantes_schema import CommunityIntegranteSchema
 
 class CommunitySchema(BaseModel):
     id: int
@@ -10,9 +12,13 @@ class CommunitySchema(BaseModel):
     compartir_espacios: Optional[int]
     limpieza: Optional[int]
     actividad: Optional[int]
-    integrantes: Optional[List[int]]
     admin: int
+    fotoUrl: Optional[str] = None
+    direccion: Optional[str] = None
+    precio: Optional[float] = None
+    affinity: Optional[float] = None  # np.float64 también es compatible como float
+    latitud : Optional[float]
+    longitud : Optional[float]
 
     class Config:
         orm_mode = True
-

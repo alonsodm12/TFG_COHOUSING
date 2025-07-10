@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from app.models.user import User
-from app.models.community import Community
+from app.models.community import CommunityBase
 
 def preprocess_data(user: User, communities: list):
     # Extraer preferencias del usuario
@@ -18,6 +18,8 @@ def preprocess_data(user: User, communities: list):
     ])
     
     # Unir todas las preferencias
+    # Matriz de tamaño n_comunidades + 1 , 5
+    
     all_preferences = np.vstack([user_preferences, communities_preferences])
     
     # Normalizar

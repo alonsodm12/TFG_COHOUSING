@@ -8,22 +8,34 @@ export type CommunityFormProps = {
   initialData?: Partial<CommunityProfile>;
 };
 
-function buildInitialFormData(userId: number | null, overrides?: Partial<CommunityProfile>): CommunityProfile {
+function buildInitialFormData(
+  userId: number | null,
+  overrides?: Partial<CommunityProfile>
+): CommunityProfile {
   return {
     name: overrides?.name ?? "",
     descripcion: overrides?.descripcion ?? "",
     idAdmin: overrides?.idAdmin ?? userId ?? 0,
     lifestyleDTO: {
-      tranquilo: overrides?.lifestyleDTO?.tranquilo ?? 1,
+      tranquilidad: overrides?.lifestyleDTO?.tranquilidad ?? 1,
       actividad: overrides?.lifestyleDTO?.actividad ?? 1,
       limpieza: overrides?.lifestyleDTO?.limpieza ?? 1,
       compartirEspacios: overrides?.lifestyleDTO?.compartirEspacios ?? 1,
       sociabilidad: overrides?.lifestyleDTO?.sociabilidad ?? 1,
     },
+    integrantes: overrides?.integrantes ?? [],
+    fotoUrl: overrides?.fotoUrl ?? null,
+    latitud: overrides?.latitud ?? 0,
+    longitud: overrides?.longitud ?? 0,
+    direccion: overrides?.direccion ?? "",
+    precio: overrides?.precio ?? 0,
   };
 }
 
-export const CommunityForm = ({ onSubmit, initialData }: CommunityFormProps) => {
+export const CommunityForm = ({
+  onSubmit,
+  initialData,
+}: CommunityFormProps) => {
   const navigate = useNavigate();
   const { userProfile } = useUserContext();
 
@@ -41,8 +53,36 @@ export const CommunityForm = ({ onSubmit, initialData }: CommunityFormProps) => 
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "precio" ? Number(value) : value,
     }));
+  };
+
+  const handleDireccionChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const direccion = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      direccion: direccion,
+    }));
+
+    // Usamos la API de geocodificación para obtener lat/lon
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}`
+      );
+      const data = await response.json();
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
+        setFormData((prev) => ({
+          ...prev,
+          latitud: parseFloat(lat),
+          longitud: parseFloat(lon),
+        }));
+      }
+    } catch (error) {
+      console.error("Error obteniendo coordenadas:", error);
+    }
   };
 
   const handleSliderChange = (name: keyof LifestyleDTO, value: number) => {
@@ -80,13 +120,15 @@ export const CommunityForm = ({ onSubmit, initialData }: CommunityFormProps) => 
       </h2>
 
       <div>
-        <label className="block text-gray-700 mb-1">Nombre de la comunidad</label>
+        <label className="block text-gray-700 mb-1">
+          Nombre de la comunidad
+        </label>
         <input
           name="name"
           value={formData.name}
           onChange={handleChange}
           placeholder="Nombre"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2"
         />
       </div>
 
@@ -96,16 +138,16 @@ export const CommunityForm = ({ onSubmit, initialData }: CommunityFormProps) => 
           name="descripcion"
           value={formData.descripcion}
           onChange={handleChange}
-          placeholder="Ej: Somos un grupo tranquilo, valoramos la limpieza y disfrutamos compartir espacios comunes."
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Ej: Somos un grupo tranquilo..."
+          className="w-full border border-gray-300 rounded-lg px-4 py-2"
         />
         <small className="text-gray-500">
-          Describe brevemente el estilo de convivencia. Ej: "Buscamos un ambiente tranquilo, limpio y colaborativo".
+          Describe brevemente el estilo de convivencia.
         </small>
       </div>
 
       {[
-        { label: "Tranquilidad", name: "tranquilo" },
+        { label: "Tranquilidad", name: "tranquilidad" },
         { label: "Nivel de actividad", name: "actividad" },
         { label: "Importancia de limpieza", name: "limpieza" },
         { label: "Compartir espacios", name: "compartirEspacios" },
@@ -130,6 +172,55 @@ export const CommunityForm = ({ onSubmit, initialData }: CommunityFormProps) => 
           />
         </div>
       ))}
+
+      <div>
+        <label className="block text-gray-700 mb-1">Dirección</label>
+        <input
+          name="direccion"
+          value={formData.direccion}
+          onChange={handleDireccionChange}
+          placeholder="Ej: Calle Mayor 3, Granada"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2"
+        />
+      </div>
+
+      <div>
+        <label className="block text-gray-700 mb-1">
+          Precio por persona (€)
+        </label>
+        <input
+          type="number"
+          name="precio"
+          value={formData.precio}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2"
+        />
+      </div>
+      <div>
+        <label className="block text-gray-700 mb-1">Foto de la comunidad</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setFormData((prev) => ({
+                ...prev,
+                fotoFile: file, // archivo real para enviar
+                fotoUrl: URL.createObjectURL(file), // URL para vista previa
+              }));
+            }
+          }}
+          className="w-full"
+        />
+        {formData.fotoUrl && (
+          <img
+            src={formData.fotoUrl}
+            alt="Vista previa"
+            className="mt-2 rounded-xl max-h-40 object-cover"
+          />
+        )}
+      </div>
 
       <button
         type="submit"

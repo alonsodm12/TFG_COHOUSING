@@ -1,7 +1,7 @@
 // features/user/api/types.ts
 
 export interface LifestyleDTO {
-    tranquilo: number;
+    tranquilidad: number;
     actividad: number;
     limpieza: number;
     compartirEspacios: number;
@@ -9,12 +9,18 @@ export interface LifestyleDTO {
 }
 
 export interface UserProfile {
+    id?: number | null;
     username: string;
-    id: number;
-    password: string;
-    role: string;
     email: string;
+    password: string;
+    role: 'buscador' | 'ofertante';
+    direccion: string;
+    latitud: number;
+    longitud: number;
+    fotoUrl?: File | null; // <-- Añade esta propiedad?: string; // Se podría usar para mostrar la imagen después del registro
     lifestyleDTO: LifestyleDTO;
+    idComunidad: number | null;
+    comunidadesGuardadas: number[] | null;
 }
 
 export interface UserLogin {

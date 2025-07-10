@@ -1,55 +1,67 @@
 package com.gestioncomunidades.demo.models;
 
+import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Table(name = "communities")
 @Entity
+@Table(name = "communities")
 public class Community {
 
     @Id
-    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String descripcion;
 
     @Column(name = "sociabilidad")
-    int sociabilidad;
+    private int sociabilidad;
 
     @Column(name = "tranquilidad")
-    int tranquilidad;
+    private int tranquilidad;
 
-    @Column(name = "compartirEspacios")
-    int compartirEspacios;
+    @Column(name = "compartir_espacios")
+    private int compartirEspacios;
 
     @Column(name = "limpieza")
-    int limpieza;
+    private int limpieza;
 
     @Column(name = "actividad")
-    int actividad;
+    private int actividad;
 
-    @Column(name = "integrantes")
-    List<Long> integrantes;
+    @ElementCollection
+    @CollectionTable(name = "community_integrantes", joinColumns = @JoinColumn(name = "community_id"))
+    @Column(name = "integrante_id")
+    private List<Long> integrantes = new ArrayList<>();
 
-    @Column(name = "admin", unique = true, nullable = false)
-    Long idAdmin;
+    @Column(name = "admin", nullable = false)
+    private Long idAdmin;
 
-    public Community() {
-    }
+    @Column(name = "foto_url")
+    private String fotoUrl;
 
-    public Community(String name, String descripcion,Long idAdmin, int sociabilidad, int tranquilidad,
-            int compartirEspacios, int limpieza, int actividad) {
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
+
+    @Column(name = "direccion")
+    private String direccion;
+
+    @Column(name = "precio")
+    private Double precio;
+
+    // Constructor vacío
+    public Community() {}
+
+    // Constructor completo
+    public Community(String name, String descripcion, Long idAdmin, int sociabilidad, int tranquilidad,
+                     int compartirEspacios, int limpieza, int actividad, String fotoUrl, Double latitud, Double longitud, String direccion, Double precio) {
         this.name = name;
         this.descripcion = descripcion;
         this.idAdmin = idAdmin;
@@ -58,6 +70,11 @@ public class Community {
         this.compartirEspacios = compartirEspacios;
         this.limpieza = limpieza;
         this.actividad = actividad;
+        this.fotoUrl = fotoUrl;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.direccion = direccion;
+        this.precio = precio;
     }
 
     public Long getId() {
@@ -140,5 +157,42 @@ public class Community {
         this.idAdmin = idAdmin;
     }
 
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+    
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
+    
+    public String getDireccion() {
+        return direccion;
+    }
+    
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+    
+    public Double getLatitud() {
+        return latitud;
+    }
+    
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+    
+    public Double getLongitud() {
+        return longitud;
+    }
+    
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
 
+    public Double getPrecio(){
+        return this.precio;
+    }
+    public void setPrecio(Double precio){
+        this.precio = precio;
+    }
 }
