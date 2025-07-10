@@ -51,7 +51,7 @@ def recommend_communities_by_user(user, communities, n_recommendations=5):
     distances = []
     for i, community_scaled in enumerate(communities_scaled):
         if communities_clusters[i] == user_cluster:
-            dist = np.linalg.norm(community_scaled - user_center)
+            dist = np.linalg.norm(community_scaled - user_scaled[0])
             distances.append((i, dist))
 
     if not distances:

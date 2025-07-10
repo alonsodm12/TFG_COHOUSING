@@ -158,7 +158,6 @@ export const modificarDireccion = async (
     throw new Error("Error al modificar la dirección del usuario");
   }
 
-  return response.json();
 };
 
 export const obtenerComunidadesGuardadas = async (comunidadesIds: number[]) => {
