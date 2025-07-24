@@ -82,11 +82,13 @@ public class UserController {
                         0L,
                         userDTO.comunidadesGuardadas());
             }
-
+            
             User newUser = userService.registerUser(userDTO);
+            
+            String jwt = jwtUtil.generateToken(newUser.getUsername(), newUser.getRole());
 
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(Map.of("Usuario registrado correctamente", newUser.getUsername()));
+                    .body(Map.of("Token", new AuthResponse(jwt)));
 
         } catch (IllegalArgumentException e) {
 

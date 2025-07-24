@@ -28,6 +28,8 @@ export const CommunityUserPage = () => {
   const [taskIndex, setTaskIndex] = useState(0);
   const [eventoIndex, setEventoIndex] = useState(0);
 
+  //Carga los datos de la comunidad
+
   useEffect(() => {
     if (
       isUserLoading ||
@@ -45,11 +47,14 @@ export const CommunityUserPage = () => {
         setError(null);
       })
       .catch((err) => {
+        userProfile.idComunidad = null;
         setError("Error al cargar la comunidad");
         console.error(err);
       })
       .finally(() => setLoading(false));
   }, [userProfile]);
+
+  //Carga las tareas del usuario
 
   useEffect(() => {
     if (!userProfile?.id) return;
@@ -62,6 +67,8 @@ export const CommunityUserPage = () => {
         console.error("Error al cargar tareas", err);
       });
   }, [userProfile]);
+
+  //Carga los eventos del usuario
 
   useEffect(() => {
     if (!userProfile?.id) return;
@@ -88,6 +95,13 @@ export const CommunityUserPage = () => {
   const handleNext = () => {
     if (taskIndex + 2 < tasks.length) setTaskIndex(taskIndex + 2);
   };
+  const handlePrevEvento = () => {
+    if (eventoIndex >= 2) setEventoIndex(eventoIndex - 2);
+  };
+
+  const handleNextEvento = () => {
+    if (eventoIndex + 2 < eventos.length) setEventoIndex(eventoIndex + 2);
+  };
 
   if (!username) {
     return <p>Error: No se pudo obtener el nombre de usuario</p>;
@@ -97,7 +111,7 @@ export const CommunityUserPage = () => {
     return <p>Cargando perfil de usuario...</p>;
   }
 
-  if (userProfile?.idComunidad === 0) {
+  if (userProfile?.idComunidad === null) {
     return (
       <div id="root">
         <Header />
@@ -134,7 +148,7 @@ export const CommunityUserPage = () => {
           {/* Comunidad */}
           <section className="bg-white rounded-xl shadow-lg p-8 text-gray-800">
             <h1 className="text-4xl font-bold mb-4">
-              ¡Bienvenido a tu Comunidad!
+              ¡Bienvenido a tu comunidad {community?.name}!
             </h1>
             <img
               src={`http://localhost:8082${community?.fotoUrl}`}
@@ -200,30 +214,29 @@ export const CommunityUserPage = () => {
                 <button
                   onClick={handlePrev}
                   disabled={taskIndex === 0}
-                  className="p-2 bg-gray-200 rounded-full disabled:opacity-50"
+                  className="..."
                 >
                   ◀
                 </button>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
-                  {visibleTasks.map((task) => (
-                    <Link
-                      to={`/TFG_COHOUSING/Tarea/${task.id}`}
-                      key={task.id}
-                      className="bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl hover:bg-gray-200 block rounded-lg"
+                  {visibleTasks.map((tarea) => (
+                    <div
+                      key={tarea.id}
+                      className="bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl"
                     >
-                      <h3 className="font-bold text-lg text-blue-700 mb-2">
-                        {task.titulo}
+                      <h3 className="font-bold text-lg text-green-700 mb-2">
+                        {tarea.titulo}
                       </h3>
-                      <p className="text-gray-700">{task.descripcion}</p>
-                    </Link>
+                      <p className="text-gray-700">{tarea.descripcion}</p>
+                    </div>
                   ))}
                 </div>
 
                 <button
                   onClick={handleNext}
                   disabled={taskIndex + 2 >= tasks.length}
-                  className="p-2 bg-gray-200 rounded-full disabled:opacity-50"
+                  className="..."
                 >
                   ▶
                 </button>
@@ -246,24 +259,24 @@ export const CommunityUserPage = () => {
             </div>
 
             {eventos.length === 0 ? (
-              <p className="text-gray-600">No tienes eventos asignadas.</p>
+              <p className="text-gray-600">No tienes eventos asignados.</p>
             ) : (
               <div className="flex items-center gap-4">
                 <button
-                  onClick={handlePrev}
+                  onClick={handlePrevEvento}
                   disabled={eventoIndex === 0}
-                  className="p-2 bg-gray-200 rounded-full disabled:opacity-50"
+                  className="..."
                 >
                   ◀
                 </button>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
-                  {visibleTasks.map((evento) => (
+                  {eventos.slice(eventoIndex, eventoIndex + 2).map((evento) => (
                     <div
                       key={evento.id}
                       className="bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl"
                     >
-                      <h3 className="font-bold text-lg text-blue-700 mb-2">
+                      <h3 className="font-bold text-lg text-purple-700 mb-2">
                         {evento.titulo}
                       </h3>
                       <p className="text-gray-700">{evento.descripcion}</p>
@@ -272,9 +285,9 @@ export const CommunityUserPage = () => {
                 </div>
 
                 <button
-                  onClick={handleNext}
+                  onClick={handleNextEvento}
                   disabled={eventoIndex + 2 >= eventos.length}
-                  className="p-2 bg-gray-200 rounded-full disabled:opacity-50"
+                  className="..."
                 >
                   ▶
                 </button>

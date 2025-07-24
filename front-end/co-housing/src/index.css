@@ -37,8 +37,47 @@ body {
   flex: 1;
   display: flex;
   padding-top: 4rem;
-  background: url("/TFG_COHOUSING/images/Background.jpg") repeat-y;
+  background: linear-gradient(135deg, #cc95c0
+  , #dbd4b4, #7aa1d2);
   background-size: cover;
   flex-direction: column;
   align-items: center;
+}
+
+@keyframes spinBorder {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animated-border {
+  position: relative;
+  width: 115px;
+  height: 115px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.animated-border:hover {
+  transform: scale(1.1);
+}
+
+.animated-border::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #f1d1ff, #c1e6ff, #7facd8, #f1d1ff
+  );
+  z-index: 0;
+  animation: spinBorder 4s linear infinite;
+  mask: radial-gradient(farthest-side, transparent 84%, black 85%);
+  -webkit-mask: radial-gradient(farthest-side, transparent 84%, black 85%);
 }

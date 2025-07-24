@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { CommunityRecommended } from "../../community/api/type";
 import Button from "../../ui/Button/Button";
 import ButtonFunction from "../../ui/Button/ButtonFunction";
@@ -31,7 +31,7 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
     const fav = props.comunidadesGuardadas?.includes(props.id) || false;
     setIsFavorite(fav);
   }, [props.comunidadesGuardadas, props.id]);
-  
+
   const handleJoin = async () => {
     if (!props.username) {
       alert("No se pudo obtener el nombre de usuario.");
@@ -57,7 +57,6 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
       alert("Error al enviar la solicitud.");
     }
   };
-  
 
   const toggleFavorite = async () => {
     if (loadingFav) return; // evitar clicks rápidos
@@ -82,7 +81,7 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
       <button
         onClick={toggleFavorite}
         aria-label={isFavorite ? "Quitar de favoritos" : "Añadir a favoritos"}
-        className="absolute top-4 right-4 text-3xl transition-colors duration-300"
+        className="absolute top-4 right-4 text-4xl transition-colors duration-300"
         style={{
           userSelect: "none",
           cursor: loadingFav ? "not-allowed" : "pointer",
@@ -90,9 +89,11 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
           border: "none",
         }}
       >
-        {isFavorite ? "❤️" : "🤍"}
+        {isFavorite ? "❤️" : "🖤"}
       </button>
-
+      <div className="absolute top-4 left-4 w-16 h-16 flex items-center justify-center text-md font-bold text-white rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
+        {props.affinity}%
+      </div>
       {/* Imagen destacada */}
       {props.fotoUrl ? (
         <img
@@ -108,9 +109,6 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
 
       {/* Contenido principal */}
       <div className="p-6">
-        <p className="text-red-500 font-bold mb-2">
-          Afinidad: {props.affinity}%
-        </p>
         <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
           {props.name}
         </h2>

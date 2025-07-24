@@ -3,8 +3,12 @@ import { useUserContext } from "../../ui/Context/UserContext";
 const BodyHero: React.FC = () => {
   const { userProfile, isLoading } = useUserContext();
 
-  if (isLoading) return <p className="text-center text-gray-600">Cargando perfil...</p>;
-  if (!userProfile) return <p className="text-center text-red-500">No se pudo cargar el perfil</p>;
+  if (isLoading)
+    return <p className="text-center text-gray-600">Cargando perfil...</p>;
+  if (!userProfile)
+    return (
+      <p className="text-center text-red-500">No se pudo cargar el perfil</p>
+    );
 
   const items = [
     {
@@ -44,7 +48,7 @@ const BodyHero: React.FC = () => {
     },
     {
       role: null,
-      label: "⚙️",
+      label: "❓",
       text: "Dudas",
       to: "/TFG_COHOUSING/Dudas",
       angle: 300,
@@ -52,11 +56,11 @@ const BodyHero: React.FC = () => {
   ];
 
   return (
-    <div className="pt-20 pb-12 text-center min-h-screen">
-      <h1 className="text-5xl font-bold text-gray-900 dark:text-black mb-2">
+    <div className="pt-20 text-center">
+      <h1 className="text-5xl font-bold text-black mb-2">
         ¡Hola {userProfile.username}! 👋
       </h1>
-      <p className="text-lg text-gray-700 dark:text-gray-500">
+      <p className="text-lg dark:text-black-400">
         ¿Listo para conectar con tu comunidad?
       </p>
 
@@ -75,8 +79,11 @@ const BodyHero: React.FC = () => {
 
         {/* Ítems en círculo */}
         {items.map((item, index) => {
-          if ((item.role && item.role !== userProfile.role) ||
-          (item.text === "Crear Comunidad" && userProfile.idComunidad)) return null;
+          if (
+            (item.role && item.role !== userProfile.role) ||
+            (item.text === "Crear Comunidad" && userProfile.idComunidad)
+          )
+            return null;
 
           console.log(userProfile.idComunidad);
           const radius = 180; // radio del círculo
@@ -85,31 +92,38 @@ const BodyHero: React.FC = () => {
           const y = radius * Math.sin(angleRad);
 
           const colors = [
-            "bg-blue-100",
-            "bg-green-100",
-            "bg-yellow-100",
-            "bg-pink-100",
-            "bg-purple-100",
-            "bg-orange-100",
+            "bg-blue-200",
+            "bg-sky-200",
+            "bg-cyan-200",
+            "bg-indigo-200",
+            "bg-violet-200",
+            "bg-purple-200",
+            "bg-fuchsia-200",
           ];
           const bgColor = colors[index % colors.length];
 
           return (
-            <button
+            <div
               key={index}
-              onClick={() => (window.location.href = item.to)}
-              className={`absolute w-28 h-28 rounded-full ${bgColor} border-4 border-white-500 shadow-lg hover:shadow-2xl transform hover:scale-110 transition-all duration-300 flex flex-col items-center justify-center text-gray-700 dark:text-gray-900 font-semibold cursor-pointer select-none focus:outline-none focus:ring-4 focus:ring-indigo-400`}
+              className="absolute"
               style={{
                 top: `calc(50% + ${y}px - 56px)`,
                 left: `calc(50% + ${x}px - 56px)`,
               }}
-              aria-label={item.text}
-              title={item.text}
-              type="button"
             >
-              <span className="text-3xl">{item.label}</span>
-              <span className="mt-1 text-sm">{item.text}</span>
-            </button>
+              <div className="animated-border rounded-full">
+                <button
+                  onClick={() => (window.location.href = item.to)}
+                  className={`relative z-10 w-28 h-28 rounded-full ${bgColor} flex flex-col items-center justify-center text-black font-semibold shadow-md transition-all duration-300`}
+                  aria-label={item.text}
+                  title={item.text}
+                  type="button"
+                >
+                  <span className="text-3xl">{item.label}</span>
+                  <span className="mt-1 text-sm">{item.text}</span>
+                </button>
+              </div>
+            </div>
           );
         })}
       </div>

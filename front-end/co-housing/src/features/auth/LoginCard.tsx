@@ -106,12 +106,7 @@ export const LoginCard: React.FC = () => {
             </a>
           </p>
         </div>
-        <button
-          onClick={handleGoogleLogin}
-          className="bg-red-500 text-white px-4 py-2 rounded mt-4"
-        >
-          Iniciar sesión con Google
-        </button>
+
       </div>
     </div>
   );
