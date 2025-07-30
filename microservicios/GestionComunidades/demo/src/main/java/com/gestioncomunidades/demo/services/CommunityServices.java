@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ import com.gestioncomunidades.demo.models.Tarea;
 import com.gestioncomunidades.demo.repository.CommunityRepository;
 import com.gestioncomunidades.demo.repository.EventoRepository;
 import com.gestioncomunidades.demo.repository.TareaRepository;
-import java.util.stream.Collectors;
+
 import jakarta.transaction.Transactional;
 
 /*
@@ -564,4 +563,48 @@ public class CommunityServices {
                 community.getDireccion(),
                 community.getPrecio());
     }
+
+
+    public int obtenerPorcentajeTareasRealizadasGlobal(Long idComunidad) {
+        try {
+            List<Tarea> tareas = tareaRepository.findByidComunidad(idComunidad);
+            int totalTareas = tareas.size();
+            if (totalTareas == 0) return 0; // evitar división por cero
+    
+            int completadas = 0;
+            for (Tarea tarea : tareas) {
+                EstadoTarea estado = tarea.getEstado();
+                if (estado.equals(EstadoTarea.COMPLETADA))
+                    completadas++;
+            }
+    
+            return (int) ((double) completadas / totalTareas * 100);
+    
+        } catch (Exception e) {
+            System.out.println("Error calculando el porcentaje de tareas de la comunidad");
+            return 0;
+        }
+    }
+    
+    public int obtenerPorcentajeTareasRealizadasIndividual(Long idUsuario) {
+        try {
+            List<Tarea> tareas = tareaRepository.findByUsuariosParticipantes(idUsuario);
+            int totalTareas = tareas.size();
+            if (totalTareas == 0) return 0; // evitar división por cero
+    
+            int completadas = 0;
+            for (Tarea tarea : tareas) {
+                EstadoTarea estado = tarea.getEstado();
+                if (estado.equals(EstadoTarea.COMPLETADA))
+                    completadas++;
+            }
+    
+            return (int) ((double) completadas / totalTareas * 100);
+    
+        } catch (Exception e) {
+            System.out.println("Error calculando el porcentaje de tareas del usuario");
+            return 0;
+        }
+    }
+    
 }

@@ -5,14 +5,17 @@ import {
   fetchCommunityById,
   fetchEventosPorUsuario,
   fetchTareasPorUsuario,
+  getPorcentajeTareasComunidad,
+  getPorcentajeTareasUsuario,
 } from "../api/operations";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import { useUserContext } from "../../ui/Context/UserContext";
 import { CommunityProfile, Evento, Tarea } from "../api/type";
 import { Calendario } from "../components/Calendar";
-import { Link } from "react-router-dom";
+
 import ButtonFunction from "../../ui/Button/ButtonFunction";
+import BarraProgreso from "../components/BarraProgreso";
 
 export const CommunityUserPage = () => {
   const { userProfile, isLoading: isUserLoading } = useUserContext();
@@ -27,6 +30,12 @@ export const CommunityUserPage = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [taskIndex, setTaskIndex] = useState(0);
   const [eventoIndex, setEventoIndex] = useState(0);
+  const [porcentajeUsuario, setPorcentajeUsuario] = useState<number | null>(
+    null
+  );
+  const [porcentajeComunidad, setPorcentajeComunidad] = useState<number | null>(
+    null
+  );
 
   //Carga los datos de la comunidad
 
@@ -85,6 +94,31 @@ export const CommunityUserPage = () => {
   useEffect(() => {
     setResponseMessage(null);
   }, [community]);
+
+  useEffect(() => {
+    if (!userProfile?.id || !userProfile?.idComunidad) return;
+
+    // Porcentaje por usuario
+    getPorcentajeTareasUsuario(userProfile.id)
+      .then((data) => {
+        setPorcentajeUsuario(data.porcentaje); // suponiendo que devuelve { porcentaje: 67 }
+      })
+      .catch((err) => {
+        console.error("Error al cargar porcentaje de usuario", err);
+      });
+
+    // Porcentaje por comunidad
+    getPorcentajeTareasComunidad(userProfile.idComunidad)
+      .then((data) => {
+        setPorcentajeComunidad(data.porcentaje);
+      })
+      .catch((err) => {
+        console.error("Error al cargar porcentaje de comunidad", err);
+      });
+  }, [community]);
+
+//POR DIOS MIRAR QUE PONER AQUI USERPROFILE COMMUNITY O RECARGAR SIEMPRE QUE SE 
+//CARGA LA PAGINA
 
   const visibleTasks = tasks.slice(taskIndex, taskIndex + 2);
 
@@ -206,7 +240,23 @@ export const CommunityUserPage = () => {
                 Ver todas
               </button>
             </div>
-
+            {/* Aquí agregas la barra de progreso */}
+            {porcentajeUsuario !== null && (
+              <div className="mb-6">
+                <p className="mb-2 font-medium text-gray-700">
+                  Tu progreso de tareas:
+                </p>
+                <BarraProgreso porcentaje={porcentajeUsuario} />
+              </div>
+            )}
+            {porcentajeComunidad !== null && (
+              <div className="mb-6">
+                <p className="mb-2 font-medium text-gray-700">
+                  Tu progreso de tareas:
+                </p>
+                <BarraProgreso porcentaje={porcentajeComunidad} />
+              </div>
+            )}
             {tasks.length === 0 ? (
               <p className="text-gray-600">No tienes tareas asignadas.</p>
             ) : (
@@ -223,7 +273,8 @@ export const CommunityUserPage = () => {
                   {visibleTasks.map((tarea) => (
                     <div
                       key={tarea.id}
-                      className="bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl"
+                      onClick={() => navigate(`/TFG_COHOUSING/Tarea/${tarea.id}`)}
+                      className="cursor-pointer bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl"
                     >
                       <h3 className="font-bold text-lg text-green-700 mb-2">
                         {tarea.titulo}

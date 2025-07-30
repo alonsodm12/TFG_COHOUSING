@@ -1,6 +1,7 @@
 package com.gestioncomunidades.demo.controllers;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -134,67 +135,67 @@ public class CommunityController {
     }
 
     @PostMapping("/tarea")
-    public ResponseEntity<?> crearTarea(@RequestBody TareaDTO tareaDTO){
-        try{
+    public ResponseEntity<?> crearTarea(@RequestBody TareaDTO tareaDTO) {
+        try {
             Tarea tarea = this.communityServices.registrarTarea(tareaDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(tarea);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/tareas/comunidad/{idComunidad}")
-    public ResponseEntity<?> obtenerTareasUsuario(@PathVariable Long idComunidad){
-        try{
+    public ResponseEntity<?> obtenerTareasUsuario(@PathVariable Long idComunidad) {
+        try {
             List<TareaDTO> tareas = communityServices.obtenerTareasComunidad(idComunidad);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(tareas);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/eventos/comunidad/{idComunidad}")
-    public ResponseEntity<?> obtenerEventosComunidad(@PathVariable Long idComunidad){
-        try{
+    public ResponseEntity<?> obtenerEventosComunidad(@PathVariable Long idComunidad) {
+        try {
             List<EventoDTO> eventos = communityServices.obtenerEventosComunidad(idComunidad);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(eventos);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PostMapping("/evento")
-    public ResponseEntity<?> crearEvento(@RequestBody EventoDTO eventoDTO){
-        try{
+    public ResponseEntity<?> crearEvento(@RequestBody EventoDTO eventoDTO) {
+        try {
             Evento evento = this.communityServices.registrarEvento(eventoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(evento);
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PatchMapping("/completarTarea/{idTarea}")
-    public ResponseEntity<?> completarTarea(@PathVariable Long idTarea){
-        try{
+    public ResponseEntity<?> completarTarea(@PathVariable Long idTarea) {
+        try {
             communityServices.marcarTareaCompletada(idTarea);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @PatchMapping("/enProgresoTarea/{idTarea}")
-    public ResponseEntity<?> enProgresoTarea(@PathVariable Long idTarea){
-        try{
+    public ResponseEntity<?> enProgresoTarea(@PathVariable Long idTarea) {
+        try {
             communityServices.marcarTareaProgreso(idTarea);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/tareas/{idUsuario}")
-    public ResponseEntity<?> getTareasByUsuario(@PathVariable Long idUsuario){
+    public ResponseEntity<?> getTareasByUsuario(@PathVariable Long idUsuario) {
         List<TareaDTO> tareas = communityServices.obtenerTareasUsuario(idUsuario);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(tareas);
@@ -202,35 +203,35 @@ public class CommunityController {
     }
 
     @GetMapping("/eventos/{idUsuario}")
-    public ResponseEntity<?> getEventosByUsuario(@PathVariable Long idUsuario){
+    public ResponseEntity<?> getEventosByUsuario(@PathVariable Long idUsuario) {
         List<EventoDTO> eventos = communityServices.obtenerEventosUsuarioComunidad(idUsuario);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(eventos);
     }
 
     @GetMapping("tarea/{idTarea}")
-    public ResponseEntity<?> consultarTarea(@PathVariable Long idTarea){
+    public ResponseEntity<?> consultarTarea(@PathVariable Long idTarea) {
         TareaDTO tarea = communityServices.obtenerTarea(idTarea);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(tarea);
     }
 
     @GetMapping("evento/{idEvento}")
-    public ResponseEntity<?> consultarEvento(@PathVariable Long idEvento){
+    public ResponseEntity<?> consultarEvento(@PathVariable Long idEvento) {
         EventoDTO evento = communityServices.obtenerEvento(idEvento);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(evento);
     }
 
     @PatchMapping("tarea/modificarFecha/{idTarea}")
-    public ResponseEntity<?> modificarFecha(@PathVariable Long idTarea, @RequestBody FechaDTO fecha){
-        
-        try{
+    public ResponseEntity<?> modificarFecha(@PathVariable Long idTarea, @RequestBody FechaDTO fecha) {
+
+        try {
             communityServices.establecerFechaTarea(idTarea, fecha.getFecha());
             communityServices.marcarTareaProgreso(idTarea);
             return ResponseEntity.status(HttpStatus.OK).build();
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        
+
     }
 
     @PostMapping("/filterPorId")
@@ -238,7 +239,31 @@ public class CommunityController {
         try {
             List<CommunityDTO> comunidades = communityServices.obtenerComunidadesIds(idsComunidades);
             return ResponseEntity.status(HttpStatus.OK).body(comunidades);
-        } catch(Exception e) {
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/porcentajeTareasUsuario/{idUsuario}")
+    public ResponseEntity<?> obtenerPorcentajeTareasUsuario(@PathVariable Long idUsuario) {
+        try {
+            int porcentaje = communityServices.obtenerPorcentajeTareasRealizadasIndividual(idUsuario);
+            Map<String, Integer> respuesta = new HashMap<>();
+            respuesta.put("porcentaje", porcentaje);
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/porcentajeTareasComunidad/{idComunidad}")
+    public ResponseEntity<?> obtenerPorcentajeTareasComunidad(@PathVariable Long idComunidad) {
+        try {
+            int porcentaje = communityServices.obtenerPorcentajeTareasRealizadasGlobal(idComunidad);
+            Map<String, Integer> respuesta = new HashMap<>();
+            respuesta.put("porcentaje", porcentaje);
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

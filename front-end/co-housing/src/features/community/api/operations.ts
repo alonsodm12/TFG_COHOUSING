@@ -224,3 +224,31 @@ export const formatLocalDateTime = (date: Date): string => {
     date.getDate()
   )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
+
+export const getPorcentajeTareasUsuario = async (idUsuario: number ) => {
+  const response = await fetch(`${API_BASE}/porcentajeTareasUsuario/${idUsuario}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error("Error al obtener el porcentaje de tareas del usuario");
+  }
+  return await response.json();
+};
+
+export const getPorcentajeTareasComunidad = async (idComunidad: number ) => {
+  const response = await fetch(`${API_BASE}/porcentajeTareasUsuario/${idComunidad}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error("Error al obtener el porcentaje de tareas del usuario");
+  }
+  return await response.json();
+};
