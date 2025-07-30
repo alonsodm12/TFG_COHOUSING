@@ -53,7 +53,8 @@ export const UserProfilePage = () => {
     <h2 className="text-3xl font-extrabold text-blue-900  mb-6">
       Perfil de Usuario
     </h2>
-    <div className="bg-white text-black dark:text-white w-full max-w-3xl rounded-xl shadow-md p-8">
+    <div className="bg-white/40 backdrop-blur-3xl text-black dark:text-white w-full max-w-3xl rounded-xl shadow-md p-8">
+
 
       {userProfile.fotoUrl ? (
         <img

@@ -1,18 +1,15 @@
 package com.gestioncomunidades.demo.services;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.DTOs.NotificacionRepartoDTO;
-import com.gestioncomunidades.demo.DTOs.UpdateUserCommunityDTO;
+
 import com.gestioncomunidades.demo.config.RabbitMQConfig;
 import com.gestioncomunidades.demo.models.Community;
 import com.gestioncomunidades.demo.models.Tarea;
@@ -36,33 +33,40 @@ public class ActividadesService {
 
     @Transactional
     public void repartirTareasCiclico(Long idComunidad) {
-        List<Long> usuarios = communityRepository.findById(idComunidad)
-            .map(Community::getIntegrantes)
-            .orElse(Collections.emptyList());
+        
+        Community comunidad = communityRepository.findById(idComunidad).get();
+
+        List<Long> usuarios = comunidad.getIntegrantes();
+
         if (usuarios.isEmpty()) return;
 
+        usuarios.sort(Comparator.naturalOrder()); // Asegura orden consistente
+
         List<Tarea> tareas = tareaRepository.findByidComunidad(idComunidad);
+        if (tareas.isEmpty()) return;
+
+        int totalUsuarios = usuarios.size();
+
+        int indiceRotacion = comunidad.getIndiceRotacion();
+        int indiceActual = indiceRotacion;
 
         for (Tarea tarea : tareas) {
-            List<Long> usuariosAsignados = tarea.getUsuariosParticipantes();
-            List<Long> nuevosUsuariosAsignados = new ArrayList<>();
+            int numParticipantes = Math.min(tarea.getNumParticipantes(), totalUsuarios);
+            List<Long> nuevosAsignados = new ArrayList<>();
 
-            if (usuariosAsignados == null || usuariosAsignados.isEmpty()) {
-                int cantidad = Math.min(tarea.getNumParticipantes(), usuarios.size());
-                nuevosUsuariosAsignados.addAll(usuarios.subList(0, cantidad));
-            } else {
-                for (Long usuario : usuariosAsignados) {
-                    int indiceActual = usuarios.indexOf(usuario);
-                    int indiceSiguiente = (indiceActual == -1) ? 0 : (indiceActual + 1) % usuarios.size();
-                    Long siguienteUsuario = usuarios.get(indiceSiguiente);
-                    nuevosUsuariosAsignados.add(siguienteUsuario);
-                }
+            for (int i = 0; i < numParticipantes; i++) {
+                int idx = (indiceActual + i) % totalUsuarios;
+                nuevosAsignados.add(usuarios.get(idx));
             }
 
-            tarea.setUsuariosParticipantes(nuevosUsuariosAsignados);
+            indiceActual = (indiceActual + numParticipantes) % totalUsuarios;
 
+            tarea.setUsuariosParticipantes(nuevosAsignados);
+            tarea.setFechaTope(null);
             tareaRepository.save(tarea);
         }
+
+        comunidad.setIndiceRotacion(indiceRotacion);
     }
 
 
@@ -70,24 +74,19 @@ public class ActividadesService {
     @Transactional
     public void repartirTareasSemanalmente() {
         List<Community> comunidades = communityRepository.findAll();
-        System.out.println("Funcionó el reparto");
-    
+
         for (Community comunidad : comunidades) {
-            // Lógica de reparto interno
             repartirTareasCiclico(comunidad.getId());
-    
-            // Obtener IDs de usuarios integrantes
+
             List<Long> idUsuarios = new ArrayList<>(comunidad.getIntegrantes());
-    
-            // Crear el payload de notificación
+
             NotificacionRepartoDTO payload = new NotificacionRepartoDTO(
                 comunidad.getId(),
                 comunidad.getName(),
                 "Se ha realizado el reparto de tareas en tu comunidad",
                 idUsuarios
             );
-    
-            // Enviar el evento por RabbitMQ
+
             rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE_NAME,
                 RabbitMQConfig.REPARTO_TAREAS_ROUTING_KEY,

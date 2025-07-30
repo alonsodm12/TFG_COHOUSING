@@ -22,7 +22,6 @@ export const Body: React.FC = () => {
             alt="Imagen 1"
             className={styles.image2}
           />
-          
         </div>
       </div>
       <section className="w-full text-black py-20 px-6 text-center ">
@@ -43,44 +42,45 @@ export const Body: React.FC = () => {
         </div>
       </section>
       <Button label="EMPEZAR YA" to="/TFG_COHOUSING/registro" />
-      <section className="w-full py-20 px-6 text-center bg-white-100 dark:bg-gray-800 rounded-lg mt-16">
-        <h2 className="text-4xl font-bold mb-10 text-gray-900 dark:text-white">
+
+      <section className="max-w-5xl mx-auto py-20 px-8 text-center bg-white/40 dark:bg-white/10 backdrop-blur-2xl border border-white/30 rounded-2xl mt-20 shadow-2xl">
+        <h2 className="font-bold text-5xl mb-14 text-gray-800 dark:text-black">
           Conoce las características de cada rol
         </h2>
-        <div className="flex flex-col items-center gap-10">
+
+        <div className="flex flex-col gap-12 items-center">
           {/* Tarjeta Usuario Buscador */}
           <CardHorizontal
             photoUrl="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=150&q=80"
             title="Usuario Buscador"
             description={
-              <>
-                <ul className="list-disc ml-5 mt-2 space-y-1">
-                  <li>Buscar comunidades activas.</li>
-                  <li>Filtrar por ubicación, tamaño y servicios.</li>
-                  <li>Contactar con creadores y miembros.</li>
-                  <li>Guardar comunidades favoritas.</li>
-                </ul>
-              </>
+              <ul className="list-disc ml-6 text-left text-gray-700 dark:text-gray-300 space-y-2">
+                <li>Buscar comunidades activas.</li>
+                <li>Filtrar por ubicación, tamaño y servicios.</li>
+                <li>Contactar con creadores y miembros.</li>
+                <li>Guardar comunidades favoritas.</li>
+              </ul>
             }
           />
+
+          <div className="h-[1px] bg-gray-300 dark:bg-gray-600 w-full opacity-40"></div>
 
           {/* Tarjeta Usuario Ofertante */}
           <CardHorizontal
             photoUrl="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=150&q=80"
             title="Usuario Ofertante"
             description={
-              <>
-                <ul className="list-disc ml-5 mt-2 space-y-1">
-                  <li>Publicar nuevas comunidades.</li>
-                  <li>Gestionar solicitudes y miembros.</li>
-                  <li>Organizar eventos y actividades.</li>
-                  <li>Actualizar información y servicios.</li>
-                </ul>
-              </>
+              <ul className="list-disc ml-6 text-left text-gray-700 dark:text-gray-300 space-y-2">
+                <li>Publicar nuevas comunidades.</li>
+                <li>Gestionar solicitudes y miembros.</li>
+                <li>Organizar eventos y actividades.</li>
+                <li>Actualizar información y servicios.</li>
+              </ul>
             }
           />
         </div>
       </section>
+
       {/* Carrusel de imágenes estáticas */}
       <h1 className="w-full text-black py-16 text-center text-5xl font-bold">
         ¡Descubre todo lo que ofrece ShareHouse!

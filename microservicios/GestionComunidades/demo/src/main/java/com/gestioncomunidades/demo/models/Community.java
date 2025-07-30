@@ -51,10 +51,15 @@ public class Community {
     private Double longitud;
 
     @Column(name = "direccion")
-    private String direccion;
+    private String direccion; 
 
     @Column(name = "precio")
     private Double precio;
+
+    @Column(name = "indiceRotacion")
+    private int indiceRotacion = 0;
+
+
 
     // Constructor vacío
     public Community() {}
@@ -195,4 +200,12 @@ public class Community {
     public void setPrecio(Double precio){
         this.precio = precio;
     }
+    public int getIndiceRotacion() {
+        return indiceRotacion;
+    }
+
+    public void setIndiceRotacion(int indiceRotacion) {
+        this.indiceRotacion = indiceRotacion;
+    }
+    
 }
