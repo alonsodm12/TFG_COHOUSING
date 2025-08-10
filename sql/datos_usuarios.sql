@@ -35,56 +35,56 @@ INSERT INTO users(
     (6, 'laura', 'laura@gmail.com',
     '$2a$12$5AZo/R8kMA//SA.ksr.ntOV6YnE3E9ReyesUZhXo.02LDTs76d/k6',
     '/uploads/1752338972556_usuario_1.jpg', 37.1710000, -3.6100000,
-    'Realejo, Granada', true, 'ofertante', 2, 2, 3, 5, 4, 1),
+    'Realejo, Granada', true, 'buscador', 2, 2, 3, 5, 4, 1),
 
     (7, 'pedro', 'pedro@gmail.com',
     '$2a$12$KGtA9nt0kHbuthIBK76XR.uLQsZSS7U9c4vYha9Vd1dg1tFBD8UdK',
     '/uploads/1752338972556_usuario_1.jpg', 37.1690000, -3.6150000,
-    'Zaidin, Granada', true, 'buscador', 5, 1, 4, 2, 3, 3),
+    'Zaidin, Granada', true, 'ofertante', 5, 1, 4, 2, 3, 3),
 
     (8, 'ana', 'ana@gmail.com',
     '$2a$12$7L0EaWdxFwoGqJJsvQ9KSe235TtRy3/GsjQksjQRNj3lcsKIr12DS',
     '/uploads/1752338972556_usuario_1.jpg', 37.1720000, -3.6200000,
-    'Sacromonte, Granada', true, 'buscador', 4, 4, 4, 4, 4, 1),
+    'Sacromonte, Granada', true, 'buscador', 4, 4, 4, 4, 4, 3),
 
     (9, 'carlos', 'carlos@gmail.com',
     '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja',
     '/uploads/1752338972556_usuario_1.jpg', 37.1705000, -3.6180000,
-    'Cartuja, Granada', true, 'ofertante', 3, 3, 3, 3, 3, 2),
+    'Cartuja, Granada', true, 'buscador', 3, 3, 3, 3, 3, 10),
 
-    (10, 'marta', 'marta@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1600000, -3.6200000, 'Calle Elvira, Granada', true, 'buscador', 3, 4, 5, 3, 4, 1),
+    (10, 'marta', 'marta@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1600000, -3.6200000, 'Calle Elvira, Granada', true, 'buscador', 3, 4, 5, 3, 4, 4),
 
-    (11, 'luis', 'luis@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1650000, -3.6100000, 'Alhambra, Granada', true, 'ofertante', 4, 3, 4, 5, 2, 2),
+    (11, 'luis', 'luis@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1650000, -3.6100000, 'Alhambra, Granada', true, 'ofertante', 4, 3, 4, 5, 2, 4),
 
-    (12, 'silvia', 'silvia@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1700000, -3.6000000, 'Realejo, Granada', true, 'buscador', 5, 5, 5, 5, 5, 3),
+    (12, 'silvia', 'silvia@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1700000, -3.6000000, 'Realejo, Granada', true, 'buscador', 5, 5, 5, 5, 5, 5),
 
-    (13, 'daniel', 'daniel@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1800000, -3.5950000, 'Centro, Granada', true, 'ofertante', 3, 2, 4, 3, 3, 3),
+    (13, 'daniel', 'daniel@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1800000, -3.5950000, 'Centro, Granada', true, 'ofertante', 3, 2, 4, 3, 3, 5),
 
-    (14, 'elena', 'elena@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1770000, -3.6050000, 'Zaidin, Granada', true, 'buscador', 4, 3, 4, 4, 4, 1),
+    (14, 'elena', 'elena@gmail.com', '$2a$12$l5MNrXPvOkAQu9ad.rgbguGglodbCSffFfTux9Y0e9ywhjzVaUAja', '/uploads/1752338972556_usuario_1.jpg', 37.1770000, -3.6050000, 'Zaidin, Granada', true, 'buscador', 4, 3, 4, 4, 4, 4),
 
     (15, 'ines', 'ines@gmail.com',
     '$2a$12$abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg',
     '/uploads/1752338972556_usuario_1.jpg', 37.1660000, -3.6020000,
-    'Calle Recogidas, Granada', true, 'ofertante', 4, 5, 3, 5, 4, 2),
+    'Calle Recogidas, Granada', true, 'ofertante', 4, 5, 3, 5, 4, 6),
 
     (16, 'rafa', 'rafa@gmail.com',
     '$2a$12$abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg',
     '/uploads/1752338972556_usuario_1.jpg', 37.1680000, -3.6105000,
-    'Calle San Antón, Granada', true, 'ofertante', 3, 3, 4, 4, 3, 1),
+    'Calle San Antón, Granada', true, 'ofertante', 3, 3, 4, 4, 3, 7),
 
     (17, 'claudia', 'claudia@gmail.com',
     '$2a$12$abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg',
     '/uploads/1752338972556_usuario_1.jpg', 37.1708000, -3.6120000,
-    'Avenida de la Constitución, Granada', true, 'ofertante', 5, 4, 5, 4, 5, 2),
+    'Avenida de la Constitución, Granada', true, 'ofertante', 5, 4, 5, 4, 5, 8),
 
     (18, 'david', 'david@gmail.com',
     '$2a$12$abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg',
     '/uploads/1752338972556_usuario_1.jpg', 37.1610000, -3.6250000,
-    'Camino de Ronda, Granada', true, 'ofertante', 2, 3, 3, 3, 2, 3),
+    'Camino de Ronda, Granada', true, 'ofertante', 2, 3, 3, 3, 2, 9),
 
     (19, 'paula', 'paula@gmail.com',
     '$2a$12$abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg',
     '/uploads/1752338972556_usuario_1.jpg', 37.1733000, -3.6160000,
-    'Paseo del Salón, Granada', true, 'ofertante', 5, 5, 5, 5, 5, 1);
+    'Paseo del Salón, Granada', true, 'ofertante', 5, 5, 5, 5, 5, 10);
 
 

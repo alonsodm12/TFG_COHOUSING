@@ -9,6 +9,7 @@ export interface LifestyleDTO {
 }
 
 export interface CommunityProfile {
+  id: number
   name: string;
   descripcion: string;
   idAdmin: number;
@@ -20,6 +21,7 @@ export interface CommunityProfile {
   longitud: number;
   direccion: string;
   precio: number;
+  num_integrantes: number
 }
 
 export interface CommunityRecommended {

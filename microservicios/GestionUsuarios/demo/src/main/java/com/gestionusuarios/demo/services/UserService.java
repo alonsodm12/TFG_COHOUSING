@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gestionusuarios.demo.DTOs.DatosPerfilDTO;
+import com.gestionusuarios.demo.DTOs.LifestyleDTO;
 import com.gestionusuarios.demo.DTOs.UpdateUserCommunityDTO;
 import com.gestionusuarios.demo.DTOs.UserDTO;
 import com.gestionusuarios.demo.DTOs.UserUpdateDTO;
@@ -258,5 +259,18 @@ public class UserService {
         usuario.setLongitud(longitud);
 
         userRepository.save(usuario);
+    }
+
+    public List<UserDTO> obtenerUsuariosComunidad(Long idComunidad){
+        List<User> usuarios = userRepository.findByIdComunidad(idComunidad).orElseThrow(() -> new RuntimeException("Usuarios no encontrados"));
+        
+        List<UserDTO> usuariosFiltrados = new ArrayList<>();
+        for(User usuario : usuarios){
+            LifestyleDTO lifestyleDTO = new LifestyleDTO(usuario.getTranquilidad(), usuario.getActividad(), usuario.getLimpieza(), usuario.getCompartirEspacios(), usuario.getSociabilidad());
+            UserDTO user = new UserDTO(usuario.getUsername(),usuario.getId(),usuario.getPassword(),usuario.getRole(),usuario.getEmail(),usuario.getDireccion(),usuario.getLatitud(),usuario.getLongitud(),usuario.getFotoUrl(),lifestyleDTO,usuario.getIdComunidad(),usuario.getComunidadesGuardadas());
+            usuariosFiltrados.add(user);
+        }
+        
+        return usuariosFiltrados;
     }
 }

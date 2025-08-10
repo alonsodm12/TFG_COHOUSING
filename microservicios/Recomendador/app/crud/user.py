@@ -8,3 +8,8 @@ def get_user_by_id(db: Session, user_id: int):
 
 def get_all_communities(db: Session):
     return db.query(CommunityBase).all()
+
+def get_incomplete_communities(db: Session):
+    all_communities = db.query(CommunityBase).all()
+    incomplete = [c for c in all_communities if c.numero_integrantes > len(c.integrantes)]
+    return incomplete

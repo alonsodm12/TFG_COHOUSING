@@ -258,4 +258,14 @@ public class UserController {
 
     }
 
+    @GetMapping("/obtenerUsuariosPorComunidad/{idComunidad}")
+    public ResponseEntity<?> obtenerUsuariosPorComunidad(@PathVariable Long idComunidad){
+        try{
+            List<UserDTO> usuarios = userService.obtenerUsuariosComunidad(idComunidad);
+            return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

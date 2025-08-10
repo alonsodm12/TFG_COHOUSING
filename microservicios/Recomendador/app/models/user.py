@@ -18,4 +18,5 @@ class User(BaseUsers):
     compartir_espacios = Column(Integer)
     limpieza = Column(Integer)
     actividad = Column(Integer)
+    id_comunidad = Column(BigInteger)
 

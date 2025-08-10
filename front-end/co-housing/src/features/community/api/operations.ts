@@ -252,3 +252,46 @@ export const getPorcentajeTareasComunidad = async (idComunidad: number ) => {
   }
   return await response.json();
 };
+
+export const deleteEliminarUsuario = async (idUsuario: number, idComunidad: number ) => {
+  const response = await fetch(`${API_BASE}/eliminarUsuario/${idUsuario}/${idComunidad}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error("Error al salir de la comunidad");
+  }
+  return await response.json();
+}
+
+export const deleteEliminarComunidad = async (idComunidad: number ) => {
+  const response = await fetch(`${API_BASE}/delete/${idComunidad}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error("Error al eliminar la comunidad");
+  }
+}
+
+
+export const obtenerUsuariosDeComunidad = async (idComunidad: number ) => {
+  const response = await fetch(`http://localhost:8084/user/obtenerUsuariosPorComunidad/${idComunidad}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error("Error al obtener los usuarios de una comunidad");
+  }
+
+  return await response.json();
+}

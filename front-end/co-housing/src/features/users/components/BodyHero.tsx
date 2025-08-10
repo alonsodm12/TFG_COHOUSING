@@ -56,7 +56,7 @@ const BodyHero: React.FC = () => {
   ];
 
   return (
-    <div className="pt-20 text-center">
+    <div className="pt-10 text-center">
       <h1 className="text-5xl font-bold text-black mb-2">
         ¡Hola {userProfile.username}! 👋
       </h1>

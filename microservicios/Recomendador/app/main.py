@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.database import get_db_users, get_db_communities
 from app.crud.user import get_user_by_id
-from app.crud.user import get_all_communities
+from app.crud.user import get_incomplete_communities
 from app.recommendation.recommendation import recommend_communities_by_user
 from typing import List
 from app.schemas.community_schema import CommunitySchema
@@ -30,8 +30,14 @@ def get_recommendations(user_id: int, db_users: Session = Depends(get_db_users),
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    communities = get_all_communities(db_communities)
-    recommended_communities = recommend_communities_by_user(user, communities)
+    communities = get_incomplete_communities(db_communities)
+
+    communities_without_user = []
+    for community in communities:
+        if(community.id != user.id_comunidad or user.id_comunidad==None):
+            communities_without_user.append(community)
+
+    recommended_communities = recommend_communities_by_user(user, communities_without_user)
     
     return recommended_communities
 
@@ -56,11 +62,16 @@ def get_recommendations_filtered(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    communities = get_all_communities(db_communities)
+    communities = get_incomplete_communities(db_communities)
+
+    communities_without_user = []
+    for community in communities:
+        if(community.id != user.id_comunidad):
+            communities_without_user.append(community)
 
     # Filtrar comunidades por distancia y precio
     filtered_communities = []
-    for community in communities:
+    for community in communities_without_user:
         if (
             community.latitud is not None and community.longitud is not None and
             user.latitud is not None and user.longitud is not None

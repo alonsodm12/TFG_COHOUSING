@@ -116,7 +116,7 @@ const Recommendations: React.FC = () => {
     <div id="root" className="min-h-screen bg-gray-50">
       <Header />
       <main className="page px-4 py-8">
-        <h1 className="text-5xl font-extrabold mb-10 text-center text-white">
+        <h1 className="text-5xl font-extrabold mb-10 text-center text-black">
           Comunidades Recomendadas
         </h1>
 
@@ -222,7 +222,7 @@ const Recommendations: React.FC = () => {
         <div className="flex gap-6 items-center mt-4">
           <button
             onClick={handlePrev}
-            className="bg-indigo-500 hover:bg-indigo-600 text-white text-lg font-bold px-5 py-2 rounded-full transition-transform hover:scale-110"
+            className="bg-gray-800 hover:bg-gray-600 text-white text-lg font-bold px-5 py-2 rounded-full transition-transform hover:scale-110"
           >
             ◀
           </button>
@@ -239,6 +239,7 @@ const Recommendations: React.FC = () => {
                   {...communities[currentIndex]}
                   userId={id ? parseFloat(id) : 0}
                   username={userProfile?.username || ""}
+                  idComunidad={userProfile?.idComunidad || null}
                   onJoinSuccess={handleCommunityJoined}
                   comunidadesGuardadas={
                     userProfile?.comunidadesGuardadas || null
@@ -257,7 +258,7 @@ const Recommendations: React.FC = () => {
           )}{" "}
           <button
             onClick={handleNext}
-            className="bg-indigo-500 hover:bg-indigo-600 text-white text-lg font-bold px-5 py-2 rounded-full transition-transform hover:scale-110"
+            className="bg-gray-800 hover:bg-gray-600 text-white text-lg font-bold px-5 py-2 rounded-full transition-transform hover:scale-110"
           >
             ▶
           </button>

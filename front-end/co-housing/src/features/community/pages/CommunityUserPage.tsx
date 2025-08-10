@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUsernameFromToken } from "../../authUtils";
 import {
+  completarTarea,
+  deleteEliminarComunidad,
+  deleteEliminarUsuario,
+  enProgresoTarea,
   fetchCommunityById,
   fetchEventosPorUsuario,
   fetchTareasPorUsuario,
@@ -14,8 +18,9 @@ import { useUserContext } from "../../ui/Context/UserContext";
 import { CommunityProfile, Evento, Tarea } from "../api/type";
 import { Calendario } from "../components/Calendar";
 
-import ButtonFunction from "../../ui/Button/ButtonFunction";
 import BarraProgreso from "../components/BarraProgreso";
+import Modal from "../components/Modal";
+import TaskModal from "../components/ModalTarea";
 
 export const CommunityUserPage = () => {
   const { userProfile, isLoading: isUserLoading } = useUserContext();
@@ -36,21 +41,54 @@ export const CommunityUserPage = () => {
   const [porcentajeComunidad, setPorcentajeComunidad] = useState<number | null>(
     null
   );
+  const [menuOpen, setMenuOpen] = useState(false);
 
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   //Carga los datos de la comunidad
-
+  const openTaskModal = (tarea) => {
+    setSelectedTask(tarea);
+    setIsModalOpen(true);
+  };
+  // 1. useEffect - Datos del usuario
   useEffect(() => {
-    if (
-      isUserLoading ||
-      !userProfile?.idComunidad ||
-      userProfile.idComunidad === 0
-    ) {
+    const userId = userProfile?.id;
+    const comunidadId = userProfile?.idComunidad;
+
+    if (!userId) return;
+
+    // Tareas
+    fetchTareasPorUsuario(userId)
+      .then((data) => setTasks(data || []))
+      .catch((err) => console.error("Error al cargar tareas", err));
+
+    // Eventos
+    fetchEventosPorUsuario(userId)
+      .then((data) => setEventos(data || []))
+      .catch((err) => console.error("Error al cargar eventos", err));
+
+    // Porcentaje del usuario
+    getPorcentajeTareasUsuario(userId)
+      .then((data) => setPorcentajeUsuario(data.porcentaje))
+      .catch((err) =>
+        console.error("Error al cargar porcentaje de usuario", err)
+      );
+  }, [userProfile?.id]);
+
+  // 2. useEffect - Datos de la comunidad
+  useEffect(() => {
+    const comunidadId = userProfile?.idComunidad;
+
+    if (isUserLoading || !comunidadId || comunidadId === 0) {
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    fetchCommunityById(userProfile.idComunidad.toString())
+    fetchCommunityById(comunidadId.toString())
       .then((data) => {
         setCommunity(data);
         setError(null);
@@ -61,64 +99,29 @@ export const CommunityUserPage = () => {
         console.error(err);
       })
       .finally(() => setLoading(false));
-  }, [userProfile]);
+  }, [userProfile?.idComunidad, isUserLoading]);
 
-  //Carga las tareas del usuario
-
+  // 3. useEffect - Porcentaje de comunidad + limpiar mensaje
   useEffect(() => {
-    if (!userProfile?.id) return;
+    const comunidadId = userProfile?.idComunidad;
 
-    fetchTareasPorUsuario(userProfile.id)
-      .then((data) => {
-        setTasks(data || []);
-      })
-      .catch((err) => {
-        console.error("Error al cargar tareas", err);
-      });
-  }, [userProfile]);
+    if (!comunidadId) return;
 
-  //Carga los eventos del usuario
-
-  useEffect(() => {
-    if (!userProfile?.id) return;
-
-    fetchEventosPorUsuario(userProfile.id)
-      .then((data) => {
-        setEventos(data || []);
-      })
-      .catch((err) => {
-        console.error("Error al cargar tareas", err);
-      });
-  }, [userProfile]);
-
-  useEffect(() => {
+    // Limpiar mensaje de respuesta al cambiar comunidad
     setResponseMessage(null);
+
+    // Cargar porcentaje de comunidad
+    getPorcentajeTareasComunidad(comunidadId)
+      .then((data) => setPorcentajeComunidad(data.porcentaje))
+      .catch((err) =>
+        console.error("Error al cargar porcentaje de comunidad", err)
+      );
   }, [community]);
 
-  useEffect(() => {
-    if (!userProfile?.id || !userProfile?.idComunidad) return;
+  const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
-    // Porcentaje por usuario
-    getPorcentajeTareasUsuario(userProfile.id)
-      .then((data) => {
-        setPorcentajeUsuario(data.porcentaje); // suponiendo que devuelve { porcentaje: 67 }
-      })
-      .catch((err) => {
-        console.error("Error al cargar porcentaje de usuario", err);
-      });
-
-    // Porcentaje por comunidad
-    getPorcentajeTareasComunidad(userProfile.idComunidad)
-      .then((data) => {
-        setPorcentajeComunidad(data.porcentaje);
-      })
-      .catch((err) => {
-        console.error("Error al cargar porcentaje de comunidad", err);
-      });
-  }, [community]);
-
-//POR DIOS MIRAR QUE PONER AQUI USERPROFILE COMMUNITY O RECARGAR SIEMPRE QUE SE 
-//CARGA LA PAGINA
+  //POR DIOS MIRAR QUE PONER AQUI USERPROFILE COMMUNITY O RECARGAR SIEMPRE QUE SE
+  //CARGA LA PAGINA
 
   const visibleTasks = tasks.slice(taskIndex, taskIndex + 2);
 
@@ -137,6 +140,23 @@ export const CommunityUserPage = () => {
     if (eventoIndex + 2 < eventos.length) setEventoIndex(eventoIndex + 2);
   };
 
+  const tareaCompletada = (taskId : number) => {
+    completarTarea(taskId);
+    setTasks((prevTasks) =>
+      prevTasks.map((t) =>
+        t.id === taskId ? { ...t, estado: "completada" } : t
+      )
+    );
+  };
+
+  const tareaProgreso = (taskId : number) => {
+    enProgresoTarea(taskId);
+    setTasks((prevTasks) =>
+      prevTasks.map((t) =>
+        t.id === taskId ? { ...t, estado: "en progreso" } : t
+      )
+    );
+  };
   if (!username) {
     return <p>Error: No se pudo obtener el nombre de usuario</p>;
   }
@@ -153,18 +173,37 @@ export const CommunityUserPage = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-4">
             ¡Todavía no formas parte de ninguna comunidad!
           </h1>
-          <p className="text-gray-600 mb-6">
-            Puedes buscar una comunidad que se ajuste a ti y unirte cuando estés
-            listo.
-          </p>
-          <button
-            onClick={() =>
-              navigate(`/TFG_COHOUSING/recommendations/${userProfile.id}`)
-            }
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
-          >
-            Buscar comunidad
-          </button>
+          {userProfile.role === "buscador" && (
+            <>
+              <p className="text-gray-600 mb-6">
+                Puedes buscar una comunidad que se ajuste a ti y unirte cuando
+                estés listo.
+              </p>
+              <button
+                onClick={() =>
+                  navigate(`/TFG_COHOUSING/recommendations/${userProfile.id}`)
+                }
+                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
+              >
+                Buscar comunidad
+              </button>
+            </>
+          )}
+
+          {userProfile.role === "ofertante" && (
+            <>
+              <p className="text-gray-600 mb-6">
+                Crea una comunidad que se ajuste a ti y observa cómo la gente
+                busca formar parte de ella.
+              </p>
+              <button
+                onClick={() => navigate(`/TFG_COHOUSING/home`)}
+                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
+              >
+                Home
+              </button>
+            </>
+          )}
         </main>
         <Footer />
       </div>
@@ -175,135 +214,260 @@ export const CommunityUserPage = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div id="root" className="min-h-screen flex flex-col bg-gray-900">
+    <div id="root">
       <Header />
-      <main className="flex-grow py-12 px-6 md:px-20 text-gray-100">
-        <div className="max-w-6xl mx-auto space-y-12">
+      <main className="page">
+        <div className="max-w-6xl mx-auto grid gap-6 grid-cols-1 md:grid-cols-3">
           {/* Comunidad */}
-          <section className="bg-white rounded-xl shadow-lg p-8 text-gray-800">
-            <h1 className="text-4xl font-bold mb-4">
-              ¡Bienvenido a tu comunidad {community?.name}!
+          <section className="rounded p-6 text-gray-900 md:col-span-4 items-center">
+            <h1 className="text-5xl font-extrabold mb-10 text-center text-black">
+              ¡Bienvenido a {community?.name}!
             </h1>
-            <img
-              src={`http://localhost:8082${community?.fotoUrl}`}
-              alt={`Imagen de ${community?.name}`}
-              className="w-full h-64 object-cover rounded-lg mb-6"
-            />
-            <p className="text-xl mb-2">
-              <strong>Nombre:</strong> {community?.name}
-            </p>
-            <p className="text-gray-700">
-              <strong>Descripción:</strong> {community?.descripcion}
-            </p>
-          </section>
+            <div className="bg-white/50 backdrop-blur-3xl p-6 rounded-2xl shadow-xl max-w-3xl mx-auto">
+              <div className="relative w-full h-72 mb-6 rounded-xl overflow-hidden shadow-2xl">
+                <img
+                  src={`http://localhost:8082${community?.fotoUrl}`}
+                  alt={`Imagen de ${community?.name}`}
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                />
+                <div className="absolute bottom-4 left-4 text-black text-xl font-bold drop-shadow">
+                  {community?.name}
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              </div>
 
-          {/* Acciones */}
-          <section className="flex flex-wrap gap-4 justify-center">
-            <button
-              onClick={() =>
-                navigate(
-                  `/TFG_COHOUSING/CreateTask/${userProfile?.idComunidad}`
-                )
-              }
-              className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg shadow-md transition"
-            >
-              Crear Tarea
-            </button>
-            <button
-              onClick={() =>
-                navigate(
-                  `/TFG_COHOUSING/CreateEvent/${userProfile?.idComunidad}`
-                )
-              }
-              className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-lg shadow-md transition"
-            >
-              Crear Evento
-            </button>
-            <ButtonFunction
-              label="Administrar Tus Tareas"
-              onClick={() =>
-                navigate(`/TFG_COHOUSING/AdministrarTareas/${userProfile?.id}`)
-              }
-            />
-          </section>
-
-          {/* Tareas */}
-          <section className="bg-white rounded-xl shadow-lg p-8 text-gray-800">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-semibold">Tareas asignadas</h2>
               <button
-                onClick={() =>
-                  navigate(`/TFG_COHOUSING/TaskListPage/${userProfile?.id}`)
-                }
-                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow"
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="mt-6 px-5 py-2 flex items-center gap-2 rounded-md bg-blue-600 text-white font-medium shadow hover:bg-blue-700 transition duration-300 mx-auto"
               >
-                Ver todas
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+                Gestionar Comunidad
               </button>
             </div>
-            {/* Aquí agregas la barra de progreso */}
+
+            {menuOpen && (
+              <div className="w-2/4 mx-auto bg-gray-800 border border-gray-200 rounded shadow-2xl flex flex-col items-center">
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    navigate(
+                      `/TFG_COHOUSING/CreateTask/${userProfile?.idComunidad}`
+                    );
+                  }}
+                  className="w-full px-4 py-2 hover:bg-gray-600 text-white"
+                >
+                  Crear Tarea
+                </button>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    navigate(
+                      `/TFG_COHOUSING/CreateEvent/${userProfile?.idComunidad}`
+                    );
+                  }}
+                  className="w-full px-4 py-2 hover:bg-gray-600 text-white"
+                >
+                  Crear Evento
+                </button>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    navigate(
+                      `/TFG_COHOUSING/AdministrarTareas/${userProfile?.id}`
+                    );
+                  }}
+                  className="w-full px-4 py-2 hover:bg-gray-600 text-white"
+                >
+                  Administrar Tus Tareas
+                </button>
+
+                {/* Renderizado condicional para role "ofertante" */}
+                {userProfile?.role === "ofertante" && (
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      // Aquí pon la navegación o acción que quieras
+                      navigate(`/TFG_COHOUSING/community/edit`, {
+                        state: { community: community },
+                      });
+                    }}
+                    className="w-full px-4 py-2 hover:bg-gray-600 text-white"
+                  >
+                    Editar Comunidad
+                  </button>
+                )}
+                {userProfile?.role === "ofertante" && (
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="w-full px-4 py-2 hover:bg-gray-600 text-white"
+                  >
+                    Eliminar Comunidad
+                  </button>
+                )}
+                {userProfile?.role === "buscador" && (
+                  <button
+                    onClick={() => setShowLeaveModal(true)}
+                    className="w-full px-4 py-2 hover:bg-gray-600 text-white"
+                  >
+                    Abandonar Comunidad
+                  </button>
+                )}
+              </div>
+            )}
+          </section>
+
+          <section className="bg-gray-800 text-white rounded-full px-10 py-6 flex justify-around items-center gap-8 md:col-span-4 w-2/4 mx-auto shadow-lg">
             {porcentajeUsuario !== null && (
-              <div className="mb-6">
-                <p className="mb-2 font-medium text-gray-700">
-                  Tu progreso de tareas:
+              <div className="flex flex-col items-center">
+                <p className="text-sm font-medium mb-2">
+                  Total progreso Individual
                 </p>
                 <BarraProgreso porcentaje={porcentajeUsuario} />
               </div>
             )}
+            <div className="h-32 w-0.5 bg-white mx-4" />
             {porcentajeComunidad !== null && (
-              <div className="mb-6">
-                <p className="mb-2 font-medium text-gray-700">
-                  Tu progreso de tareas:
+              <div className="flex flex-col items-center">
+                <p className="text-sm font-medium mb-2">
+                  Total progreso Grupal
                 </p>
                 <BarraProgreso porcentaje={porcentajeComunidad} />
               </div>
             )}
+          </section>
+          <section className="rounded p-6 md:col-span-4 bg-white/50 backdrop-blur-3xl rounded-lg shadow-md text-center mx-auto w-2/4">
+            <h2 className="text-2xl font-semibold text-center text-black">
+              ¡Tareas para hoy!
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-6 items-start mt-6">
+              {/* Columna izquierda: tareas */}
+              <div>
+                {tasks.filter((task) => {
+                  const fecha = new Date(task.fechaTope)
+                    .toISOString()
+                    .split("T")[0];
+                  return fecha === hoy;
+                }).length === 0 ? (
+                  <p className="text-black mt-6">No tienes tareas para hoy</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {tasks
+                      .filter((task) => {
+                        const fecha = new Date(task.fechaTope)
+                          .toISOString()
+                          .split("T")[0];
+                        return fecha === hoy;
+                      })
+                      .map((tarea) => (
+                        <li
+                          key={tarea.id}
+                          onClick={() =>
+                            navigate(`/TFG_COHOUSING/Tarea/${tarea.id}`)
+                          }
+                          className="cursor-pointer rounded px-4 py-3 hover:bg-green-300 transition bg-green-100 shadow-md"
+                        >
+                          <p className="font-semibold text-green-700">
+                            {tarea.titulo}
+                          </p>
+                          <p className="text-black text-sm">
+                            {tarea.descripcion}
+                          </p>
+                        </li>
+                      ))}
+                  </ul>
+                )}
+              </div>
+              {/* Columna derecha: calendario del día */}
+              <div className="flex justify-center items-center h-full">
+                <div>
+                  <div className="text-5xl">🗓️</div>
+                  <p className="text-xl font-bold text-gray-800 mt-4">
+                    {new Date().toLocaleDateString("es-ES", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                    })}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+          {/* Tareas */}
+          <section className="bg-gray-800 rounded p-6 text-gray-900 md:col-span-1">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold text-white">
+                Tareas asignadas
+              </h2>
+              <button
+                onClick={() =>
+                  navigate(`/TFG_COHOUSING/TaskListPage/${userProfile?.id}`)
+                }
+                className="text-blue-600 hover:underline text-white"
+              >
+                Ver todas
+              </button>
+            </div>
+
             {tasks.length === 0 ? (
               <p className="text-gray-600">No tienes tareas asignadas.</p>
             ) : (
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={handlePrev}
-                  disabled={taskIndex === 0}
-                  className="..."
-                >
-                  ◀
-                </button>
+              <ul className="space-y-3">
+                {tasks.map((tarea) => (
+                  <li
+                    key={tarea.id}
+                    onClick={() => openTaskModal(tarea)}
+                    className="cursor-pointer rounded px-3 py-2 hover:bg-blue-300 transition bg-blue-100"
+                  >
+                    <p className="font-semibold text-blue-700">
+                      {tarea.titulo}
+                    </p>
+                    <p className="text-black text-sm">{tarea.descripcion}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
-                  {visibleTasks.map((tarea) => (
-                    <div
-                      key={tarea.id}
-                      onClick={() => navigate(`/TFG_COHOUSING/Tarea/${tarea.id}`)}
-                      className="cursor-pointer bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl"
-                    >
-                      <h3 className="font-bold text-lg text-green-700 mb-2">
-                        {tarea.titulo}
-                      </h3>
-                      <p className="text-gray-700">{tarea.descripcion}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={handleNext}
-                  disabled={taskIndex + 2 >= tasks.length}
-                  className="..."
-                >
-                  ▶
-                </button>
-              </div>
+            {selectedTask && (
+              <TaskModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                tarea={selectedTask}
+                onComplete={() => {
+                  // Aquí iría un fetch a tu endpoint real
+                  tareaCompletada(selectedTask.id)
+                  setIsModalOpen(false);
+                }}
+                onProgress={() => {
+                  // Aquí también podrías usar fetch/Axios
+                  tareaProgreso(selectedTask.id)
+                  setIsModalOpen(false);
+                }}
+              />
             )}
           </section>
 
           {/* Eventos */}
-          <section className="bg-white rounded-xl shadow-lg p-8 text-gray-800">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-semibold">Eventos asignados</h2>
+          <section className="bg-gray-50 rounded p-6 text-gray-900 md:col-span-2">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">Eventos asignados</h2>
               <button
                 onClick={() =>
                   navigate(`/TFG_COHOUSING/EventosListPage/${userProfile?.id}`)
                 }
-                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow"
+                className="text-blue-600 hover:underline"
               >
                 Ver todos
               </button>
@@ -312,55 +476,91 @@ export const CommunityUserPage = () => {
             {eventos.length === 0 ? (
               <p className="text-gray-600">No tienes eventos asignados.</p>
             ) : (
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={handlePrevEvento}
-                  disabled={eventoIndex === 0}
-                  className="..."
-                >
-                  ◀
-                </button>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
-                  {eventos.slice(eventoIndex, eventoIndex + 2).map((evento) => (
-                    <div
-                      key={evento.id}
-                      className="bg-gray-100 p-6 rounded-lg shadow transition hover:shadow-xl"
-                    >
-                      <h3 className="font-bold text-lg text-purple-700 mb-2">
-                        {evento.titulo}
-                      </h3>
-                      <p className="text-gray-700">{evento.descripcion}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={handleNextEvento}
-                  disabled={eventoIndex + 2 >= eventos.length}
-                  className="..."
-                >
-                  ▶
-                </button>
-              </div>
+              <ul className="space-y-3">
+                {eventos.map((evento) => (
+                  <li
+                    key={evento.id}
+                    className="rounded px-3 py-2 hover:bg-gray-200 transition"
+                  >
+                    <p className="font-semibold text-purple-700">
+                      {evento.titulo}
+                    </p>
+                    <p className="text-gray-700 text-sm">
+                      {evento.descripcion}
+                    </p>
+                  </li>
+                ))}
+              </ul>
             )}
           </section>
 
           {/* Calendario */}
-          <section className="bg-white rounded-xl shadow-lg p-8 text-gray-800">
-            <h2 className="text-3xl font-semibold mb-4">Calendario</h2>
+          <section className="bg-white/80 backdrop-blur-3xl rounded p-6 mb-6 text-gray-900 md:col-span-3">
+            <h2 className="text-2xl font-semibold mb-4 text-black">
+              Calendario
+            </h2>
             <Calendario userId={userProfile?.id!} />
           </section>
 
-          {/* Mensaje de respuesta */}
+          {/* Mensaje respuesta */}
           {responseMessage && (
-            <div className="p-4 bg-green-100 text-green-800 rounded-md shadow">
+            <div className="p-4 bg-green-100 text-green-800 rounded md:col-span-3">
               {responseMessage}
             </div>
           )}
         </div>
       </main>
       <Footer />
+      <Modal
+        isOpen={showLeaveModal}
+        title="Abandonar comunidad"
+        onClose={() => setShowLeaveModal(false)}
+        footer={
+          <>
+            <button
+              onClick={() => setShowLeaveModal(false)}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={() =>
+                deleteEliminarUsuario(userProfile?.id, userProfile?.idComunidad)
+              }
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+            >
+              Abandonar
+            </button>
+          </>
+        }
+      >
+        <p>¿Estás seguro de que quieres abandonar la comunidad?</p>
+      </Modal>
+
+      <Modal
+        isOpen={showDeleteModal}
+        title="Eliminar comunidad"
+        onClose={() => setShowDeleteModal(false)}
+        footer={
+          <>
+            <button
+              onClick={() => setShowDeleteModal(false)}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              No
+            </button>
+            <button
+              onClick={() => deleteEliminarComunidad(userProfile?.idComunidad)}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+            >
+              Sí
+            </button>
+          </>
+        }
+      >
+        <p>¿Estás seguro de que quieres eliminar la comunidad?</p>
+      </Modal>
     </div>
   );
 };
+//`/TFG_COHOUSING/eliminarUsuario/${userProfile?.id}${userProfile?.idComunidad}/`
