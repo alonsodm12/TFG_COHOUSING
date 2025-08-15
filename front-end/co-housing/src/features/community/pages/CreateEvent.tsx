@@ -26,7 +26,8 @@ const CreateEvent = () => {
         try{
             const taskToSend = { ...evento, idComunidad: Number(idComunidad) || 0 };
             const response = await createEvent(taskToSend);
-            alert("Evento creado con exito");
+
+
         } catch (error: any) {
             alert(`${error.message}`);
         }

@@ -2,14 +2,13 @@ import { useUserContext } from "../../ui/Context/UserContext";
 
 const BodyHero: React.FC = () => {
   const { userProfile, isLoading } = useUserContext();
-
+  console.log(userProfile?.email);
   if (isLoading)
     return <p className="text-center text-gray-600">Cargando perfil...</p>;
   if (!userProfile)
     return (
       <p className="text-center text-red-500">No se pudo cargar el perfil</p>
     );
-
   const items = [
     {
       role: null,
@@ -69,7 +68,7 @@ const BodyHero: React.FC = () => {
         <div
           className="absolute top-1/2 left-1/2 w-52 h-52 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-2xl bg-white/30 dark:bg-white/10 backdrop-blur-md flex items-center justify-center z-10 cursor-default select-none"
           style={{
-            backgroundImage: "url('/TFG_COHOUSING/images/prueba-logo.png')",
+            backgroundImage: "url('/TFG_COHOUSING/images/final2.png')",
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",

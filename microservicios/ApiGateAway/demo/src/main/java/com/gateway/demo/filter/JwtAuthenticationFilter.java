@@ -3,6 +3,7 @@ package com.gateway.demo.filter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -27,14 +28,14 @@ public class JwtAuthenticationFilter implements GatewayFilter {
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain){
-
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
-        final String authorizationHeader = request.getHeaders().getFirst("Authorization");
+        // Obtener la cookie con el token JWT
+        HttpCookie tokenCookie = request.getCookies().getFirst("auth-token");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);  // Remove "Bearer " prefix
+        if (tokenCookie != null) {
+            String token = tokenCookie.getValue();
 
             if (jwtUtil.validateJwtToken(token)) {
                 // Token válido, continuar con la cadena de filtros
@@ -45,7 +46,5 @@ public class JwtAuthenticationFilter implements GatewayFilter {
         // Token no válido o ausente -> respuesta 401
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         return exchange.getResponse().setComplete();
-    
     }
-
 }

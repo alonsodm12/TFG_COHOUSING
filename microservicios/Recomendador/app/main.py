@@ -11,19 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from math import radians, cos, sin, asin, sqrt
 
 app = FastAPI()
-origins = [
-    "http://localhost:5173",  # frontend local
-    "http://127.0.0.1:3000",  # otro posible origen
-    # "https://tu-frontend-en-produccion.com",  <-- si lo usas en producción
-]
-# Habilitar CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
 @app.get("/recommendations/{user_id}", response_model=List[CommunitySchema])
 def get_recommendations(user_id: int, db_users: Session = Depends(get_db_users), db_communities: Session = Depends(get_db_communities)):
     user = get_user_by_id(db_users, user_id)

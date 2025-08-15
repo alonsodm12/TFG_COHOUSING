@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { createUser } from "../users/api/operations";
 import { UserProfile } from "../users/api/types";
 import { useUserContext } from "../ui/Context/UserContext";
-import { getRoleFromToken, getUsernameFromToken } from "../authUtils";
 
 export const RegisterCard: React.FC = () => {
   const [step, setStep] = useState(0);
@@ -113,11 +112,9 @@ export const RegisterCard: React.FC = () => {
     try {
       const result = await createUser(dataToSend);
       console.log("Registro exitoso:", result);
-      const token = result["Token"].token;
-      localStorage.setItem("token", token);
 
-      const username = getUsernameFromToken();
-      const role = getRoleFromToken();
+      const username = result.username;
+      const role = result.role;
 
       if (!username || !role) {
         throw new Error("Token inválido");

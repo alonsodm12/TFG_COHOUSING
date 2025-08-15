@@ -19,7 +19,7 @@ import com.gestionusuarios.demo.DTOs.LifestyleDTO;
 import com.gestionusuarios.demo.DTOs.UserDTO;
 import com.gestionusuarios.demo.models.User;
 import com.gestionusuarios.demo.repository.UserRepository;
-import com.gestionusuarios.demo.services.UserService;
+import com.gestionusuarios.demo.services.AuthService;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -31,7 +31,7 @@ public class UserServiceTest {
     PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    UserService userService;
+    AuthService userService;
 
     @Test
     public void registrarUsuario_devuelveUsuarioGuardado() {
@@ -48,8 +48,6 @@ public class UserServiceTest {
             new LifestyleDTO(2, 2, 2, 2, 2),0L,new ArrayList<>()
         );
 
-        // Stubbing para que no lance la excepción por email duplicado
-        when(userRepository.findByEmail(userDTO.email())).thenReturn(Optional.empty());
 
         // Stubbing del repositorio para el método save
         when(userRepository.save(any(User.class)))
@@ -69,7 +67,7 @@ public class UserServiceTest {
                 2
             ));
 
-        User usuario = userService.registerUser(userDTO);
+        User usuario = userService.createUser(userDTO);
 
         // Verificación de que el save() se invoca con un objeto User
         verify(userRepository).save(any(User.class));

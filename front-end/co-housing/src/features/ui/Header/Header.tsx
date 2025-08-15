@@ -5,8 +5,26 @@ import { useUserContext } from "../../ui/Context/UserContext";
 
 export const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { userProfile, isLoading } = useUserContext();
+  const { userProfile } = useUserContext();
+
   const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('https://localhost:8084/user/logout', {
+        method: 'POST',
+        credentials: 'include', // para enviar cookies
+      });
+      if (response.ok) {
+        // Redirigir a landing page usando JS puro
+        window.location.href = '/';
+      } else {
+        console.error('Error al cerrar sesión');
+      }
+    } catch (error) {
+      console.error('Error en logout:', error);
+    }
+  };
 
   return (
     <header className={styles.header}>
@@ -57,12 +75,13 @@ export const Header: React.FC = () => {
             >
               Perfil
             </a>
-            <a
-              href="/logout"
-              className={`${styles.logout} block px-4 py-2 hover:bg-gray-100 text-sm text-red-600`}
+            {/* Cambio aquí a button */}
+            <button
+              onClick={handleLogout}
+              className={`${styles.logout} block px-4 py-2 hover:bg-gray-100 text-sm text-red-600 w-full text-left`}
             >
               Cerrar sesión
-            </a>
+            </button>
           </div>
         )}
       </div>

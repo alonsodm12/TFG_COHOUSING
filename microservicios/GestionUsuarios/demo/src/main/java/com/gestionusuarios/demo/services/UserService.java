@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,29 +29,9 @@ import jakarta.transaction.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    public User registerUser(UserDTO userDTO) {
-        if (userRepository.findByEmail(userDTO.email()).isPresent())
-            throw new IllegalArgumentException("El email ya ha sido registrado");
-
-        if (!userDTO.role().equals("buscador") && !userDTO.role().equals("ofertante"))
-            throw new IllegalArgumentException("Rol inválido");
-
-        String codedPassword = passwordEncoder.encode(userDTO.password());
-
-        User usuario = new User(userDTO.username(), userDTO.email(), codedPassword, userDTO.fotoUrl(),
-                userDTO.latitud(), userDTO.longitud(), userDTO.direccion(), userDTO.role(),
-                userDTO.lifestyleDTO().sociabilidad(), userDTO.lifestyleDTO().tranquilidad(),
-                userDTO.lifestyleDTO().compartirEspacios(), userDTO.lifestyleDTO().limpieza(),
-                userDTO.lifestyleDTO().actividad());
-
-        return userRepository.save(usuario);
     }
 
     public Optional<List<String>> getUsers() {

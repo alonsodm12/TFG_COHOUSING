@@ -188,6 +188,17 @@ public class CommunityController {
         }
     }
 
+    @PostMapping("/completarEvento/{idEvento}")
+    public ResponseEntity<?> completarEvento(@PathVariable Long idEvento) {
+        try{
+            communityServices.marcarEventoCompletado(idEvento);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
     @PatchMapping("/enProgresoTarea/{idTarea}")
     public ResponseEntity<?> enProgresoTarea(@PathVariable Long idTarea) {
         try {

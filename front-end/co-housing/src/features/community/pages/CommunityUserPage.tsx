@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUsernameFromToken } from "../../authUtils";
 import {
+  completarEvento,
   completarTarea,
   deleteEliminarComunidad,
   deleteEliminarUsuario,
@@ -21,10 +21,11 @@ import { Calendario } from "../components/Calendar";
 import BarraProgreso from "../components/BarraProgreso";
 import Modal from "../components/Modal";
 import TaskModal from "../components/ModalTarea";
+import EventoModal from "../components/ModalEvento";
 
 export const CommunityUserPage = () => {
   const { userProfile, isLoading: isUserLoading } = useUserContext();
-  const username: string | null = getUsernameFromToken();
+  const username: string | undefined = userProfile?.username;
   const navigate = useNavigate();
 
   const [community, setCommunity] = useState<CommunityProfile>();
@@ -47,12 +48,21 @@ export const CommunityUserPage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalTaskOpen, setIsModalTaskOpen] = useState(false);
+  const [isModalEventOpen, setIsModalEventOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
   //Carga los datos de la comunidad
   const openTaskModal = (tarea) => {
     setSelectedTask(tarea);
-    setIsModalOpen(true);
+    setIsModalTaskOpen(true);
   };
+
+  const openEventModal = (evento) => {
+    setSelectedEvent(evento);
+    setIsModalEventOpen(true);
+  };
+
   // 1. useEffect - Datos del usuario
   useEffect(() => {
     const userId = userProfile?.id;
@@ -120,9 +130,6 @@ export const CommunityUserPage = () => {
 
   const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
-  //POR DIOS MIRAR QUE PONER AQUI USERPROFILE COMMUNITY O RECARGAR SIEMPRE QUE SE
-  //CARGA LA PAGINA
-
   const visibleTasks = tasks.slice(taskIndex, taskIndex + 2);
 
   const handlePrev = () => {
@@ -140,7 +147,7 @@ export const CommunityUserPage = () => {
     if (eventoIndex + 2 < eventos.length) setEventoIndex(eventoIndex + 2);
   };
 
-  const tareaCompletada = (taskId : number) => {
+  const tareaCompletada = (taskId: number) => {
     completarTarea(taskId);
     setTasks((prevTasks) =>
       prevTasks.map((t) =>
@@ -149,7 +156,12 @@ export const CommunityUserPage = () => {
     );
   };
 
-  const tareaProgreso = (taskId : number) => {
+  const eventoCompletado = (eventoId : number) => {
+    completarEvento(eventoId);
+
+  }
+
+  const tareaProgreso = (taskId: number) => {
     enProgresoTarea(taskId);
     setTasks((prevTasks) =>
       prevTasks.map((t) =>
@@ -328,7 +340,7 @@ export const CommunityUserPage = () => {
             )}
           </section>
 
-          <section className="bg-gray-800 text-white rounded-full px-10 py-6 flex justify-around items-center gap-8 md:col-span-4 w-2/4 mx-auto shadow-lg">
+          <section className="bg-gray-800 text-white rounded-full px-10 py-6 flex justify-around items-center gap-8 md:col-span-4 w-3/4 mx-auto shadow-lg">
             {porcentajeUsuario !== null && (
               <div className="flex flex-col items-center">
                 <p className="text-sm font-medium mb-2">
@@ -355,23 +367,26 @@ export const CommunityUserPage = () => {
             <div className="grid md:grid-cols-2 gap-6 items-start mt-6">
               {/* Columna izquierda: tareas */}
               <div>
-                {tasks.filter((task) => {
-                  const fecha = new Date(task.fechaTope)
-                    .toISOString()
-                    .split("T")[0];
-                  return fecha === hoy;
-                }).length === 0 ? (
-                  <p className="text-black mt-6">No tienes tareas para hoy</p>
-                ) : (
-                  <ul className="space-y-3">
-                    {tasks
-                      .filter((task) => {
-                        const fecha = new Date(task.fechaTope)
-                          .toISOString()
-                          .split("T")[0];
-                        return fecha === hoy;
-                      })
-                      .map((tarea) => (
+                {(() => {
+                  const hoy = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD local
+                  const tareasHoy = tasks.filter((task) => {
+                    const fecha = new Date(task.fechaTope).toLocaleDateString(
+                      "en-CA"
+                    );
+                    return fecha === hoy;
+                  });
+
+                  if (tareasHoy.length === 0) {
+                    return (
+                      <p className="text-black mt-6">
+                        No tienes tareas para hoy
+                      </p>
+                    );
+                  }
+
+                  return (
+                    <ul className="space-y-3">
+                      {tareasHoy.map((tarea) => (
                         <li
                           key={tarea.id}
                           onClick={() =>
@@ -387,8 +402,9 @@ export const CommunityUserPage = () => {
                           </p>
                         </li>
                       ))}
-                  </ul>
-                )}
+                    </ul>
+                  );
+                })()}
               </div>
               {/* Columna derecha: calendario del día */}
               <div className="flex justify-center items-center h-full">
@@ -405,9 +421,10 @@ export const CommunityUserPage = () => {
               </div>
             </div>
           </section>
+
           {/* Tareas */}
-          <section className="bg-gray-800 rounded p-6 text-gray-900 md:col-span-1">
-            <div className="flex justify-between items-center mb-4">
+          <section className="bg-gray-800 rounded p-6 text-gray-900 md:col-span-2">
+            <div className="flex-1 justify-between items-center mb-4">
               <h2 className="text-2xl font-semibold text-white">
                 Tareas asignadas
               </h2>
@@ -442,32 +459,37 @@ export const CommunityUserPage = () => {
 
             {selectedTask && (
               <TaskModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={isModalTaskOpen}
+                onClose={() => setIsModalTaskOpen(false)}
                 tarea={selectedTask}
                 onComplete={() => {
                   // Aquí iría un fetch a tu endpoint real
-                  tareaCompletada(selectedTask.id)
-                  setIsModalOpen(false);
+                  tareaCompletada(selectedTask.id);
+                  setIsModalTaskOpen(false);
+                  fetchTareasPorUsuario(userProfile?.id)
+                  .then((data) => setTasks(data || []))
+                  .catch((err) => console.error("Error al cargar tareas", err));
                 }}
                 onProgress={() => {
                   // Aquí también podrías usar fetch/Axios
-                  tareaProgreso(selectedTask.id)
-                  setIsModalOpen(false);
+                  tareaProgreso(selectedTask.id);
+                  setIsModalTaskOpen(false);
                 }}
               />
             )}
           </section>
 
           {/* Eventos */}
-          <section className="bg-gray-50 rounded p-6 text-gray-900 md:col-span-2">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-semibold">Eventos asignados</h2>
+          <section className="bg-gray-800 rounded p-6 text-gray-900 md:col-span-2">
+            <div className="flex-1 justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold text-white">
+                Eventos asignados
+              </h2>
               <button
                 onClick={() =>
                   navigate(`/TFG_COHOUSING/EventosListPage/${userProfile?.id}`)
                 }
-                className="text-blue-600 hover:underline"
+                className="text-blue-600 hover:underline text-white"
               >
                 Ver todos
               </button>
@@ -480,17 +502,35 @@ export const CommunityUserPage = () => {
                 {eventos.map((evento) => (
                   <li
                     key={evento.id}
-                    className="rounded px-3 py-2 hover:bg-gray-200 transition"
+                    onClick={() => openEventModal(evento)}
+                    className="cursor-pointer rounded px-3 py-2 hover:bg-blue-300 transition bg-blue-100"
                   >
-                    <p className="font-semibold text-purple-700">
+                    <p className="font-semibold text-blue-700">
                       {evento.titulo}
                     </p>
-                    <p className="text-gray-700 text-sm">
-                      {evento.descripcion}
-                    </p>
+                    <p className="text-black text-sm">{evento.descripcion}</p>
                   </li>
                 ))}
               </ul>
+            )}
+
+            {selectedEvent && (
+              <EventoModal
+                isOpen={isModalEventOpen}
+                onClose={() => setIsModalEventOpen(false)}
+                evento={selectedEvent}
+                onComplete={() => {
+                  // Aquí iría un fetch a tu endpoint real
+                  //eventoCompletada(selectedTask.id);
+                  eventoCompletado(selectedEvent.id);
+                  setIsModalEventOpen(false);
+                }}
+                onProgress={() => {
+                  // Aquí también podrías usar fetch/Axios
+                  //tareaProgreso(selectedTask.id);
+                  setIsModalEventOpen(false);
+                }}
+              />
             )}
           </section>
 
@@ -499,7 +539,8 @@ export const CommunityUserPage = () => {
             <h2 className="text-2xl font-semibold mb-4 text-black">
               Calendario
             </h2>
-            <Calendario userId={userProfile?.id!} />
+            <Calendario userId={userProfile?.id!} tareas={tasks} 
+            eventos={eventos} />
           </section>
 
           {/* Mensaje respuesta */}
@@ -511,6 +552,9 @@ export const CommunityUserPage = () => {
         </div>
       </main>
       <Footer />
+
+
+      {/*   MODALES    */}
       <Modal
         isOpen={showLeaveModal}
         title="Abandonar comunidad"

@@ -510,6 +510,14 @@ public class CommunityServices {
         }
     }
 
+    public boolean marcarEventoCompletado(Long idEvento){
+        Optional<Evento> evento = eventoRepository.findById(idEvento);
+        
+        eventoRepository.delete(evento.get());
+
+        return true;
+    }
+
     public boolean marcarTareaProgreso(Long idTarea) {
         Optional<Tarea> tarea = tareaRepository.findById(idTarea);
         if (tarea.isPresent()) {

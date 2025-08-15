@@ -3,7 +3,6 @@ package com.gestioncomunidades.demo.DTOs;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gestioncomunidades.demo.models.EstadoTarea;
 
 public record TareaDTO (

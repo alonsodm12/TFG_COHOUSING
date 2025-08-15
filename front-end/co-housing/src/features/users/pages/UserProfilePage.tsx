@@ -12,7 +12,6 @@ import { Footer } from "../../ui/Footer/Footer";
 export const UserProfilePage = () => {
   const { username, userProfile, isLoading } = useUserContext();
   const navigate = useNavigate();
-
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -58,7 +57,7 @@ export const UserProfilePage = () => {
 
       {userProfile.fotoUrl ? (
         <img
-          src={`http://localhost:8081${userProfile.fotoUrl}`}
+          src={`${userProfile.fotoUrl}`}
           alt="Foto de perfil"
           className="mx-auto w-32 h-32 rounded-full object-cover mb-6 border-4 border-indigo-400 dark:border-indigo-600 shadow-lg"
         />

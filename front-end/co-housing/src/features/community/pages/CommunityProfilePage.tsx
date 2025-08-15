@@ -1,11 +1,11 @@
-import { getUsernameFromToken } from "../../authUtils";
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom"; // importamos Link
+import { useParams, Link } from "react-router-dom";
 import { CommunityMap } from "../components/CommunityMap";
 import { useCommunity } from "../hook/useCommunity";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import { obtenerUsuariosDeComunidad } from "../api/operations";
+import { useUserContext } from "../../ui/Context/UserContext";
 
 interface Usuario {
   id: number;
@@ -17,27 +17,16 @@ interface Usuario {
   fotoUrl?: string;
 }
 
-const username: string | null = getUsernameFromToken();
-
 export const CommunityProfilePage = () => {
+  const { username, role } = useUserContext();
   const { communityName } = useParams<{ communityName: string }>();
   const communityNameValid = communityName ?? null;
 
   const { community, loading, error } = useCommunity(communityNameValid);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
-
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [usuariosLoading, setUsuariosLoading] = useState(false);
   const [usuariosError, setUsuariosError] = useState<string | null>(null);
-
-  if (!username) {
-    return <p>Error: No se pudo obtener el nombre de usuario</p>;
-  }
-  if (!communityNameValid) {
-    return (
-      <p>Error: No se pudo obtener el nombre de la comunidad desde la URL</p>
-    );
-  }
 
   useEffect(() => {
     if (community?.id) {
@@ -57,22 +46,24 @@ export const CommunityProfilePage = () => {
     }
   }, [community]);
 
+  // Render condicional después de todos los hooks
+  if (!username) {
+    return <p>Error: No se pudo obtener el nombre de usuario</p>;
+  }
+  if (!communityNameValid) {
+    return <p>Error: No se pudo obtener el nombre de la comunidad desde la URL</p>;
+  }
   if (loading) return <p>Cargando datos...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div
-      id="root"
-      className="min-h-screen flex flex-col bg-gray-50 text-gray-800"
-    >
+    <div id="root" className="min-h-screen flex flex-col bg-gray-50 text-gray-800">
       <Header />
       <main className="page flex-grow">
-        {/* Título */}
         <h1 className="text-4xl font-bold mb-8 text-center text-indigo-700">
           Perfil de Comunidad
         </h1>
 
-        {/* Foto comunidad */}
         <div className="max-w-4xl mx-auto px-4 mb-10">
           {community?.fotoUrl ? (
             <img
@@ -88,15 +79,12 @@ export const CommunityProfilePage = () => {
         </div>
 
         <div className="max-w-6xl mx-auto px-4">
-          {/* Izquierda: datos comunidad */}
           <section className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 mb-10">
             <p className="text-xl font-semibold mb-2">
               <span className="text-indigo-600">Nombre:</span> {community?.name}
             </p>
             <p className="mb-4">
-              <span className="font-semibold text-indigo-600">
-                Descripción:
-              </span>{" "}
+              <span className="font-semibold text-indigo-600">Descripción:</span>{" "}
               {community?.descripcion}
             </p>
             <p className="mb-4">
@@ -149,7 +137,6 @@ export const CommunityProfilePage = () => {
                 {responseMessage}
               </p>
             )}
-            {/* Ahora la sección de usuarios va aquí, debajo */}
 
             <h3 className="text-xl mt-6 font-semibold text-indigo-700 mb-4 border-b border-indigo-300 pb-2">
               Usuarios ({usuarios.length})
@@ -171,7 +158,7 @@ export const CommunityProfilePage = () => {
                     <img
                       src={
                         u.fotoUrl
-                          ? `http://localhost:8081${u.fotoUrl}`
+                          ? `https://localhost:8084/user${u.fotoUrl}`
                           : "/default-avatar.png"
                       }
                       alt={`Avatar de ${u.username}`}

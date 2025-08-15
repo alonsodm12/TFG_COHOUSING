@@ -6,6 +6,7 @@ import { Footer } from "../../ui/Footer/Footer";
 import { useUserContext } from "../../ui/Context/UserContext";
 import { CommunityRecommended } from "../../community/api/type";
 import { modificarDireccion } from "../../users/api/operations";
+import { getRecommendations } from "../api/operations";
 
 const Recommendations: React.FC = () => {
   const { id } = useParams();
@@ -64,23 +65,20 @@ const Recommendations: React.FC = () => {
 
   useEffect(() => {
     if (!id) return;
-
-    setIsLoading(true);
-    fetch(`http://localhost:8000/recommendations/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Error en la respuesta del servidor");
-        return res.json();
-      })
-      .then((data) => {
-        setCommunities(data);
-      })
-      .catch((err) => {
-        console.error("Error fetching recommendations:", err);
-        setCommunities([]);
-      })
-      .finally(() => {
+  
+    const fetchRecommendations = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getRecommendations(id); // esperamos la promesa
+        setCommunities(response); // ahora sí tenemos los datos
+      } catch (error) {
+        console.error(error);
+      } finally {
         setIsLoading(false);
-      });
+      }
+    };
+  
+    fetchRecommendations();
   }, [id]);
 
   const aplicarFiltros = () => {
@@ -88,7 +86,7 @@ const Recommendations: React.FC = () => {
 
     setIsLoading(true);
     fetch(
-      `http://localhost:8000/recommendations-filtered/${id}?precio=${maxPrecio}&distancia=${maxDistancia}`
+      `https://localhost:8084/recommendations-filtered/${id}?precio=${maxPrecio}&distancia=${maxDistancia}`
     )
       .then((res) => {
         if (!res.ok) throw new Error("Error en la respuesta del servidor");

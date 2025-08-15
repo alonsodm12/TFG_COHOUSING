@@ -57,20 +57,20 @@ export interface Tarea {
   duracion: number;
   asignacion: string;
 }
-
-export interface Evento {
+export type Evento = {
   id: number;
   titulo: string;
   descripcion: string;
   usuariosParticipantes: number[];
-  fechaTope: string;
+  fechaTope: string; // "YYYY-MM-DD"
   lugar: string;
-  horaInicio: number;
-  horaFinal: number;
+  horaInicio: string; // "HH:mm"
+  horaFinal: string;  // "HH:mm"
   idComunidad: number;
   numParticipantes: number;
+};
 
-}
+
 
 //Ambas interfaces destinadas a método patch
 export type UpdateCommunityProfile = Partial<CommunityProfile>;

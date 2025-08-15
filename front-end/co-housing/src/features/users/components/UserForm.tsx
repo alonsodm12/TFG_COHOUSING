@@ -13,7 +13,7 @@ export const UserForm = ({ initialData = {}, onSubmit }: UserFormProps) => {
         password: '',
         role: initialData.role || '',
         lifestyleDTO: {
-            tranquilo: initialData.lifestyleDTO?.tranquilo ?? 1,
+            tranquilidad: initialData.lifestyleDTO?.tranquilidad ?? 1,
             actividad: initialData.lifestyleDTO?.actividad ?? 1,
             limpieza: initialData.lifestyleDTO?.limpieza ?? 1,
             compartirEspacios: initialData.lifestyleDTO?.compartirEspacios ?? 1,
