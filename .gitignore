@@ -65,3 +65,5 @@ uploads/
 # Carpeta donde se almacenan scripts sql de prueba
 sql/
 
+# Carpeta donde se almacenan los resumenes mensuales
+resumenes/
