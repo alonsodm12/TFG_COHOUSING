@@ -58,3 +58,5 @@ desktop.ini
 coverage/
 jacoco.exec
 target/site/jacoco/
+
+uploads/
