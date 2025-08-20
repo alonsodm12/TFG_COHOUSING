@@ -59,4 +59,9 @@ coverage/
 jacoco.exec
 target/site/jacoco/
 
+# Carpeta donde se almacenan las imagenes de los usuarios y comunidades
 uploads/
+
+# Carpeta donde se almacenan scripts sql de prueba
+sql/
+
