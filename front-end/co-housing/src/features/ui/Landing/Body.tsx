@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./LandingPage.module.css";
 import Card from "../Card";
 
@@ -6,6 +6,33 @@ import Button from "../Button/Button";
 import CardHorizontal from "../CardHorizontal";
 
 export const Body: React.FC = () => {
+  const images = [
+    { src: "/TFG_COHOUSING/images/pruebilla.png", alt: "Gestión fácil" },
+    { src: "/TFG_COHOUSING/images/pruebon.png", alt: "Eventos compartidos" },
+    {
+      src: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=600&q=80",
+      alt: "Comunicación fluida",
+    },
+    {
+      src: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=600&q=80",
+      alt: "Soporte 24/7",
+    },
+  ];
+
+  const [current, setCurrent] = useState(0);
+  const length = images.length;
+
+  // Auto-slide cada 3s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const nextSlide = () => setCurrent((current + 1) % length);
+  const prevSlide = () => setCurrent((current - 1 + length) % length);
+
   return (
     <section className={styles.container}>
       <div className={styles.headerText}>
@@ -43,18 +70,18 @@ export const Body: React.FC = () => {
       </section>
       <Button label="EMPEZAR YA" to="/TFG_COHOUSING/registro" />
 
-      <section className="max-w-5xl mx-auto py-20 px-8 text-center bg-white/40 dark:bg-white/10 backdrop-blur-2xl border border-white/30 rounded-2xl mt-20 shadow-2xl">
+      <section className="tetxmax-w-5xl mx-auto py-20 px-8 text-center bg-white/40 dark:bg-white/10 backdrop-blur-2xl border border-white/30 rounded-2xl mt-20 shadow-2xl">
         <h2 className="font-bold text-5xl mb-14 text-gray-800 dark:text-black">
           Conoce las características de cada rol
         </h2>
-
+        text-black
         <div className="flex flex-col gap-12 items-center">
           {/* Tarjeta Usuario Buscador */}
           <CardHorizontal
-            photoUrl="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=150&q=80"
+            photoUrl="https://static.vecteezy.com/system/resources/previews/015/146/563/non_2x/search-customers-icon-color-outline-vector.jpg"
             title="Usuario Buscador"
             description={
-              <ul className="list-disc ml-6 text-left text-gray-700 dark:text-gray-300 space-y-2">
+              <ul className="list-disc ml-6 text-left text-black space-y-2">
                 <li>Buscar comunidades activas.</li>
                 <li>Filtrar por ubicación, tamaño y servicios.</li>
                 <li>Contactar con creadores y miembros.</li>
@@ -67,10 +94,10 @@ export const Body: React.FC = () => {
 
           {/* Tarjeta Usuario Ofertante */}
           <CardHorizontal
-            photoUrl="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=150&q=80"
+            photoUrl="https://cdn-icons-png.flaticon.com/512/9166/9166962.png"
             title="Usuario Ofertante"
             description={
-              <ul className="list-disc ml-6 text-left text-gray-700 dark:text-gray-300 space-y-2">
+              <ul className="list-disc ml-6 text-left text-black space-y-2">
                 <li>Publicar nuevas comunidades.</li>
                 <li>Gestionar solicitudes y miembros.</li>
                 <li>Organizar eventos y actividades.</li>
@@ -82,37 +109,40 @@ export const Body: React.FC = () => {
       </section>
 
       {/* Carrusel de imágenes estáticas */}
-      <h1 className="w-full text-black py-16 text-center text-5xl font-bold">
-        ¡Descubre todo lo que ofrece ShareHouse!
-      </h1>
-      <section className={styles.carouselSection}>
-        <div className={styles.carouselTrack}>
-          <img
-            src="/TFG_COHOUSING/images/pruebilla.png"
-            alt="Gestión fácil"
-            className={styles.carouselImage}
-          />
-          <img
-            src="/TFG_COHOUSING/images/pruebon.png"
-            alt="Eventos compartidos"
-            className={styles.carouselImage}
-          />
-          <img
-            src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=600&q=80"
-            alt="Comunicación fluida"
-            className={styles.carouselImage}
-          />
-          <img
-            src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=600&q=80"
-            alt="Soporte 24/7"
-            className={styles.carouselImage}
-          />
+      <h2 className="font-bold text-5xl mb-14 text-gray-800 dark:text-black">
+          Descubre todo lo que ofrece ShareSpace
+      </h2>
+      <div className={styles.carouselSection}>
+        <div className={styles.carouselContainer}>
+          {images.map((img, index) => (
+            <img
+              key={index}
+              src={img.src}
+              alt={img.alt}
+              className={`${styles.carouselImage} ${index === current ? styles.active : ""}`}
+            />
+          ))}
+          <button className={styles.prev} onClick={prevSlide}>
+            &#10094;
+          </button>
+          <button className={styles.next} onClick={nextSlide}>
+            &#10095;
+          </button>
         </div>
-      </section>
+        <div className={styles.dots}>
+          {images.map((_, index) => (
+            <span
+              key={index}
+              className={`${styles.dot} ${index === current ? styles.activeDot : ""}`}
+              onClick={() => setCurrent(index)}
+            />
+          ))}
+        </div>
+      </div>
 
       <div className={styles.cardsWrapper}>
         <h1 className={styles.typingP}>Lo que dicen nuestros usuarios</h1>
-        <div className="flex gap-6 justify-center flex-wrap mt-4">
+        <div className="flex gap-6 justify-center flex-wrap mt-4 text-black">
           <Card
             photoUrl="https://i.pravatar.cc/150?img=3"
             title="Laura García"

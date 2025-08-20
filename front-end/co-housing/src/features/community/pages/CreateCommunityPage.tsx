@@ -22,7 +22,8 @@ const CreateCommunityPage = () => {
                 latitud: formData.latitud,
                 longitud: formData.longitud,
                 direccion: formData.direccion,
-                precio: formData.precio
+                precio: formData.precio,
+                num_integrantes: formData.num_integrantes
             };
 
             const communityBlob = new Blob([JSON.stringify(communityWithoutFile)], {

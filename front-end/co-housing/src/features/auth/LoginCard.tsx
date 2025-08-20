@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../users/api/operations";
-import { getRoleFromToken, getUsernameFromToken } from "../authUtils";
 import { useUserContext } from "../ui/Context/UserContext";
 
 export const LoginCard: React.FC = () => {
@@ -10,9 +9,6 @@ export const LoginCard: React.FC = () => {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
   const { setUsername, setRole } = useUserContext();
-  const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8084/oauth2/authorization/google";
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,15 +21,9 @@ export const LoginCard: React.FC = () => {
 
     try {
       const response = await loginUser(formData);
-      if (!response || !response["Login correcto: "]?.token) {
-        throw new Error("Credenciales inválidas");
-      }
 
-      const token = response["Login correcto: "].token;
-      localStorage.setItem("token", token);
-
-      const username = getUsernameFromToken();
-      const role = getRoleFromToken();
+      const username = response.username;
+      const role = response.role;
 
       if (!username || !role) {
         throw new Error("Token inválido");

@@ -12,7 +12,6 @@ import { Footer } from "../../ui/Footer/Footer";
 export const UserProfilePage = () => {
   const { username, userProfile, isLoading } = useUserContext();
   const navigate = useNavigate();
-
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -53,12 +52,12 @@ export const UserProfilePage = () => {
     <h2 className="text-3xl font-extrabold text-blue-900  mb-6">
       Perfil de Usuario
     </h2>
-    <div className="bg-white/40 backdrop-blur-3xl text-black dark:text-white w-full max-w-3xl rounded-xl shadow-md p-8">
+    <div className="bg-white/25 backdrop-blur-3xl text-black w-fit px-32 rounded-xl shadow-2xl p-8 mb-6">
 
 
       {userProfile.fotoUrl ? (
         <img
-          src={`http://localhost:8081${userProfile.fotoUrl}`}
+          src={`${userProfile.fotoUrl}`}
           alt="Foto de perfil"
           className="mx-auto w-32 h-32 rounded-full object-cover mb-6 border-4 border-indigo-400 dark:border-indigo-600 shadow-lg"
         />
@@ -88,7 +87,7 @@ export const UserProfilePage = () => {
           <h3 className="text-xl font-semibold dark:text-black mb-3 text-center">
             Estilo de vida
           </h3>
-          <ul className="list-disc list-inside text-gray-600 dark:text-black-400 text-center mb-8 space-y-1 text-sm">
+          <ul className="list-disc list-inside text-black text-center mb-8 space-y-1 text-sm">
             <li>Tranquilo: {userProfile.lifestyleDTO.tranquilidad}</li>
             <li>Actividad: {userProfile.lifestyleDTO.actividad}</li>
             <li>Limpieza: {userProfile.lifestyleDTO.limpieza}</li>

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CommunityDTO(
+    Long id,
     @NotNull(message = "El nombre de la comunidad no puede estar vacio") String name,
     @NotBlank(message = "La descripcion de la comunidad no puede estar vacia") String descripcion,
     @NotNull(message = "El admin no puede estar vacio") Long idAdmin,
@@ -15,6 +16,7 @@ public record CommunityDTO(
     Double latitud,
     Double longitud,
     String direccion,
-    Double precio
+    Double precio,
+    int num_integrantes
 ) {
 }

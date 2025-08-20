@@ -105,7 +105,7 @@
 /* ============= Tarjetas ============== */
 
 .cardsWrapper {
-  background-color: #222831; /* gris muy oscuro */
+  background-color: #cfd8e4; /* gris muy oscuro */
   color: #eee; /* texto claro */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
   margin: 40px auto;
@@ -126,6 +126,7 @@
 
 .typingP {
   font-size: 30px;
+  color:#000000;
 }
 
 /* ============ Responsive ============== */
@@ -157,148 +158,78 @@
     margin-top: 60px;
     margin-bottom: 30px;
   }
+
+
+
 }
-
-.carouselSection {
-  width: 100%;
-  max-width: 900px;
-  margin: 3rem auto;
-  overflow: hidden;
-  border-radius: 1rem;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  /* Degradado mismo que container */
-  background: linear-gradient(135deg, #1c1c1c 0%, #0d1a2a 100%);
-  padding: 1rem 0;
-}
-
-.carouselTrack {
-  display: flex;
-  width: 400%; /* 4 imágenes */
-  animation: slideCenter 20s ease-in-out infinite;
-  /* centramos con padding para que se vean los bordes */
-  padding-left: 12.5%;
-}
-
-.carouselImage {
-  flex: 0 0 25%; /* cada imagen ocupa 25% del track */
-  max-width: 25%;
-  margin: 0 10px;
-  border-radius: 12px;
-  object-fit: cover;
-  user-select: none;
-  pointer-events: none;
-  filter: brightness(0.7);
-  transition: transform 0.5s ease, filter 0.5s ease, box-shadow 0.5s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-/* Imagen destacada (centrada) - se ilumina y crece */
-.carouselTrack img:nth-child(1) {
-  filter: brightness(1);
-  transform: scale(1.1);
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
-}
-
-/* Animación para que la imagen destacada vaya rotando */
-
-@keyframes slideCenter {
-  0% {
-    transform: translateX(0%);
+  /* Carousel.module.css */
+  .carouselSection {
+    width: 100%;
+    max-width: 900px;
+    margin: 3rem auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #1c1c1c 0%, #0d1a2a 100%);
+    padding: 1rem 0;
   }
-  20% {
-    transform: translateX(0%);
+  
+  .carouselContainer {
+    position: relative;
+    width: 100%;
+    height: 400px;
   }
-  25% {
-    transform: translateX(-25%);
+  
+  .carouselImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
   }
-  45% {
-    transform: translateX(-25%);
+  
+  .carouselImage.active {
+    opacity: 1;
+    z-index: 1;
   }
-  50% {
-    transform: translateX(-50%);
+  
+  .prev,
+  .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    background: rgba(0,0,0,0.3);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 50%;
+    z-index: 2;
   }
-  70% {
-    transform: translateX(-50%);
+  
+  .prev { left: 10px; }
+  .next { right: 10px; }
+  
+  .dots {
+    text-align: center;
+    margin-top: 1rem;
   }
-  75% {
-    transform: translateX(-75%);
+  
+  .dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin: 0 5px;
+    background: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
   }
-  95% {
-    transform: translateX(-75%);
+  
+  .activeDot {
+    background: #1e90ff;
   }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
-/* Cambiar la imagen destacada durante la animación */
-
-.carouselTrack img:nth-child(1) {
-  animation: highlight1 20s infinite;
-}
-
-.carouselTrack img:nth-child(2) {
-  animation: highlight2 20s infinite;
-}
-
-.carouselTrack img:nth-child(3) {
-  animation: highlight3 20s infinite;
-}
-
-.carouselTrack img:nth-child(4) {
-  animation: highlight4 20s infinite;
-}
-
-/* Animaciones para cambiar brillo y escala de la imagen destacada */
-
-@keyframes highlight1 {
-  0%, 20%, 100% {
-    filter: brightness(1);
-    transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
-  }
-  21%, 99% {
-    filter: brightness(0.7);
-    transform: scale(1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  }
-}
-
-@keyframes highlight2 {
-  0%, 24%, 44%, 100% {
-    filter: brightness(0.7);
-    transform: scale(1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  }
-  25%, 45% {
-    filter: brightness(1);
-    transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
-  }
-}
-
-@keyframes highlight3 {
-  0%, 49%, 69%, 100% {
-    filter: brightness(0.7);
-    transform: scale(1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  }
-  50%, 70% {
-    filter: brightness(1);
-    transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
-  }
-}
-
-@keyframes highlight4 {
-  0%, 74%, 94%, 100% {
-    filter: brightness(0.7);
-    transform: scale(1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  }
-  75%, 95% {
-    filter: brightness(1);
-    transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
-  }
-}

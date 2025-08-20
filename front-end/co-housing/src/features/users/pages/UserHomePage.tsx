@@ -3,10 +3,6 @@ import { Footer } from "../../ui/Footer/Footer";
 import BodyHero from "../components/BodyHero";
 
 export const UserHomePage = () => {
-  //const { user, loading } = useUser(username); // ← aquí podrías meter el ID logueado
-
-  //if (!user) return <p>{alonso} No se pudo cargar el perfil.</p>;
-
   return (
     <div id="root">
       <Header />

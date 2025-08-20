@@ -1,17 +1,16 @@
 //Inclusion de toda la lógica de llamadas a la API de Usuarios
 
-import { UpdateCommunityProfile, CommunityProfile, Tarea, Evento } from "./type";
+import { UpdateCommunityProfile, Tarea, Evento } from "./type";
 
-const API_BASE: String = "http://localhost:8084/comunidades";
-const token = localStorage.getItem('token');
+const API_BASE: String = "https://localhost:8084/comunidades";
 //Patch comunidad
 export const updateCommunity = async (data: UpdateCommunityProfile) => {
   const response = await fetch(`${API_BASE}/update`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
     },
+    credentials: "include",
     body: JSON.stringify(data),
   });
 
@@ -24,7 +23,9 @@ export const updateCommunity = async (data: UpdateCommunityProfile) => {
 
 //Get comunidad especifica
 export const fetchCommunityByName = async (communityname: string | null) => {
-  const response = await fetch(`${API_BASE}/${communityname}`);
+  const response = await fetch(`${API_BASE}/${communityname}` ,{
+    credentials: "include"
+  });
   if (!response.ok) {
     throw new Error("Error al obtener los datos de la comunidad");
   }
@@ -34,7 +35,9 @@ export const fetchCommunityByName = async (communityname: string | null) => {
 
 //Get comunidad por su id
 export const fetchCommunityById = async (communityId: string | null) => {
-  const response = await fetch(`${API_BASE}/id/${communityId}`);
+  const response = await fetch(`${API_BASE}/id/${communityId}`,{
+    credentials: "include"
+  });
   if (!response.ok) {
     throw new Error("Error al obtener los datos de la comunidad");
   }
@@ -49,6 +52,7 @@ export const createCommunity = async (data: FormData) => {
   const response = await fetch(`${API_BASE}/create`, {
     method: "POST",
     body: data,
+    credentials: "include"
   });
 
   if (!response.ok) {
@@ -65,9 +69,9 @@ export const deleteCommunity = async (communityname: string) => {
   const response = await fetch(`${API_BASE}/delete/${communityname}`, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
+    credentials: "include"
   });
 
   if (!response.ok) {
@@ -79,7 +83,9 @@ export const deleteCommunity = async (communityname: string) => {
 
 
 export const fetchTareasPorUsuario = async (userId: number): Promise<Tarea[]> => {
-  const response = await fetch(`http://localhost:8084/comunidades/tareas/${userId}`);
+  const response = await fetch(`https://localhost:8084/comunidades/tareas/${userId}`,{
+    credentials: "include"
+  });
   if (!response.ok) {
     throw new Error("No se pudieron cargar las tareas del usuario");
   }
@@ -87,7 +93,9 @@ export const fetchTareasPorUsuario = async (userId: number): Promise<Tarea[]> =>
 };
 
 export const fetchEventosPorUsuario = async (userId:number): Promise<Evento[]> => {
-  const response = await fetch(`http://localhost:8084/comunidades/eventos/${userId}`);
+  const response = await fetch(`https://localhost:8084/comunidades/eventos/${userId}`,{
+    credentials: "include"
+  });
   if(!response.ok)
     throw new Error("No se pudieron cargar los eventos del usuario");
   return response.json();
@@ -97,9 +105,9 @@ export const createTask = async (datosTarea: Tarea) => {
   const response = await fetch(`${API_BASE}/tarea`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
+    credentials: "include",
     body: JSON.stringify(datosTarea),
   });
 
@@ -110,30 +118,37 @@ export const createTask = async (datosTarea: Tarea) => {
   return response.json();
 }
 
-export const createEvent = async (datosEvento: Evento) => {
-  const response = await fetch(`${API_BASE}/evento`,{
+export async function createEvent(evento: Evento) {
+  const eventoDTO = {
+    ...evento,
+    fechaTope: evento.fechaTope + "T00:00:00",
+    horaInicio: evento.horaInicio, // "HH:mm"
+    horaFinal: evento.horaFinal,   // "HH:mm"
+  };
+
+  const res = await fetch("https://localhost:8084/comunidades/evento", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
     },
-    body: JSON.stringify(datosEvento),
+    credentials: "include",
+    body: JSON.stringify(eventoDTO),
   });
 
-  if(!response.ok) {
+  if (!res.ok) {
     throw new Error("Error al crear el evento");
   }
 
-  return response.json();
+  return await res.json();
 }
 
 export const getUserTask = async (idUsuario: number) => {
   const response = await fetch(`${API_BASE}/tareas/${idUsuario}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
+    credentials: "include"
   });
 
   if (!response.ok) {
@@ -147,9 +162,9 @@ export const getTask = async ( idTarea:number ) => {
   const response = await fetch(`${API_BASE}/tarea/${idTarea}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
+    credentials: "include"
   });
 
   if (!response.ok) {
@@ -163,9 +178,9 @@ export const getEvent = async ( idEvento: number ) => {
   const response = await fetch(`${API_BASE}/evento/${idEvento}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
+    credentials: "include"
   });
   if (!response.ok) {
     throw new Error("Error al obtener el evento");
@@ -178,9 +193,9 @@ export const enProgresoTarea = async ( idTarea: number ) => {
   const response = await fetch(`${API_BASE}/enProgresoTarea/${idTarea}`, {
     method: "PATCH",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
+    credentials: "include"
   });
   if (!response.ok) {
     throw new Error("Error al marcar la tarea como En Progreso");
@@ -193,12 +208,27 @@ export const completarTarea = async ( idTarea: number ) => {
   const response = await fetch(`${API_BASE}/completarTarea/${idTarea}`, {
     method: "PATCH",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
+    credentials: "include"
   });
   if (!response.ok) {
     throw new Error("Error al marcar la tarea como Completada");
+  }
+
+  return;
+}
+
+export const completarEvento = async ( idEvento: number ) => {
+  const response = await fetch(`${API_BASE}/completarEvento/${idEvento}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include"
+  });
+  if (!response.ok) {
+    throw new Error("Error al marcar el evento como Completado");
   }
 
   return;
@@ -208,9 +238,9 @@ export const updateDateTarea = async ( idTarea: number, fecha: string ) => {
   const response = await fetch(`${API_BASE}/tarea/modificarFecha/${idTarea}`, {
     method: "PATCH",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
+    credentials: "include",
     body: JSON.stringify({fecha}),
   });
   if (!response.ok) {
@@ -229,9 +259,9 @@ export const getPorcentajeTareasUsuario = async (idUsuario: number ) => {
   const response = await fetch(`${API_BASE}/porcentajeTareasUsuario/${idUsuario}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    }
+      "Content-Type": "application/json"
+    },
+    credentials: "include"
   });
   if (!response.ok) {
     throw new Error("Error al obtener el porcentaje de tareas del usuario");
@@ -243,12 +273,55 @@ export const getPorcentajeTareasComunidad = async (idComunidad: number ) => {
   const response = await fetch(`${API_BASE}/porcentajeTareasUsuario/${idComunidad}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    }
+      "Content-Type": "application/json"
+    },
+    credentials: "include"
   });
   if (!response.ok) {
     throw new Error("Error al obtener el porcentaje de tareas del usuario");
   }
   return await response.json();
 };
+
+export const deleteEliminarUsuario = async (idUsuario: number, idComunidad: number ) => {
+  const response = await fetch(`${API_BASE}/eliminarUsuario/${idUsuario}/${idComunidad}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include"
+  });
+  if (!response.ok) {
+    throw new Error("Error al salir de la comunidad");
+  }
+  return await response.json();
+}
+
+export const deleteEliminarComunidad = async (idComunidad: number ) => {
+  const response = await fetch(`${API_BASE}/delete/${idComunidad}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include"
+  });
+  if (!response.ok) {
+    throw new Error("Error al eliminar la comunidad");
+  }
+}
+
+
+export const obtenerUsuariosDeComunidad = async (idComunidad: number ) => {
+  const response = await fetch(`https://localhost:8084/user/obtenerUsuariosPorComunidad/${idComunidad}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include"
+  });
+  if (!response.ok) {
+    throw new Error("Error al obtener los usuarios de una comunidad");
+  }
+
+  return await response.json();
+}

@@ -22,9 +22,9 @@ def community_to_dict(community):
     }
 
 def recommend_communities_by_user(user, communities, n_recommendations=5):
-    if not communities:
+    
+    if communities is None or len(communities) == 0:
         return []
-
     # Preprocesar datos
     user_scaled, communities_scaled = preprocess_data(user, communities)
 

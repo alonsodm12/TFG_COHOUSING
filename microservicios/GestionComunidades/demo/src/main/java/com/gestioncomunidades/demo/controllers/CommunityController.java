@@ -1,16 +1,18 @@
 package com.gestioncomunidades.demo.controllers;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +28,9 @@ import com.gestioncomunidades.demo.DTOs.FechaDTO;
 import com.gestioncomunidades.demo.DTOs.TareaDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
 import com.gestioncomunidades.demo.models.Community;
-import com.gestioncomunidades.demo.models.EstadoTarea;
 import com.gestioncomunidades.demo.models.Evento;
 import com.gestioncomunidades.demo.models.Tarea;
+import com.gestioncomunidades.demo.services.ActividadesService;
 import com.gestioncomunidades.demo.services.CommunityServices;
 
 import jakarta.validation.Valid;
@@ -38,6 +40,8 @@ import jakarta.validation.Valid;
 public class CommunityController {
     private CommunityServices communityServices;
 
+    @Autowired
+    private ActividadesService actividadesService;
     public CommunityController(CommunityServices communityServices) {
         this.communityServices = communityServices;
     }
@@ -86,9 +90,9 @@ public class CommunityController {
 
             if (foto != null && !foto.isEmpty()) {
                 String fotoUrl = communityServices.guardarFoto(foto);
-                communityDTO = new CommunityDTO(communityDTO.name(), communityDTO.descripcion(), communityDTO.idAdmin(),
+                communityDTO = new CommunityDTO(communityDTO.id(),communityDTO.name(), communityDTO.descripcion(), communityDTO.idAdmin(),
                         communityDTO.lifestyleDTO(), communityDTO.integrantes(), fotoUrl, communityDTO.latitud(),
-                        communityDTO.longitud(), communityDTO.direccion(), communityDTO.precio());
+                        communityDTO.longitud(), communityDTO.direccion(), communityDTO.precio(),communityDTO.num_integrantes());
             }
             Community comunidad = communityServices.registrarComunidad(communityDTO);
 
@@ -110,14 +114,14 @@ public class CommunityController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Comunidad modificada ", actualizado.toString()));
     }
 
-    @PostMapping("/delete/{communityname}")
-    public ResponseEntity<?> deleteCommunity(@PathVariable String communityname) {
+    @DeleteMapping("/delete/{idComunidad}")
+    public ResponseEntity<?> deleteCommunity(@PathVariable Long idComunidad) {
         try {
-            communityServices.deleteCommunity(communityname);
+            communityServices.deleteCommunity(idComunidad);
             return ResponseEntity.status(HttpStatus.ACCEPTED)
-                    .body("Comunidad: " + communityname + " borrada correctamente");
+                    .body("Comunidad: " + idComunidad + " borrada correctamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error borrando la comunidad: " + communityname);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error borrando la comunidad: " + idComunidad);
         }
     }
 
@@ -183,6 +187,17 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PostMapping("/completarEvento/{idEvento}")
+    public ResponseEntity<?> completarEvento(@PathVariable Long idEvento) {
+        try{
+            communityServices.marcarEventoCompletado(idEvento);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     @PatchMapping("/enProgresoTarea/{idTarea}")
     public ResponseEntity<?> enProgresoTarea(@PathVariable Long idTarea) {
@@ -263,6 +278,28 @@ public class CommunityController {
             Map<String, Integer> respuesta = new HashMap<>();
             respuesta.put("porcentaje", porcentaje);
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/eliminarUsuario/{idUsuario}/{idComunidad}")
+    public ResponseEntity<?> abandonarComunidad(@PathVariable Long idUsuario,Long idComunidad){
+        try{
+            communityServices.eliminarMiembroComunidad(idUsuario,idComunidad);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/pruebaResumenSemanal")
+    public ResponseEntity<?> pruebaSemanal() {
+        try {
+            Community comunidad = communityServices.obtenerComunidades().get(0);
+
+            actividadesService.generarResumenSemanal(comunidad, LocalDate.now());
+            //actividadesService.repartirTareasSemanalmente();
+            return ResponseEntity.status(HttpStatus.OK).body(comunidad);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

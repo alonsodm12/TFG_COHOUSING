@@ -3,6 +3,8 @@ import { CommunityProfile } from "../api/type";
 import { CommunityForm } from "../components/CommunityForm";  // Asegúrate de importar correctamente
 import { updateCommunity } from "../api/operations";  // Asegúrate de importar desde el archivo correcto
 import { useLocation } from "react-router-dom";
+import { Header } from "../../ui/Header/Header";
+import { Footer } from "../../ui/Footer/Footer";
 
 const UpdateCommunityPage: React.FC = () => {
 
@@ -30,9 +32,12 @@ const UpdateCommunityPage: React.FC = () => {
     };
 
     return (
-        <div>
-            <h1>Editar Comunidad</h1>
-            <CommunityForm initialData={community} onSubmit={handleUpdateCommunity} />
+        <div id="root">
+            <Header />
+            <main className="page">
+                <CommunityForm initialData={community} onSubmit={handleUpdateCommunity} />
+            </main>
+            <Footer/>
         </div>
     );
 };

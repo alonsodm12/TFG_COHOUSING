@@ -1,14 +1,22 @@
 FROM openjdk:17-jdk-slim
 
-LABEL maintainer = "alonsodmx@gmail.com"
+LABEL maintainer="alonsodmx@gmail.com"
 
-VOLUME /tmp
+WORKDIR /app
+
+# Instalamos las librerías necesarias para evitar problemas con fuentes y AWT headless
+RUN apt-get update && apt-get install -y \
+    curl \
+    libfreetype6 \
+    fontconfig \
+    libxrender1 \
+    libxtst6 \
+    libxi6 \
+    libxext6 && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_TOOL_OPTIONS="-Djava.awt.headless=true"
 
 EXPOSE 8082
 
-ARG JAR_FILE=target/demo-0.0.1-SNAPSHOT.jar
-
-ADD ${JAR_FILE} gestioncomunidades.jar
-
-
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/ ./urandom","-jar","/gestioncomunidades.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,14 +1,12 @@
 FROM openjdk:17-jdk-slim
 
-LABEL maintainer = "alonsodmx@gmail.com"
+LABEL maintainer="alonsodmx@gmail.com"
 
-VOLUME /tmp
+# Creamos directorio de trabajo
+WORKDIR /app
 
+# Exponemos el puerto del gateway
 EXPOSE 8084
 
-ARG JAR_FILE=target/demo-0.0.1-SNAPSHOT.jar
-
-ADD ${JAR_FILE} gateway.jar
-
-
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/ ./urandom","-jar","/gateway.jar"]
+# Ejecutamos la app
+ENTRYPOINT ["java", "-jar", "app.jar"]

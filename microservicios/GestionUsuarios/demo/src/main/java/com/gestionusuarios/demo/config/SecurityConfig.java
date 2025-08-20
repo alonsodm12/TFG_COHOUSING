@@ -1,63 +1,38 @@
 package com.gestionusuarios.demo.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.gestionusuarios.demo.security.CustomAuthenticationProvider;
-import com.gestionusuarios.demo.security.filters.JwtAuthenticationFilter;
-import com.gestionusuarios.demo.services.CustomUserDetailsService;
-import com.gestionusuarios.demo.utils.JwtUtil;
-import com.gestionusuarios.demo.config.CustomOAuth2SuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomAuthenticationProvider authenticationProvider;
-    private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
-
-    public SecurityConfig(CustomAuthenticationProvider authenticationProvider,
-                          CustomOAuth2SuccessHandler customOAuth2SuccessHandler) {
-        this.authenticationProvider = authenticationProvider;
-        this.customOAuth2SuccessHandler = customOAuth2SuccessHandler;
-    }
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
-            throws Exception {
-        return http.csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**", "/user/login", "/user/register", "/uploads/**", "/user/delete")
-                        .permitAll()
-                        .requestMatchers("/oauth2/**").permitAll()
-                        .requestMatchers("/user/usuarios").hasRole("buscador")
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2Login(oauth -> oauth.successHandler(customOAuth2SuccessHandler))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+          .csrf(csrf -> csrf.disable())
+          .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/user/**").permitAll()
+            .anyRequest().authenticated()
+          );
+        return http.build();
     }
-
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOriginPatterns(List.of("https://localhost:8084")); // acepta cualquier origen
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // o true si necesitas cookies, pero en ese caso revisa que frontend tenga origen concreto
+    
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtUtil jwtUtil,
-            CustomUserDetailsService customUserDetailsService) {
-        return new JwtAuthenticationFilter(jwtUtil, customUserDetailsService);
-    }
-
 }
