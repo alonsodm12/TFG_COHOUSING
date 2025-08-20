@@ -1,4 +1,4 @@
-package com.gestioncomunidades.demo;
+package com.solicitudes.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,16 +1,19 @@
 package com.gestionusuarios.demo.services;
 
+import java.util.NoSuchElementException;
+
+import javax.security.sasl.AuthenticationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,13 @@ public class AuthService implements UserDetailsService{
     }
 
     public User createUser(final UserDTO createUserDTO){
+
+        //Comprobamos que el usuario no este registrado previamente
+        if(userRepository.findByEmail(createUserDTO.email()).isPresent()){
+            throw new IllegalArgumentException("El usuario con este email ya esta registrado");    
+        }
+
+        //Creamos el usuario
         final User createUser = new User(createUserDTO.username(), createUserDTO.email(),
          createUserDTO.email(), createUserDTO.fotoUrl(),createUserDTO.latitud(),
           createUserDTO.longitud(),createUserDTO.direccion(),createUserDTO.role()
@@ -49,6 +59,7 @@ public class AuthService implements UserDetailsService{
         createUser.setPassword(passwordEncoder.encode(createUserDTO.password()));
         final User user = userRepository.save(createUser);
         logger.info("[USER] : User successfully created with id {}", user.getId());
+
         return user;
     }
 
@@ -56,11 +67,11 @@ public class AuthService implements UserDetailsService{
         return userRepository.findById(id)
             .orElseThrow(() -> {
                 logger.error("[USER] : User not found with id {}", id);
-                return new RuntimeException("Error al obtener el usuario");
+                return new NoSuchElementException("Error al obtener el usuario");
             });
     }
 
-    public String login(final LoginRequestDTO loginRequest) {
+    public String login(final LoginRequestDTO loginRequest){
         try {
             final AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
             final org.springframework.security.core.Authentication authRequest = new UsernamePasswordAuthenticationToken(loginRequest.username(),loginRequest.password());
@@ -69,7 +80,7 @@ public class AuthService implements UserDetailsService{
 
         } catch (Exception e) {
             logger.error("[USER] : Error while trying to login", e);
-            throw new RuntimeException("Error al realizar el login");
+            throw new BadCredentialsException("Error al realizar el login");
         }
     }
 

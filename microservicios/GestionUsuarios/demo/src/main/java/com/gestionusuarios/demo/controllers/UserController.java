@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
@@ -145,7 +145,7 @@ public class UserController {
             ));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("Error durante el login: ", "Credenciales inválidas"));
+                    .body(Map.of("error:", "Credenciales inválidas"));
         }
     }
 
@@ -210,23 +210,32 @@ public class UserController {
 
     @GetMapping("/{username}")
     public ResponseEntity<?> getUsuario(@PathVariable String username) {
-        Optional<User> usuario = userService.findByUsername(username);
+        
+        try{
+            Optional<User> usuario = userService.findByUsername(username);
+            if (usuario.isPresent()) {
+                LifestyleDTO lifestyleDTO = new LifestyleDTO(usuario.get().getTranquilidad(), usuario.get().getActividad(),
+                        usuario.get().getLimpieza(), usuario.get().getCompartirEspacios(), usuario.get().getSociabilidad());
+    
+                UserDTO userDto = new UserDTO(usuario.get().getUsername(), usuario.get().getId(),
+                        usuario.get().getPassword(), usuario.get().getRole(), usuario.get().getEmail(),
+                        usuario.get().getDireccion(),
+                        usuario.get().getLatitud(), usuario.get().getLongitud(),"https://localhost:8084/user"+
+                        usuario.get().getFotoUrl(), lifestyleDTO, usuario.get().getIdComunidad(),usuario.get().getComunidadesGuardadas());
+    
+                return ResponseEntity.status(HttpStatus.OK).body(userDto);
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Error en la consulta del usuario"));  
+            }
+        }catch (UsernameNotFoundException e){
 
-        if (usuario.isPresent()) {
-            LifestyleDTO lifestyleDTO = new LifestyleDTO(usuario.get().getTranquilidad(), usuario.get().getActividad(),
-                    usuario.get().getLimpieza(), usuario.get().getCompartirEspacios(), usuario.get().getSociabilidad());
-
-            UserDTO userDto = new UserDTO(usuario.get().getUsername(), usuario.get().getId(),
-                    usuario.get().getPassword(), usuario.get().getRole(), usuario.get().getEmail(),
-                    usuario.get().getDireccion(),
-                    usuario.get().getLatitud(), usuario.get().getLongitud(),"https://localhost:8084/user"+
-                    usuario.get().getFotoUrl(), lifestyleDTO, usuario.get().getIdComunidad(),usuario.get().getComunidadesGuardadas());
-
-            return ResponseEntity.status(HttpStatus.OK).body(userDto);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(Map.of("error", "Error en la consulta del usuario"));
+    
         }
-
-        return ResponseEntity.ofNullable("Error en la consulta del usuario");
-
+        
     }
     @GetMapping(value = "/uploads/{filename}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getImage(@PathVariable String filename) {

@@ -29,6 +29,7 @@ def get_recommendations(user_id: int, db_users: Session = Depends(get_db_users),
     
     return recommended_communities
 
+#Sacado de internet
 def haversine(lat1, lon1, lat2, lon2):
     # Fórmula para calcular distancia entre dos puntos geográficos
     R = 6371  # Radio de la Tierra en km

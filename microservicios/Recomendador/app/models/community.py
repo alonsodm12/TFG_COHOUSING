@@ -14,7 +14,7 @@ class CommunityIntegrantes(BaseCommunities):  # convención: Clases con mayúscu
 class CommunityBase(BaseCommunities):
     __tablename__ = 'communities'
 
-    id = Column(BigInteger, primary_key=True)
+    id = Column(Integer, primary_key=True,autoincrement=True)
     name = Column(String, nullable=False)
     descripcion = Column(String, nullable=False)
     sociabilidad = Column(Integer, nullable=False)
