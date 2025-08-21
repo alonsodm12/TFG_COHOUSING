@@ -28,7 +28,7 @@ jobs:
 
       - name: Compilar micros a JAR
         run: |
-          for dir in microservicios/*/; do
+          for dir in microservicios/*; do
             echo "Compilando $dir"
             if [ -f "$dir/demo/pom.xml" ]; then
                 cd "$dir/demo"
