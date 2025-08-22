@@ -31,7 +31,8 @@ export const RegisterCard: React.FC = () => {
       sociabilidad: 5,
     },
     idComunidad: null,
-    fotoFile: null, // nuevo campo para almacenar el archivo
+    fotoFile: null,
+    comunidadesGuardadas: []
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

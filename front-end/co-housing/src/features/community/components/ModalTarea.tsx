@@ -8,8 +8,8 @@ interface TaskModalProps {
     titulo: string;
     descripcion: string;
     duracion: number;
-    fechaLimite: string;
-    participantes: number[];
+    fechaTope: string;
+    usuariosParticipantes: number[];
     estado: string;
   };
   onComplete: () => void;

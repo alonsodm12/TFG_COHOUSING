@@ -5,17 +5,18 @@ import { createEvent, obtenerUsuariosDeComunidad } from "../api/operations"; // 
 // Tipos
 type Usuario = {
   id: number;
-  username: string;home
+  username: string;
 };
 
 type Evento = {
+  id: number,
   titulo: string;
   descripcion: string;
   usuariosParticipantes: number[];
   fechaTope: string;
   lugar: string;
-  horaInicio: string; // "HH:mm"
-  horaFinal: string;  // "HH:mm"
+  horaInicio: string;
+  horaFinal: string;
   idComunidad: number;
   numParticipantes: number;
 };
@@ -26,6 +27,7 @@ const EventoForm: React.FC = () => {
   const navigate = useNavigate();
 
   const [evento, setEvento] = useState<Evento>({
+    id: 0,
     titulo: "",
     descripcion: "",
     usuariosParticipantes: [],

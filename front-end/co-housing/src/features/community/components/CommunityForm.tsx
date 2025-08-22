@@ -13,6 +13,7 @@ function buildInitialFormData(
   overrides?: Partial<CommunityProfile>
 ): CommunityProfile {
   return {
+    id: 0,
     name: overrides?.name ?? "",
     descripcion: overrides?.descripcion ?? "",
     idAdmin: overrides?.idAdmin ?? userId ?? 0,

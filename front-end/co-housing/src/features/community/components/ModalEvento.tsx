@@ -19,7 +19,7 @@ interface EventModalProps {
   onProgress: () => void;
 }
 
-const EventoModal: React.FC<EventModalProps> = ({ isOpen, onClose, evento, onComplete, onProgress }) => {
+const EventoModal: React.FC<EventModalProps> = ({ isOpen, onClose, evento, onComplete }) => {
   return (
     <Modal
       isOpen={isOpen}

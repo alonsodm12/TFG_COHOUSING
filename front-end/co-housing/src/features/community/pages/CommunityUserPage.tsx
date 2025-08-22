@@ -45,20 +45,19 @@ export const CommunityUserPage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [showLeaveModal, setShowLeaveModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTask, setSelectedTask] = useState<Tarea | null>(null);
   const [isModalTaskOpen, setIsModalTaskOpen] = useState(false);
   const [isModalEventOpen, setIsModalEventOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState<Evento | null>(null);
 
   //Carga los datos de la comunidad
-  const openTaskModal = (tarea) => {
+  const openTaskModal = (tarea : Tarea) => {
     setSelectedTask(tarea);
     setIsModalTaskOpen(true);
   };
 
-  const openEventModal = (evento) => {
+  const openEventModal = (evento : Evento) => {
     setSelectedEvent(evento);
     setIsModalEventOpen(true);
   };
@@ -66,8 +65,6 @@ export const CommunityUserPage = () => {
   // 1. useEffect - Datos del usuario
   useEffect(() => {
     const userId = userProfile?.id;
-    const comunidadId = userProfile?.idComunidad;
-
     if (!userId) return;
 
     // Tareas
@@ -466,9 +463,11 @@ export const CommunityUserPage = () => {
                   // Aquí iría un fetch a tu endpoint real
                   tareaCompletada(selectedTask.id);
                   setIsModalTaskOpen(false);
-                  fetchTareasPorUsuario(userProfile?.id)
-                  .then((data) => setTasks(data || []))
-                  .catch((err) => console.error("Error al cargar tareas", err));
+                  if(userProfile?.id){
+                    fetchTareasPorUsuario(userProfile?.id)
+                    .then((data) => setTasks(data || []))
+                    .catch((err) => console.error("Error al cargar tareas", err));
+                  }
                 }}
                 onProgress={() => {
                   // Aquí también podrías usar fetch/Axios
@@ -568,8 +567,11 @@ export const CommunityUserPage = () => {
               Cancelar
             </button>
             <button
-              onClick={() =>
-                deleteEliminarUsuario(userProfile?.id, userProfile?.idComunidad)
+              onClick={() => {
+                if(userProfile?.id && userProfile?.idComunidad){
+                  deleteEliminarUsuario(userProfile?.id, userProfile?.idComunidad)
+                }
+              }
               }
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
             >
@@ -594,7 +596,10 @@ export const CommunityUserPage = () => {
               No
             </button>
             <button
-              onClick={() => deleteEliminarComunidad(userProfile?.idComunidad)}
+              onClick={() => {
+                if( userProfile?.idComunidad)
+                  deleteEliminarComunidad(userProfile?.idComunidad)}
+              }
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
             >
               Sí
