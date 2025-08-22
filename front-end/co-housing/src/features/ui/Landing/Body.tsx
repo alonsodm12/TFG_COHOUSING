@@ -109,7 +109,7 @@ export const Body: React.FC = () => {
       </section>
 
       {/* Carrusel de imágenes estáticas */}
-      <h2 className="font-bold text-5xl mb-14 text-gray-800 dark:text-black">
+      <h2 className="font-bold text-5xl mt-14 text-gray-800 dark:text-black">
           Descubre todo lo que ofrece ShareSpace
       </h2>
       <div className={styles.carouselSection}>
