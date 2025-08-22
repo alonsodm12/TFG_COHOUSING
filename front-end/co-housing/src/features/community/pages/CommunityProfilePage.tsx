@@ -61,7 +61,7 @@ export const CommunityProfilePage = () => {
     <div id="root" className="min-h-screen flex flex-col bg-gray-50 text-gray-800">
       <Header />
       <main className="page flex-grow">
-        <h1 className="text-4xl font-bold mb-8 text-center text-indigo-700">
+        <h1 className="text-5xl font-extrabold mb-10 text-center text-black">
           Perfil de Comunidad
         </h1>
 

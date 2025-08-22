@@ -6,8 +6,6 @@ services:
     build:
       context: ./microservicios/GestionUsuarios/demo
       dockerfile: Dockerfile
-    ports:
-      - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
@@ -23,8 +21,6 @@ services:
     build:
       context: ./microservicios/GestionComunidades/demo
       dockerfile: Dockerfile
-    ports:
-      - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
@@ -55,8 +51,6 @@ services:
     build:
       context: ./microservicios/Recomendador
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
     networks:
       - cohousing
 
@@ -64,8 +58,6 @@ services:
     build:
       context: ./microservicios/Solicitudes/demo
       dockerfile: Dockerfile
-    ports:
-      - "8083:8083"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
