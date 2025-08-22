@@ -22,6 +22,7 @@ import BarraProgreso from "../components/BarraProgreso";
 import Modal from "../components/Modal";
 import TaskModal from "../components/ModalTarea";
 import EventoModal from "../components/ModalEvento";
+import { Spinner } from "../../users/components/Spinner";
 
 export const CommunityUserPage = () => {
   const { userProfile, isLoading: isUserLoading } = useUserContext();
@@ -45,20 +46,19 @@ export const CommunityUserPage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [showLeaveModal, setShowLeaveModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTask, setSelectedTask] = useState<Tarea | null>(null);
   const [isModalTaskOpen, setIsModalTaskOpen] = useState(false);
   const [isModalEventOpen, setIsModalEventOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState<Evento | null>(null);
 
-  //Carga los datos de la comunidad
-  const openTaskModal = (tarea) => {
+  //FUNCIONES PARA ABRIR MODALES
+  const openTaskModal = (tarea: Tarea) => {
     setSelectedTask(tarea);
     setIsModalTaskOpen(true);
   };
 
-  const openEventModal = (evento) => {
+  const openEventModal = (evento: Evento) => {
     setSelectedEvent(evento);
     setIsModalEventOpen(true);
   };
@@ -66,7 +66,6 @@ export const CommunityUserPage = () => {
   // 1. useEffect - Datos del usuario
   useEffect(() => {
     const userId = userProfile?.id;
-    const comunidadId = userProfile?.idComunidad;
 
     if (!userId) return;
 
@@ -128,53 +127,30 @@ export const CommunityUserPage = () => {
       );
   }, [community]);
 
-  const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-
+  // Paginación de tareas
   const visibleTasks = tasks.slice(taskIndex, taskIndex + 2);
-
   const handlePrev = () => {
     if (taskIndex >= 2) setTaskIndex(taskIndex - 2);
   };
-
   const handleNext = () => {
     if (taskIndex + 2 < tasks.length) setTaskIndex(taskIndex + 2);
   };
+
+  // Paginación de eventos
+  const visibleEventos = eventos.slice(eventoIndex, eventoIndex + 2);
   const handlePrevEvento = () => {
     if (eventoIndex >= 2) setEventoIndex(eventoIndex - 2);
   };
-
   const handleNextEvento = () => {
     if (eventoIndex + 2 < eventos.length) setEventoIndex(eventoIndex + 2);
   };
 
-  const tareaCompletada = (taskId: number) => {
-    completarTarea(taskId);
-    setTasks((prevTasks) =>
-      prevTasks.map((t) =>
-        t.id === taskId ? { ...t, estado: "completada" } : t
-      )
-    );
-  };
-
-  const eventoCompletado = (eventoId : number) => {
-    completarEvento(eventoId);
-
-  }
-
-  const tareaProgreso = (taskId: number) => {
-    enProgresoTarea(taskId);
-    setTasks((prevTasks) =>
-      prevTasks.map((t) =>
-        t.id === taskId ? { ...t, estado: "en progreso" } : t
-      )
-    );
-  };
   if (!username) {
-    return <p>Error: No se pudo obtener el nombre de usuario</p>;
+    return <Spinner />;
   }
 
   if (isUserLoading) {
-    return <p>Cargando perfil de usuario...</p>;
+    return <Spinner />;
   }
 
   if (userProfile?.idComunidad === null) {
@@ -222,7 +198,7 @@ export const CommunityUserPage = () => {
     );
   }
 
-  if (loading) return <p>Cargando datos de la comunidad...</p>;
+  if (loading) return <Spinner />;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -441,20 +417,48 @@ export const CommunityUserPage = () => {
             {tasks.length === 0 ? (
               <p className="text-gray-600">No tienes tareas asignadas.</p>
             ) : (
-              <ul className="space-y-3">
-                {tasks.map((tarea) => (
-                  <li
-                    key={tarea.id}
-                    onClick={() => openTaskModal(tarea)}
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-blue-300 transition bg-blue-100"
-                  >
-                    <p className="font-semibold text-blue-700">
-                      {tarea.titulo}
-                    </p>
-                    <p className="text-black text-sm">{tarea.descripcion}</p>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="space-y-3">
+                  {visibleTasks.map((tarea) => (
+                    <li
+                      key={tarea.id}
+                      onClick={() => openTaskModal(tarea)}
+                      className="cursor-pointer rounded px-3 py-2 hover:bg-blue-300 transition bg-blue-100"
+                    >
+                      <p className="font-semibold text-blue-700">
+                        {tarea.titulo}
+                      </p>
+                      <p className="text-black text-sm">{tarea.descripcion}</p>
+                    </li>
+                  ))}
+                </ul>
+                {tasks.length > 2 && (
+                  <div className="flex justify-center mt-4 gap-4">
+                    <button
+                      onClick={handlePrev}
+                      disabled={taskIndex === 0}
+                      className={`px-4 py-2 rounded ${
+                        taskIndex === 0
+                          ? "bg-gray-400"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      } text-white transition`}
+                    >
+                      Anterior
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      disabled={taskIndex + 2 >= tasks.length}
+                      className={`px-4 py-2 rounded ${
+                        taskIndex + 2 >= tasks.length
+                          ? "bg-gray-400"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      } text-white transition`}
+                    >
+                      Siguiente
+                    </button>
+                  </div>
+                )}
+              </>
             )}
 
             {selectedTask && (
@@ -462,19 +466,6 @@ export const CommunityUserPage = () => {
                 isOpen={isModalTaskOpen}
                 onClose={() => setIsModalTaskOpen(false)}
                 tarea={selectedTask}
-                onComplete={() => {
-                  // Aquí iría un fetch a tu endpoint real
-                  tareaCompletada(selectedTask.id);
-                  setIsModalTaskOpen(false);
-                  fetchTareasPorUsuario(userProfile?.id)
-                  .then((data) => setTasks(data || []))
-                  .catch((err) => console.error("Error al cargar tareas", err));
-                }}
-                onProgress={() => {
-                  // Aquí también podrías usar fetch/Axios
-                  tareaProgreso(selectedTask.id);
-                  setIsModalTaskOpen(false);
-                }}
               />
             )}
           </section>
@@ -498,20 +489,48 @@ export const CommunityUserPage = () => {
             {eventos.length === 0 ? (
               <p className="text-gray-600">No tienes eventos asignados.</p>
             ) : (
-              <ul className="space-y-3">
-                {eventos.map((evento) => (
-                  <li
-                    key={evento.id}
-                    onClick={() => openEventModal(evento)}
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-blue-300 transition bg-blue-100"
-                  >
-                    <p className="font-semibold text-blue-700">
-                      {evento.titulo}
-                    </p>
-                    <p className="text-black text-sm">{evento.descripcion}</p>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="space-y-3">
+                  {visibleEventos.map((evento) => (
+                    <li
+                      key={evento.id}
+                      onClick={() => openEventModal(evento)}
+                      className="cursor-pointer rounded px-3 py-2 hover:bg-blue-300 transition bg-blue-100"
+                    >
+                      <p className="font-semibold text-blue-700">
+                        {evento.titulo}
+                      </p>
+                      <p className="text-black text-sm">{evento.descripcion}</p>
+                    </li>
+                  ))}
+                </ul>
+                {eventos.length > 2 && (
+                  <div className="flex justify-center mt-4 gap-4">
+                    <button
+                      onClick={handlePrevEvento}
+                      disabled={eventoIndex === 0}
+                      className={`px-4 py-2 rounded ${
+                        eventoIndex === 0
+                          ? "bg-gray-400"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      } text-white transition`}
+                    >
+                      Anterior
+                    </button>
+                    <button
+                      onClick={handleNextEvento}
+                      disabled={eventoIndex + 2 >= eventos.length}
+                      className={`px-4 py-2 rounded ${
+                        eventoIndex + 2 >= eventos.length
+                          ? "bg-gray-400"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      } text-white transition`}
+                    >
+                      Siguiente
+                    </button>
+                  </div>
+                )}
+              </>
             )}
 
             {selectedEvent && (
@@ -519,17 +538,8 @@ export const CommunityUserPage = () => {
                 isOpen={isModalEventOpen}
                 onClose={() => setIsModalEventOpen(false)}
                 evento={selectedEvent}
-                onComplete={() => {
-                  // Aquí iría un fetch a tu endpoint real
-                  //eventoCompletada(selectedTask.id);
-                  eventoCompletado(selectedEvent.id);
-                  setIsModalEventOpen(false);
-                }}
-                onProgress={() => {
-                  // Aquí también podrías usar fetch/Axios
-                  //tareaProgreso(selectedTask.id);
-                  setIsModalEventOpen(false);
-                }}
+                onComplete={() => setIsModalEventOpen(false)}
+                onProgress={() => setIsModalEventOpen(false)}
               />
             )}
           </section>
@@ -607,4 +617,4 @@ export const CommunityUserPage = () => {
     </div>
   );
 };
-//`/TFG_COHOUSING/eliminarUsuario/${userProfile?.id}${userProfile?.idComunidad}/`
+

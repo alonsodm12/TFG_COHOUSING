@@ -65,7 +65,7 @@ def recommend_communities_by_user(user, communities, n_recommendations=5):
     affinities = []
     for i, dist in distances:
         affinity = 100 * (1 - (dist / max_distance)) if math.isfinite(dist) else 0.0
-        affinities.append((i, round(max(min(affinity, 100), 0), 2)))
+        affinities.append((i, round(max(min(affinity, 100), 0))))
 
     # Ordenar por mayor afinidad
     affinities.sort(key=lambda x: x[1], reverse=True)

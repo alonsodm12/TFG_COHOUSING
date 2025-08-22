@@ -18,13 +18,11 @@ interface CommunityCardProps extends CommunityRecommended {
 }
 
 const CommunityCard: React.FC<CommunityCardProps> = (props) => {
-  console.log(props.comunidadesGuardadas);
 
   const [hasRequestedJoin, setHasRequestedJoin] = useState(false);
   const isFavoriteInitial =
     props.comunidadesGuardadas?.includes(props.id) || false;
 
-  console.log(isFavoriteInitial);
   const [isFavorite, setIsFavorite] = useState(isFavoriteInitial);
   const [loadingFav, setLoadingFav] = useState(false);
 
@@ -60,14 +58,22 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
   };
 
   const toggleFavorite = async () => {
-    if (loadingFav) return; // evitar clicks rápidos
-
+    if (loadingFav) return;
+  
     setLoadingFav(true);
     try {
-      if (isFavorite) await removeComunidad(props.userId, props.id);
-      else await addComunidad(props.userId, props.id);
-
-      setIsFavorite(!isFavorite);
+      if (isFavorite) {
+        await removeComunidad(props.userId, props.id);
+        setIsFavorite(false);
+        props.comunidadesGuardadas?.splice(
+          props.comunidadesGuardadas.indexOf(props.id),
+          1
+        );
+      } else {
+        await addComunidad(props.userId, props.id);
+        setIsFavorite(true);
+        props.comunidadesGuardadas?.push(props.id);
+      }
     } catch (error) {
       console.error("Error toggling favorite:", error);
       alert("Error al cambiar favorito.");

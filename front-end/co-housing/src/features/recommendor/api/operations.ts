@@ -74,3 +74,17 @@ export const removeComunidad = async (userId: number,idComunidad: number) => {
   return;
 
 }
+
+export const getRecomendacionesFiltradas = async (userId: string, maxPrecio: number, maxDistancia: number) => {
+  const response = await fetch(`https://localhost:8084/recommendations-filtered/${userId}?precio=${maxPrecio}&distancia=${maxDistancia}`,{
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include"
+  });
+  if (!response.ok) {
+    throw new Error("Error al obtener las comunidades recomendadas");
+  }
+  return response.json();
+};

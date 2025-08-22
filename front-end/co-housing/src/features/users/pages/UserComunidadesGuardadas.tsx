@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CommunityCard from "../components/CommunityCard";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
@@ -17,7 +17,9 @@ export const UserComunidadesGuardadas = () => {
 
       setIsLoading(true);
       try {
-        const data = await obtenerComunidadesGuardadas(userProfile.comunidadesGuardadas);
+        const data = await obtenerComunidadesGuardadas(
+          userProfile.comunidadesGuardadas
+        );
         setCommunities(data);
       } catch (error) {
         console.error("Error al obtener comunidades guardadas:", error);
@@ -34,7 +36,9 @@ export const UserComunidadesGuardadas = () => {
     <>
       <Header />
       <main className="page">
-        <h2 className="text-xl font-bold mb-4">Tus comunidades guardadas</h2>
+        <h1 className="text-5xl font-bold text-black mb-2">
+          Tus comunidades guardadas
+        </h1>
 
         {isLoading ? (
           <p>Cargando comunidades...</p>

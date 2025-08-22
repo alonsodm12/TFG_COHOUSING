@@ -39,7 +39,9 @@ public class GatewayConfig {
                         "/user/{username}",
                         "/user/modificarDireccion/**",
                         "/user/update-admin/**",
-                        "/user/profile/edit")
+                        "/user/profile/edit",
+                        "/user/addComunidadGuardada/**",
+                        "/user/removeComunidadGuardada/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
                         .uri("http://gestion-usuarios:8081"))
 
@@ -60,7 +62,8 @@ public class GatewayConfig {
 
 
                 .route("recomendaciones-protected-routes", r -> r.path(
-                        "/recommendations/**")
+                        "/recommendations/**",
+                        "/recommendations-filtered/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
                         .uri("http://recomendador:8000"))
 
