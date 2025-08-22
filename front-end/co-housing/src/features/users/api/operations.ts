@@ -1,4 +1,4 @@
-import { UpdateUserProfile, UserLogin, UserProfile } from "./types";
+import { UpdateUserProfile, UserLogin } from "./types";
 const API_BASE: String = "https://localhost:8084/user";
 
 // Patch usuario

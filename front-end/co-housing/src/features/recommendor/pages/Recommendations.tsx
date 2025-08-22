@@ -21,8 +21,7 @@ const Recommendations: React.FC = () => {
   const [maxDistancia, setMaxDistancia] = useState(10);
   const [maxPrecio, setMaxPrecio] = useState(1000);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [latitud, setLatitud] = useState<string | null>(null);
-  const [longitud, setLongitud] = useState<string | null>(null);
+
 
   const handleAplicarUbicacion = async () => {
     if (!ubicacion || !id) return;
@@ -46,13 +45,10 @@ const Recommendations: React.FC = () => {
       // Guardar en el backend
       await modificarDireccion(ubicacion, lat, lon, parseInt(id));
 
-      // Guardar en estado local si quieres usarlo luego
-      setLatitud(lat.toString());
-      setLongitud(lon.toString());
+
 
       alert("Ubicación actualizada correctamente.");
 
-      // (Opcional) aplicar filtros si quieres refrescar resultados
       aplicarFiltros();
     } catch (error) {
       console.error("Error al aplicar ubicación:", error);
@@ -87,6 +83,7 @@ const Recommendations: React.FC = () => {
 
     setIsLoading(true);
     const response = await getRecomendacionesFiltradas(id,maxPrecio,maxDistancia);
+    //console.log(response);
     setCommunities(response);
     setIsLoading(false);
   };

@@ -66,7 +66,7 @@ const BodyHero: React.FC = () => {
         ¿Listo para conectar con tu comunidad?
       </p>
 
-      <div className="relative w-[600px] h-[500px] mx-auto">
+      <div className="relative w-[600px] h-[600px] mx-auto">
         {/* Centro con imagen */}
         <div
           className="absolute top-1/2 left-1/2 w-52 h-52 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-2xl bg-white/30 dark:bg-white/10 backdrop-blur-md flex items-center justify-center z-10 cursor-default select-none"

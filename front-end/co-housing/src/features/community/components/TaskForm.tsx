@@ -1,5 +1,5 @@
 import React from "react";
-import { Tarea, EstadoTarea } from "../api/type";
+import { Tarea } from "../api/type";
 
 type Props = {
   task: Tarea;
