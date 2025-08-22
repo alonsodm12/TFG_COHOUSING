@@ -28,15 +28,20 @@ jobs:
 
       - name: Compilar micros a JAR
         run: |
-          for dir in microservicios/*/; do
-            echo "Compilando $dir"
-            if [ -f "$dir/demo/pom.xml" ]; then
-                cd "$dir/demo"
-                mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
+          for dir in microservicios/*; do
+            demo_dir="$dir/demo"
+            if [ -d "$demo_dir" ]; then
+                if [ -f "$demo_dir/pom.xml" ]; then
+                    echo "Compilando $demo_dir"
+                    cd "$demo_dir"
+                    mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
+                    cd - > /dev/null
+                else
+                    echo "No se encontró pom.xml en $demo_dir, saltando..."
+                fi
             else
-                echo "No se encontró pom.xml en $dir/demo, saltando..."
+                echo "No existe $demo_dir, saltando..."
             fi
-            cd - > /dev/null
           done
 
       - name: Instalar dependencias Python

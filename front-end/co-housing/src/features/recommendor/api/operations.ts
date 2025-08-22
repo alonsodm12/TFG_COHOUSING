@@ -1,17 +1,16 @@
 //Inclusion de toda la lógica de llamadas a la API de Recomendador
 
-const API_BASE: String = "http://localhost:8000/recommendations";
-const API_COMMUNITY: String = "http://localhost:8084/comunidades";
-const token = localStorage.getItem("token");
+const API_BASE: String = "https://localhost:8084/recommendations";
+const API_COMMUNITY: String = "https://localhost:8084/comunidades";
 
 //Get recomendaciones para un usuario especifico
-export const getRecommendations = async (userId: number | null) => {
+export const getRecommendations = async (userId: string | null) => {
   const response = await fetch(`${API_BASE}/${userId}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
+    credentials: "include"
   });
   if (!response.ok) {
     throw new Error("Error al obtener las recomendaciones para el usuario");
@@ -31,10 +30,10 @@ export const UnirseComuniadad = async (data: UnionRequestDTO) => {
   const response = await fetch(`${API_COMMUNITY}/unirse`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Asegúrate de que `token` esté accesible
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify(data), // ← Aquí se envía el cuerpo con los datos
+    body: JSON.stringify(data),
+    credentials: "include"
   });
 
   if (!response.ok) {
@@ -45,12 +44,12 @@ export const UnirseComuniadad = async (data: UnionRequestDTO) => {
 };
 
 export const addComunidad = async (userId: number,idComunidad: number) => {
-  const response = await fetch(`http://localhost:8084/user/addComunidadGuardada/${userId}/${idComunidad}`,{
+  const response = await fetch(`https://localhost:8084/user/addComunidadGuardada/${userId}/${idComunidad}`,{
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Asegúrate de que `token` esté accesible
+      "Content-Type": "application/json"
     },
+    credentials: "include"
   });
   if (!response.ok) {
     throw new Error("Error al guardar la comunidad");
@@ -61,12 +60,12 @@ export const addComunidad = async (userId: number,idComunidad: number) => {
 }
 
 export const removeComunidad = async (userId: number,idComunidad: number) => {
-  const response = await fetch(`http://localhost:8084/user/removeComunidadGuardada/${userId}/${idComunidad}`,{
+  const response = await fetch(`https://localhost:8084/user/removeComunidadGuardada/${userId}/${idComunidad}`,{
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Asegúrate de que `token` esté accesible
+      "Content-Type": "application/json"
     },
+    credentials: "include"
   });
   if (!response.ok) {
     throw new Error("Error al eliminar la comunidad");
@@ -75,3 +74,17 @@ export const removeComunidad = async (userId: number,idComunidad: number) => {
   return;
 
 }
+
+export const getRecomendacionesFiltradas = async (userId: string, maxPrecio: number, maxDistancia: number) => {
+  const response = await fetch(`https://localhost:8084/recommendations-filtered/${userId}?precio=${maxPrecio}&distancia=${maxDistancia}`,{
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include"
+  });
+  if (!response.ok) {
+    throw new Error("Error al obtener las comunidades recomendadas");
+  }
+  return response.json();
+};

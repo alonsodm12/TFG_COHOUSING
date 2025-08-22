@@ -1,13 +1,32 @@
-# 🏡 TFG_COHOUSING – Plataforma de Co-Housing
+# Trabajo de Fin de Grado: Sistema multiplataforma para la búsqueda y gestión de pisos compartidos
 
 **Repositorio oficial del Trabajo de Fin de Grado de Alonso Doña Martínez – Universidad de Granada.**  
-Este proyecto consiste en el desarrollo de una plataforma de gestión para comunidades de co-housing mediante arquitectura de microservicios, integración continua, automatización y tecnologías modernas.
 
+**Autor:** Alonso Doña Martínez  
+**Tutor:** Luis López Escudero
+
+## Descripción
+Este proyecto consiste en el desarrollo de una plataforma de búsqueda y gestión para comunidades de co-housing siguiendo una arquitectura de microservicios, integración continua y tecnologías modernas.
+
+La arquitectura general del proyecto se muestra en el siguiente diagrama, donde se reflejan los distintos microservicios y
+la relación que existe entre ellos.
+![Diagrama de arquitectura](./docs/arquitectura-frontend.png)
+## Generación de la documentación
+
+Para generar el PDF de la documentación, necesitas tener instalado **TeXLive** en tu sistema.  
+
+Pasos para compilar la documentación:
+
+Situarse en el directorio `doc`:
 ---
-## Flujo a seguir
+
+## Flujo a seguir en el desarrollo del proyecto
 main             ← producción estable
+
 develop          ← integración y pruebas
+
 feature/frontend ← desarrollo del frontend
+
 feature/usuarios ← desarrollo del microservicio "usuarios"
 
 Crea ramas feature/* para trabajar cosas aisladas (uno por microservicio o pantalla).
@@ -31,17 +50,16 @@ Si todo va bien, mergeas develop a main para desplegar a producción.
 
 ---
 
-## 🔧 Tecnologías utilizadas
+## 🔧 Tecnologías utilizadas en la realización del proyecto
 
 - ⚙️ **Backend**: Java 17, Spring Boot, Maven  
 - 🧪 **Testing**: JUnit, Jacoco, Codecov  
 - 🌐 **Frontend**: React, TypeScript  
 - 🐳 **Contenedores**: Docker & Docker Compose  
 - 🛠️ **CI/CD**: GitHub Actions, Docker Hub  
-- 🔐 **Seguridad**: Spring Security + OAuth2 (Google)  
-- 📡 **Comunicación**: REST API, RabbitMQ/Kafka *(opcional)*  
-- 🗃️ **BBDD**: PostgreSQL/MySQL  
-- ☁️ **Cloud-ready**: Preparado para despliegue en GCP / AWS / Cloud Run  
+- 🔐 **Seguridad**: Spring Security + JWT
+- 📡 **Comunicación**: REST API, RabbitMQ  
+- 🗃️ **BBDD**: PostgreSQL  
 
 ---
 
@@ -61,7 +79,7 @@ TFG_COHOUSING/
 ├── docs/                    # Documentación técnica
 ├── README.md
 └── .gitignore
-
+```
 ## 🎯 Objetivos del proyecto
 
 - ✅ Facilitar la convivencia organizada en comunidades de co-housing  
@@ -85,7 +103,7 @@ Con cada **push** o **pull request** se ejecuta automáticamente el siguiente fl
 - 🐳 **Build de imágenes Docker**  
 - ✅ **Validaciones y checks automáticos**  
 
-🔧 Archivo principal del workflow: `.github/workflows/ci-cd.yml`
+🔧 Archivos del workflow: `.github/workflows/`
 
 
 ## 🧠 Metodología

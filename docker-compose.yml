@@ -6,30 +6,34 @@ services:
     build:
       context: ./microservicios/GestionUsuarios/demo
       dockerfile: Dockerfile
-    ports:
-      - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
       - cohousing
     depends_on:
       - postgres-usuarios
+      - rabbitmq
     volumes:
       - ./uploads:/app/uploads
+      - ./microservicios/GestionUsuarios/demo/target/demo-0.0.1-SNAPSHOT.jar:/app/app.jar
+
   gestion-comunidades:
     build:
       context: ./microservicios/GestionComunidades/demo
       dockerfile: Dockerfile
-    ports:
-      - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
       - cohousing
     depends_on:
       - postgres-comunidades
+      - rabbitmq
     volumes:
-      - ./uploads:/app/uploads
+    - ./microservicios/GestionComunidades/demo/target/demo-0.0.1-SNAPSHOT.jar:/app/app.jar
+    - ./uploads:/app/uploads
+    - ./resumenes:/app/resumenes
+
+
   api-gateway:
     build:
       context: ./microservicios/ApiGateAway/demo
@@ -40,13 +44,13 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
       - cohousing
+    volumes:
+      - ./microservicios/ApiGateAway/demo/target/demo-0.0.1-SNAPSHOT.jar:/app/app.jar
 
   recomendador:
     build:
       context: ./microservicios/Recomendador
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
     networks:
       - cohousing
 
@@ -54,14 +58,15 @@ services:
     build:
       context: ./microservicios/Solicitudes/demo
       dockerfile: Dockerfile
-    ports:
-      - "8083:8083"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
       - cohousing
+    volumes:
+      - ./microservicios/Solicitudes/demo/target/demo-0.0.1-SNAPSHOT.jar:/app/app.jar
     depends_on:
       - postgres-solicitudes
+      - rabbitmq
 
 
   frontend:

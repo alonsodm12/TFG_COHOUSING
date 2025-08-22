@@ -51,17 +51,27 @@ public class Community {
     private Double longitud;
 
     @Column(name = "direccion")
-    private String direccion;
+    private String direccion; 
 
     @Column(name = "precio")
     private Double precio;
+
+    @Column(name = "indiceRotacion")
+    private int indiceRotacion = 0;
+
+    @Column(name = "numeroIntegrantes")
+    private int numeroIntegrantes = 0;
+
+
+
+
 
     // Constructor vacío
     public Community() {}
 
     // Constructor completo
     public Community(String name, String descripcion, Long idAdmin, int sociabilidad, int tranquilidad,
-                     int compartirEspacios, int limpieza, int actividad, String fotoUrl, Double latitud, Double longitud, String direccion, Double precio) {
+                     int compartirEspacios, int limpieza, int actividad, String fotoUrl, Double latitud, Double longitud, String direccion, Double precio, int numeroIntegrantes) {
         this.name = name;
         this.descripcion = descripcion;
         this.idAdmin = idAdmin;
@@ -75,6 +85,7 @@ public class Community {
         this.longitud = longitud;
         this.direccion = direccion;
         this.precio = precio;
+        this.numeroIntegrantes = numeroIntegrantes;
     }
 
     public Long getId() {
@@ -194,5 +205,21 @@ public class Community {
     }
     public void setPrecio(Double precio){
         this.precio = precio;
+    }
+    public int getIndiceRotacion() {
+        return indiceRotacion;
+    }
+
+    public void setIndiceRotacion(int indiceRotacion) {
+        this.indiceRotacion = indiceRotacion;
+    }
+
+
+    public int getNumeroIntegrantes() {
+        return numeroIntegrantes;
+    }
+
+    public void setNumeroIntegrantes(int numeroIntegrantes) {
+        this.numeroIntegrantes = numeroIntegrantes;
     }
 }

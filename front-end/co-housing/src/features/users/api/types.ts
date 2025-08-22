@@ -17,7 +17,7 @@ export interface UserProfile {
     direccion: string;
     latitud: number;
     longitud: number;
-    fotoUrl?: File | null; // <-- Añade esta propiedad?: string; // Se podría usar para mostrar la imagen después del registro
+    fotoUrl?: string | null;
     lifestyleDTO: LifestyleDTO;
     idComunidad: number | null;
     comunidadesGuardadas: number[] | null;

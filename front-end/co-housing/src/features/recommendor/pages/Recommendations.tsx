@@ -6,6 +6,8 @@ import { Footer } from "../../ui/Footer/Footer";
 import { useUserContext } from "../../ui/Context/UserContext";
 import { CommunityRecommended } from "../../community/api/type";
 import { modificarDireccion } from "../../users/api/operations";
+import { getRecomendacionesFiltradas, getRecommendations } from "../api/operations";
+import { Spinner } from "../../users/components/Spinner";
 
 const Recommendations: React.FC = () => {
   const { id } = useParams();
@@ -18,9 +20,8 @@ const Recommendations: React.FC = () => {
   const [ubicacion, setUbicacion] = useState("");
   const [maxDistancia, setMaxDistancia] = useState(10);
   const [maxPrecio, setMaxPrecio] = useState(1000);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const [latitud, setLatitud] = useState<string | null>(null);
-  const [longitud, setLongitud] = useState<string | null>(null);
 
   const handleAplicarUbicacion = async () => {
     if (!ubicacion || !id) return;
@@ -44,13 +45,10 @@ const Recommendations: React.FC = () => {
       // Guardar en el backend
       await modificarDireccion(ubicacion, lat, lon, parseInt(id));
 
-      // Guardar en estado local si quieres usarlo luego
-      setLatitud(lat.toString());
-      setLongitud(lon.toString());
+
 
       alert("Ubicación actualizada correctamente.");
 
-      // (Opcional) aplicar filtros si quieres refrescar resultados
       aplicarFiltros();
     } catch (error) {
       console.error("Error al aplicar ubicación:", error);
@@ -64,64 +62,54 @@ const Recommendations: React.FC = () => {
 
   useEffect(() => {
     if (!id) return;
-
-    setIsLoading(true);
-    fetch(`http://localhost:8000/recommendations/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Error en la respuesta del servidor");
-        return res.json();
-      })
-      .then((data) => {
-        setCommunities(data);
-      })
-      .catch((err) => {
-        console.error("Error fetching recommendations:", err);
-        setCommunities([]);
-      })
-      .finally(() => {
+  
+    const fetchRecommendations = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getRecommendations(id); // esperamos la promesa
+        setCommunities(response); // ahora sí tenemos los datos
+      } catch (error) {
+        console.error(error);
+      } finally {
         setIsLoading(false);
-      });
+      }
+    };
+  
+    fetchRecommendations();
   }, [id]);
 
-  const aplicarFiltros = () => {
+  const aplicarFiltros = async () => {
     if (!id) return;
 
     setIsLoading(true);
-    fetch(
-      `http://localhost:8000/recommendations-filtered/${id}?precio=${maxPrecio}&distancia=${maxDistancia}`
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Error en la respuesta del servidor");
-        return res.json();
-      })
-      .then((data) => {
-        setCommunities(data);
-      })
-      .catch((err) => {
-        console.error("Error fetching filtered recommendations:", err);
-        setCommunities([]);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    const response = await getRecomendacionesFiltradas(id,maxPrecio,maxDistancia);
+    //console.log(response);
+    setCommunities(response);
+    setIsLoading(false);
+  };
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev === 0 ? communities.length - 1 : prev - 1));
   };
 
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === communities.length - 1 ? 0 : prev + 1));
+  };
   return (
     <div id="root" className="min-h-screen bg-gray-50">
       <Header />
       <main className="page px-4 py-8">
-        <h1 className="text-3xl font-extrabold mb-8 text-center text-gray-900">
+        <h1 className="text-5xl font-extrabold mb-10 text-center text-black">
           Comunidades Recomendadas
         </h1>
 
-        {/* Barra de filtros */}
-        <section className="mb-10 p-6 bg-white rounded-3xl shadow-lg space-y-6">
-          {/* Filtro Precio */}
-          <div className="flex flex-col items-start sm:flex-row sm:items-center justify-between gap-6">
-            <div className="flex flex-col items-center sm:items-start w-full sm:w-1/3">
+        {/* Filtros */}
+        <section className="mb-12 bg-white rounded-3xl shadow-xl p-6 sm:p-8 space-y-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+            {/* Precio */}
+            <div>
               <label
                 htmlFor="precioRange"
-                className="mb-2 text-gray-700 font-semibold text-lg"
+                className="block text-lg font-semibold text-gray-700 mb-2"
               >
                 Precio máximo (€)
               </label>
@@ -133,18 +121,18 @@ const Recommendations: React.FC = () => {
                 step={50}
                 value={maxPrecio}
                 onChange={(e) => setMaxPrecio(Number(e.target.value))}
-                className="w-full h-3 bg-gradient-to-r from-green-400 via-yellow-300 to-red-500 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 bg-gradient-to-r from-green-400 via-yellow-300 to-red-500 rounded-lg appearance-none cursor-pointer"
               />
-              <span className="mt-1 text-gray-600 font-medium">
+              <p className="text-sm mt-2 text-gray-600 font-medium text-center">
                 {maxPrecio} €
-              </span>
+              </p>
             </div>
 
-            {/* Filtro Distancia */}
-            <div className="flex flex-col items-center sm:items-start w-full sm:w-1/3">
+            {/* Distancia */}
+            <div>
               <label
                 htmlFor="distanciaRange"
-                className="mb-2 text-gray-700 font-semibold text-lg"
+                className="block text-lg font-semibold text-gray-700 mb-2"
               >
                 Radio de búsqueda (km)
               </label>
@@ -156,29 +144,29 @@ const Recommendations: React.FC = () => {
                 step={1}
                 value={maxDistancia}
                 onChange={(e) => setMaxDistancia(Number(e.target.value))}
-                className="w-full h-3 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500 rounded-lg appearance-none cursor-pointer"
               />
-              <span className="mt-1 text-gray-600 font-medium">
+              <p className="text-sm mt-2 text-gray-600 font-medium text-center">
                 {maxDistancia} km
-              </span>
+              </p>
             </div>
 
             {/* Botón aplicar */}
-            <div className="w-full sm:w-1/3 flex justify-center sm:justify-end">
+            <div className="flex items-end justify-center sm:justify-end">
               <button
                 onClick={aplicarFiltros}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-lg shadow"
+                className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-xl transition duration-200 shadow"
               >
                 Aplicar filtros
               </button>
             </div>
           </div>
 
-          {/* Desplegable de ubicación */}
-          <div className="border-t pt-4">
+          {/* Ubicación */}
+          <div className="border-t border-gray-200 pt-6">
             <button
               onClick={() => setShowUbicacionInput(!showUbicacionInput)}
-              className="text-indigo-600 font-medium hover:underline flex items-center gap-2"
+              className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-2 transition"
             >
               {showUbicacionInput
                 ? "Ocultar ubicación ▲"
@@ -186,7 +174,7 @@ const Recommendations: React.FC = () => {
             </button>
 
             {showUbicacionInput && (
-              <div className="mt-4 flex flex-col sm:flex-row sm:items-end gap-4">
+              <div className="mt-6 bg-gray-50 p-4 rounded-xl shadow-inner flex flex-col sm:flex-row sm:items-end gap-4">
                 <div className="flex flex-col w-full sm:w-auto">
                   <label
                     htmlFor="ubicacionInput"
@@ -205,7 +193,7 @@ const Recommendations: React.FC = () => {
                 </div>
                 <button
                   onClick={handleAplicarUbicacion}
-                  className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow self-start sm:self-auto"
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition"
                 >
                   Aplicar
                 </button>
@@ -213,29 +201,50 @@ const Recommendations: React.FC = () => {
             )}
           </div>
         </section>
+        <div className="flex gap-6 items-center mt-4">
+          <button
+            onClick={handlePrev}
+            className="bg-gray-800 hover:bg-gray-600 text-white text-lg font-bold px-5 py-2 rounded-full transition-transform hover:scale-110"
+          >
+            ◀
+          </button>
+          {/* Lista de comunidades */}
+          {isLoading ? (
+            <p className="text-center text-gray-500 text-lg">
+              <Spinner />
+            </p>
+          ) : communities.length > 0 ? (
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-full max-w-3xl transition-all duration-300 ease-in-out">
+                <CommunityCard
+                  key={communities[currentIndex].id}
+                  {...communities[currentIndex]}
+                  userId={id ? parseFloat(id) : 0}
+                  username={userProfile?.username || ""}
+                  idComunidad={userProfile?.idComunidad || null}
+                  onJoinSuccess={handleCommunityJoined}
+                  comunidadesGuardadas={
+                    userProfile?.comunidadesGuardadas || null
+                  }
+                />
+              </div>
 
-        {/* Lista de comunidades */}
-        {isLoading ? (
-          <p className="text-center text-gray-500 text-lg">
-            Cargando recomendaciones...
-          </p>
-        ) : communities.length > 0 ? (
-          communities.map((c) => (
-            <CommunityCard
-              key={c.id}
-              {...c}
-              userId={id ? parseFloat(id) : 0}
-              username={userProfile?.username || ""}
-              onJoinSuccess={handleCommunityJoined}
-              comunidadesGuardadas = {userProfile?.comunidadesGuardadas || null}
-
-            />
-          ))
-        ) : (
-          <p className="text-center text-gray-500 text-lg">
-            No se encontraron recomendaciones.
-          </p>
-        )}
+              <span className="text-sm text-gray-600">
+                Comunidad {currentIndex + 1} de {communities.length}
+              </span>
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 text-lg">
+              No se encontraron recomendaciones.
+            </p>
+          )}{" "}
+          <button
+            onClick={handleNext}
+            className="bg-gray-800 hover:bg-gray-600 text-white text-lg font-bold px-5 py-2 rounded-full transition-transform hover:scale-110"
+          >
+            ▶
+          </button>
+        </div>
       </main>
       <Footer />
     </div>

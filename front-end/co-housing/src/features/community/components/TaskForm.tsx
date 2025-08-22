@@ -1,5 +1,5 @@
 import React from "react";
-import { Tarea, EstadoTarea } from "../api/type";
+import { Tarea } from "../api/type";
 
 type Props = {
   task: Tarea;
@@ -32,7 +32,7 @@ const TaskForm: React.FC<Props> = ({ task, setTask, onSubmit }) => {
   return (
     <form
       onSubmit={onSubmit}
-      className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg space-y-4"
+      className="max-w-2xl w-full p-6 bg-white shadow-lg rounded-lg space-y-4"
     >
       <h2 className="text-2xl font-bold mb-4 text-center">Crear nueva tarea</h2>
 

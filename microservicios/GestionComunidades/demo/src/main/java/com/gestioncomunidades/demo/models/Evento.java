@@ -1,5 +1,8 @@
 package com.gestioncomunidades.demo.models;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
@@ -10,10 +13,10 @@ public class Evento extends Actividad {
     private String lugar;
 
     @Column(name = "horaInicio")
-    private Double horaInicio;
+    private LocalTime horaInicio;
 
     @Column(name = "horaFinal")
-    private Double horaFinal;
+    private LocalTime horaFinal;
 
     public String getLugar() {
         return lugar;
@@ -23,19 +26,19 @@ public class Evento extends Actividad {
         this.lugar = lugar;
     }
 
-    public Double getHoraInicio() {
+    public LocalTime getHoraInicio() {
         return horaInicio;
     }
 
-    public void setHoraInicio(Double horaInicio) {
+    public void setHoraInicio(LocalTime horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public Double getHoraFinal() {
+    public LocalTime getHoraFinal() {
         return horaFinal;
     }
 
-    public void setHoraFinal(Double horaFinal) {
+    public void setHoraFinal(LocalTime horaFinal) {
         this.horaFinal = horaFinal;
     }
 

@@ -27,10 +27,9 @@ export const TaskListPage = () => {
   }, [userId]);
 
   return (
-    <div id="root" className="min-h-screen flex flex-col">
+    <div id="root">
       <Header />
-      <main className="flex-grow py-10 px-6 md:px-20 bg-gray-100">
-        <div className="max-w-5xl mx-auto">
+      <main className="page px-4">
           <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
             Tareas asignadas
           </h1>
@@ -60,7 +59,7 @@ export const TaskListPage = () => {
               ))}
             </div>
           )}
-        </div>
+
       </main>
       <Footer />
     </div>

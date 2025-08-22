@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ import com.gestioncomunidades.demo.models.Tarea;
 import com.gestioncomunidades.demo.repository.CommunityRepository;
 import com.gestioncomunidades.demo.repository.EventoRepository;
 import com.gestioncomunidades.demo.repository.TareaRepository;
-import java.util.stream.Collectors;
+
 import jakarta.transaction.Transactional;
 
 /*
@@ -76,7 +75,8 @@ public class CommunityServices {
                 communityDTO.latitud(),
                 communityDTO.longitud(),
                 communityDTO.direccion(),
-                communityDTO.precio());
+                communityDTO.precio(),
+                communityDTO.num_integrantes());
 
         List<Long> integrantes = new ArrayList<>();
         if (communityDTO.integrantes() != null && !communityDTO.integrantes().isEmpty()) {
@@ -116,6 +116,7 @@ public class CommunityServices {
 
             // Convertir Community a CommunityDTO manualmente
             CommunityDTO communityDTO = new CommunityDTO(
+                    community.getId(),
                     community.getName(),
                     community.getDescripcion(),
                     community.getIdAdmin(),
@@ -125,7 +126,7 @@ public class CommunityServices {
                     community.getLatitud(),
                     community.getLongitud(),
                     community.getDireccion(),
-                    community.getPrecio());
+                    community.getPrecio(),community.getNumeroIntegrantes());
 
             // Devuelve el DTO envuelto en un Optional
             return Optional.of(communityDTO);
@@ -157,6 +158,7 @@ public class CommunityServices {
 
             // Convertir Community a CommunityDTO manualmente
             CommunityDTO communityDTO = new CommunityDTO(
+                    community.getId(),
                     community.getName(),
                     community.getDescripcion(),
                     community.getIdAdmin(),
@@ -166,7 +168,7 @@ public class CommunityServices {
                     community.getLatitud(),
                     community.getLongitud(),
                     community.getDireccion(),
-                    community.getPrecio());
+                    community.getPrecio(),community.getNumeroIntegrantes());
 
             // Devuelve el DTO envuelto en un Optional
             return Optional.of(communityDTO);
@@ -268,8 +270,8 @@ public class CommunityServices {
      * 
      */
 
-    public void deleteCommunity(String communityName) throws Exception {
-        Optional<Community> communityOptional = communityRepository.findByName(communityName);
+    public void deleteCommunity(Long idComunidad) throws Exception {
+        Optional<Community> communityOptional = communityRepository.findById(idComunidad);
 
         if (communityOptional.isPresent())
             communityRepository.delete(communityOptional.get());
@@ -508,6 +510,14 @@ public class CommunityServices {
         }
     }
 
+    public boolean marcarEventoCompletado(Long idEvento){
+        Optional<Evento> evento = eventoRepository.findById(idEvento);
+        
+        eventoRepository.delete(evento.get());
+
+        return true;
+    }
+
     public boolean marcarTareaProgreso(Long idTarea) {
         Optional<Tarea> tarea = tareaRepository.findById(idTarea);
         if (tarea.isPresent()) {
@@ -553,6 +563,7 @@ public class CommunityServices {
     private CommunityDTO convertirACommunityDTO(Community community) {
         LifestyleDTO lifestyleDTO = new LifestyleDTO(community.getSociabilidad(), community.getTranquilidad(), community.getCompartirEspacios(), community.getLimpieza(), community.getActividad());
         return new CommunityDTO(
+                community.getId(),
                 community.getName(),
                 community.getDescripcion(),
                 community.getIdAdmin(),
@@ -562,6 +573,70 @@ public class CommunityServices {
                 community.getLatitud(),
                 community.getLongitud(),
                 community.getDireccion(),
-                community.getPrecio());
+                community.getPrecio(),community.getNumeroIntegrantes());
     }
+
+
+    public int obtenerPorcentajeTareasRealizadasGlobal(Long idComunidad) {
+        try {
+            List<Tarea> tareas = tareaRepository.findByidComunidad(idComunidad);
+            int totalTareas = tareas.size();
+            if (totalTareas == 0) return 0; // evitar división por cero
+    
+            int completadas = 0;
+            for (Tarea tarea : tareas) {
+                EstadoTarea estado = tarea.getEstado();
+                if (estado.equals(EstadoTarea.COMPLETADA))
+                    completadas++;
+            }
+    
+            return (int) ((double) completadas / totalTareas * 100);
+    
+        } catch (Exception e) {
+            System.out.println("Error calculando el porcentaje de tareas de la comunidad");
+            return 0;
+        }
+    }
+    
+    public int obtenerPorcentajeTareasRealizadasIndividual(Long idUsuario) {
+        try {
+            List<Tarea> tareas = tareaRepository.findByUsuariosParticipantes(idUsuario);
+            int totalTareas = tareas.size();
+            if (totalTareas == 0) return 0; // evitar división por cero
+    
+            int completadas = 0;
+            for (Tarea tarea : tareas) {
+                EstadoTarea estado = tarea.getEstado();
+                if (estado.equals(EstadoTarea.COMPLETADA))
+                    completadas++;
+            }
+    
+            return (int) ((double) completadas / totalTareas * 100);
+    
+        } catch (Exception e) {
+            System.out.println("Error calculando el porcentaje de tareas del usuario");
+            return 0;
+        }
+    }
+
+    @Transactional
+    public void eliminarMiembroComunidad(Long idUsuario,Long idComunidad){
+        try{
+            Community comunidad = communityRepository.findById(idComunidad).orElseThrow(() -> new RuntimeException("Error durante la modificacion de la comunidad"));
+            List<Long> nuevosIntegrantes = new ArrayList<>();
+            for(Long integrante : comunidad.getIntegrantes()){
+                if(integrante != idUsuario){
+                    nuevosIntegrantes.add(integrante);
+                }
+
+            }
+
+            comunidad.setIntegrantes(nuevosIntegrantes);
+            communityRepository.save(comunidad);
+
+        }catch(Exception e){
+            System.out.println("Error al eliminar miembro de una comunidad");
+        }
+    }
+    
 }

@@ -3,6 +3,7 @@ import ButtonFunction from "../ui/Button/ButtonFunction";
 import { useNavigate } from 'react-router-dom';
 import { createUser } from "../users/api/operations";
 import { UserProfile } from "../users/api/types";
+import { useUserContext } from "../ui/Context/UserContext";
 
 export const RegisterCard: React.FC = () => {
   const [step, setStep] = useState(0);
@@ -10,6 +11,7 @@ export const RegisterCard: React.FC = () => {
   const [longitud, setLongitud] = useState("");
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { setUsername, setRole } = useUserContext();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<UserProfile & { fotoFile?: File | null }>({
@@ -20,7 +22,7 @@ export const RegisterCard: React.FC = () => {
     direccion: "",
     latitud: 0,
     longitud: 0,
-    fotoUrl: null,
+    fotoUrl: "",
     lifestyleDTO: {
       tranquilidad: 5,
       actividad: 5,
@@ -29,6 +31,7 @@ export const RegisterCard: React.FC = () => {
       sociabilidad: 5,
     },
     idComunidad: null,
+    comunidadesGuardadas: [], 
     fotoFile: null, // nuevo campo para almacenar el archivo
   });
 
@@ -110,8 +113,17 @@ export const RegisterCard: React.FC = () => {
     try {
       const result = await createUser(dataToSend);
       console.log("Registro exitoso:", result);
-      setSuccess("Registro completado correctamente");
-      setTimeout(() => navigate("/TFG_COHOUSING/home"), 2000);
+
+      const username = result.username;
+      const role = result.role;
+
+      if (!username || !role) {
+        throw new Error("Token inválido");
+      }
+      setUsername(username); // Al actualizar username, UserProvider carga el perfil
+      setRole(role);
+      setSuccess("Registro completado con éxito");
+      navigate("/TFG_COHOUSING/home");
     } catch (err: any) {
       console.error("Error:", err);
       setError(err.message || "Ocurrió un error en el registro.");

@@ -3,7 +3,7 @@ from app.database import BaseUsers
 
 class User(BaseUsers):
     __tablename__ = 'users'
-    id = Column(BigInteger, primary_key=True)
+    id = Column(Integer, primary_key=True,autoincrement=True)
     username = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
@@ -18,4 +18,5 @@ class User(BaseUsers):
     compartir_espacios = Column(Integer)
     limpieza = Column(Integer)
     actividad = Column(Integer)
+    id_comunidad = Column(BigInteger)
 

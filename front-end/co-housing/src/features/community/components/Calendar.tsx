@@ -6,36 +6,60 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import { addHours } from "date-fns";
-import { getUserTask } from "../api/operations";
+import { Evento, Tarea } from "../api/type";
 
-export const Calendario = ({ userId }: { userId: number }) => {
-  const [eventos, setEventos] = useState([]);
+interface CalendarioProps {
+  userId: number;
+  tareas: Tarea[];
+  eventos: Evento[];
+}
+
+export const Calendario: React.FC<CalendarioProps> = ({tareas = [], eventos = [] }) => {
+  const [actividades, setActividades] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const tareas = await getUserTask(userId);
-
-        const formattedEvents = tareas.map((tarea: any) => {
-          const start = new Date(tarea.fechaTope);
-          const end = addHours(start, tarea.duracion || 1);
-
-          return {
-            title: tarea.titulo,
-            start,
-            end,
-          };
-        });
-
-        setEventos(formattedEvents);
-      } catch (error) {
-        console.error("Error cargando tareas", error);
-      }
+    const organizarActividades = () => {
+      // Formatear tareas
+      const tareasFormateadas = tareas.map((tarea) => {
+        const start = new Date(tarea.fechaTope);
+        const end = addHours(start, tarea.duracion || 1);
+        return {
+          title: tarea.titulo,
+          start,
+          end,
+          backgroundColor: "#3b82f6", // azul para tareas
+        };
+      });
+  
+      // Formatear eventos como tareas
+      const eventosFormateados = eventos.map((evento) => {
+        // Combinar fechaTope con horaInicio y horaFinal
+        const [horaI, minI, segI] = evento.horaInicio.split(":").map(Number);
+        const [horaF, minF, segF] = evento.horaFinal.split(":").map(Number);
+  
+        const fecha = new Date(evento.fechaTope);
+        const start = new Date(fecha);
+        start.setHours(horaI, minI, segI);
+  
+        const end = new Date(fecha);
+        end.setHours(horaF, minF, segF);
+  
+        return {
+          title: evento.titulo,
+          start,
+          end,
+          backgroundColor: "#f59e0b", // naranja para eventos
+        };
+      });
+  
+      // Unir ambos
+      setActividades([...tareasFormateadas, ...eventosFormateados]);
     };
+  
+    organizarActividades();
+  }, [tareas, eventos]);
 
-    fetchTasks();
-  }, [userId]);
-
+  console.log(actividades);
   return (
     <div style={{ margin: "2rem" }}>
       <FullCalendar
@@ -48,12 +72,12 @@ export const Calendario = ({ userId }: { userId: number }) => {
         }}
         locale={esLocale}
         timeZone="local"
-        events={eventos}
+        events={actividades}
         height="600px"
         slotMinTime="07:00:00"
         slotMaxTime="22:00:00"
         eventClick={(info) => {
-          alert(`Tarea: ${info.event.title}`);
+          alert(`Actividad: ${info.event.title}`);
         }}
       />
     </div>

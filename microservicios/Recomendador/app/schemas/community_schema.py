@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,ConfigDict
 from typing import List, Optional, Union
 
 from app.schemas.communityIntegrantes_schema import CommunityIntegranteSchema
@@ -20,5 +20,4 @@ class CommunitySchema(BaseModel):
     latitud : Optional[float]
     longitud : Optional[float]
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

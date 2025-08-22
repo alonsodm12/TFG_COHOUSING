@@ -1,20 +1,32 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { updateUser } from "../api/operations";
 import { UserProfile } from "../api/types";
 import { useNavigate } from "react-router-dom";
 
+import { useUserContext } from "../../ui/Context/UserContext";
+
+
 type Props = {
   user: UserProfile;
 };
+
 export const UpdateUserForm = ({ user }: Props) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    role: "",
+  const {fetchUserProfile } = useUserContext();
+
+  const [formData, setFormData] = useState<{
+    role?: "buscador" | "ofertante";
     lifestyleDTO: {
-      tranquilo: 3,
+      tranquilidad: number;
+      actividad: number;
+      limpieza: number;
+      compartirEspacios: number;
+      sociabilidad: number;
+    };
+  }>({
+    role: undefined,
+    lifestyleDTO: {
+      tranquilidad: 3,
       actividad: 3,
       limpieza: 3,
       compartirEspacios: 3,
@@ -22,15 +34,15 @@ export const UpdateUserForm = ({ user }: Props) => {
     },
   });
 
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
   useEffect(() => {
     if (user) {
       setFormData({
-        username: user.username ?? "",
-        email: user.email ?? "",
-        password: user.password ?? "",
-        role: user.role ?? "",
+        role: user.role ?? undefined,
         lifestyleDTO: {
-          tranquilo: user.lifestyleDTO?.tranquilidad ?? 3,
+          tranquilidad: user.lifestyleDTO?.tranquilidad ?? 3,
           actividad: user.lifestyleDTO?.actividad ?? 3,
           limpieza: user.lifestyleDTO?.limpieza ?? 3,
           compartirEspacios: user.lifestyleDTO?.compartirEspacios ?? 3,
@@ -39,9 +51,6 @@ export const UpdateUserForm = ({ user }: Props) => {
       });
     }
   }, [user]);
-
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   const updateProfile = (field: string, value: any) => {
     if (field.startsWith("lifestyleDTO.")) {
@@ -53,96 +62,43 @@ export const UpdateUserForm = ({ user }: Props) => {
           [subField]: value,
         },
       }));
-    } else {
+    } else if (field === "role") {
       setFormData((prev) => ({
         ...prev,
-        [field]: value,
+        role: value,
       }));
     }
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setMessage("");
-  
+
     try {
       const response = await updateUser(user.username, formData);
-  
-      // Extrae la primera clave del objeto de respuesta
+
       const keys = Object.keys(response);
       if (keys.length === 0) throw new Error("Respuesta vacía del servidor");
-  
-      const successMessage = keys[0];
-      setMessage(successMessage);
-      
-      // Navegar después de un breve delay para mostrar el mensaje
+      await fetchUserProfile();
+      setMessage(keys[0]);
       setTimeout(() => {
-        navigate('/TFG_COHOUSING/user/profile');
-      }, 1000);
+        navigate("/TFG_COHOUSING/user/profile");
+      }, 500);
     } catch (err) {
       console.error(err);
       setError("Error al actualizar el perfil");
     }
   };
-  
-  
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-2xl mx-auto mt-10 mb-10 p-6 bg-white rounded-xl shadow-md border border-gray-200 space-y-6"
+      className="max-w-2xl w-full p-6 bg-white rounded-xl shadow-md border border-gray-200 space-y-6"
     >
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Nombre de usuario
-        </label>
-        <input
-          type="text"
-          value={formData.username}
-          onChange={(e) => updateProfile("username", e.target.value)}
-          className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-          placeholder="Nombre de usuario"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Correo electrónico
-        </label>
-        <input
-          type="email"
-          value={formData.email}
-          onChange={(e) => updateProfile("email", e.target.value)}
-          className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-          placeholder="Correo electrónico"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Contraseña
-        </label>
-        <input
-          type="password"
-          value={formData.password}
-          onChange={(e) => updateProfile("password", e.target.value)}
-          className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-          placeholder="Contraseña"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">Rol</label>
-        <select
-          value={formData.role}
-          onChange={(e) => updateProfile("role", e.target.value)}
-          className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-        >
-          <option value="">Selecciona un rol</option>
-          <option value="Buscador">Buscador</option>
-          <option value="Ofertante">Ofertante</option>
-        </select>
-      </div>
+      <h2 className="text-2xl font-bold mb-4 text-center">
+        Editar perfil del usuario
+      </h2>
 
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-800">Estilo de vida</h3>

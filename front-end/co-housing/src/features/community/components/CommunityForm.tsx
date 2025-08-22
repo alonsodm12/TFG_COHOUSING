@@ -13,6 +13,7 @@ function buildInitialFormData(
   overrides?: Partial<CommunityProfile>
 ): CommunityProfile {
   return {
+    id: 0,
     name: overrides?.name ?? "",
     descripcion: overrides?.descripcion ?? "",
     idAdmin: overrides?.idAdmin ?? userId ?? 0,
@@ -29,6 +30,7 @@ function buildInitialFormData(
     longitud: overrides?.longitud ?? 0,
     direccion: overrides?.direccion ?? "",
     precio: overrides?.precio ?? 0,
+    num_integrantes: overrides?.num_integrantes ?? 0
   };
 }
 
@@ -143,6 +145,20 @@ export const CommunityForm = ({
         />
         <small className="text-gray-500">
           Describe brevemente el estilo de convivencia.
+        </small>
+      </div>
+      <div>
+        <label className="block text-gray-700 mb-1">Número de integrantes</label>
+        <input
+          type="number"
+          name="num_integrantes"
+          value={formData.num_integrantes}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2"
+          min="1" // opcional
+        />
+        <small className="text-gray-500">
+          Indica cuántas personas pueden vivir en la comunidad.
         </small>
       </div>
 

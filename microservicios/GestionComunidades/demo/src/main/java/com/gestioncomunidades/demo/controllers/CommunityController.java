@@ -1,15 +1,18 @@
 package com.gestioncomunidades.demo.controllers;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,9 +28,9 @@ import com.gestioncomunidades.demo.DTOs.FechaDTO;
 import com.gestioncomunidades.demo.DTOs.TareaDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
 import com.gestioncomunidades.demo.models.Community;
-import com.gestioncomunidades.demo.models.EstadoTarea;
 import com.gestioncomunidades.demo.models.Evento;
 import com.gestioncomunidades.demo.models.Tarea;
+import com.gestioncomunidades.demo.services.ActividadesService;
 import com.gestioncomunidades.demo.services.CommunityServices;
 
 import jakarta.validation.Valid;
@@ -37,6 +40,8 @@ import jakarta.validation.Valid;
 public class CommunityController {
     private CommunityServices communityServices;
 
+    @Autowired
+    private ActividadesService actividadesService;
     public CommunityController(CommunityServices communityServices) {
         this.communityServices = communityServices;
     }
@@ -85,9 +90,9 @@ public class CommunityController {
 
             if (foto != null && !foto.isEmpty()) {
                 String fotoUrl = communityServices.guardarFoto(foto);
-                communityDTO = new CommunityDTO(communityDTO.name(), communityDTO.descripcion(), communityDTO.idAdmin(),
+                communityDTO = new CommunityDTO(communityDTO.id(),communityDTO.name(), communityDTO.descripcion(), communityDTO.idAdmin(),
                         communityDTO.lifestyleDTO(), communityDTO.integrantes(), fotoUrl, communityDTO.latitud(),
-                        communityDTO.longitud(), communityDTO.direccion(), communityDTO.precio());
+                        communityDTO.longitud(), communityDTO.direccion(), communityDTO.precio(),communityDTO.num_integrantes());
             }
             Community comunidad = communityServices.registrarComunidad(communityDTO);
 
@@ -109,14 +114,14 @@ public class CommunityController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("Comunidad modificada ", actualizado.toString()));
     }
 
-    @PostMapping("/delete/{communityname}")
-    public ResponseEntity<?> deleteCommunity(@PathVariable String communityname) {
+    @DeleteMapping("/delete/{idComunidad}")
+    public ResponseEntity<?> deleteCommunity(@PathVariable Long idComunidad) {
         try {
-            communityServices.deleteCommunity(communityname);
+            communityServices.deleteCommunity(idComunidad);
             return ResponseEntity.status(HttpStatus.ACCEPTED)
-                    .body("Comunidad: " + communityname + " borrada correctamente");
+                    .body("Comunidad: " + idComunidad + " borrada correctamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error borrando la comunidad: " + communityname);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error borrando la comunidad: " + idComunidad);
         }
     }
 
@@ -134,67 +139,78 @@ public class CommunityController {
     }
 
     @PostMapping("/tarea")
-    public ResponseEntity<?> crearTarea(@RequestBody TareaDTO tareaDTO){
-        try{
+    public ResponseEntity<?> crearTarea(@RequestBody TareaDTO tareaDTO) {
+        try {
             Tarea tarea = this.communityServices.registrarTarea(tareaDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(tarea);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/tareas/comunidad/{idComunidad}")
-    public ResponseEntity<?> obtenerTareasUsuario(@PathVariable Long idComunidad){
-        try{
+    public ResponseEntity<?> obtenerTareasUsuario(@PathVariable Long idComunidad) {
+        try {
             List<TareaDTO> tareas = communityServices.obtenerTareasComunidad(idComunidad);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(tareas);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/eventos/comunidad/{idComunidad}")
-    public ResponseEntity<?> obtenerEventosComunidad(@PathVariable Long idComunidad){
-        try{
+    public ResponseEntity<?> obtenerEventosComunidad(@PathVariable Long idComunidad) {
+        try {
             List<EventoDTO> eventos = communityServices.obtenerEventosComunidad(idComunidad);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(eventos);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PostMapping("/evento")
-    public ResponseEntity<?> crearEvento(@RequestBody EventoDTO eventoDTO){
-        try{
+    public ResponseEntity<?> crearEvento(@RequestBody EventoDTO eventoDTO) {
+        try {
             Evento evento = this.communityServices.registrarEvento(eventoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(evento);
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PatchMapping("/completarTarea/{idTarea}")
-    public ResponseEntity<?> completarTarea(@PathVariable Long idTarea){
-        try{
+    public ResponseEntity<?> completarTarea(@PathVariable Long idTarea) {
+        try {
             communityServices.marcarTareaCompletada(idTarea);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @PatchMapping("/enProgresoTarea/{idTarea}")
-    public ResponseEntity<?> enProgresoTarea(@PathVariable Long idTarea){
+
+    @PostMapping("/completarEvento/{idEvento}")
+    public ResponseEntity<?> completarEvento(@PathVariable Long idEvento) {
         try{
+            communityServices.marcarEventoCompletado(idEvento);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @PatchMapping("/enProgresoTarea/{idTarea}")
+    public ResponseEntity<?> enProgresoTarea(@PathVariable Long idTarea) {
+        try {
             communityServices.marcarTareaProgreso(idTarea);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/tareas/{idUsuario}")
-    public ResponseEntity<?> getTareasByUsuario(@PathVariable Long idUsuario){
+    public ResponseEntity<?> getTareasByUsuario(@PathVariable Long idUsuario) {
         List<TareaDTO> tareas = communityServices.obtenerTareasUsuario(idUsuario);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(tareas);
@@ -202,35 +218,35 @@ public class CommunityController {
     }
 
     @GetMapping("/eventos/{idUsuario}")
-    public ResponseEntity<?> getEventosByUsuario(@PathVariable Long idUsuario){
+    public ResponseEntity<?> getEventosByUsuario(@PathVariable Long idUsuario) {
         List<EventoDTO> eventos = communityServices.obtenerEventosUsuarioComunidad(idUsuario);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(eventos);
     }
 
     @GetMapping("tarea/{idTarea}")
-    public ResponseEntity<?> consultarTarea(@PathVariable Long idTarea){
+    public ResponseEntity<?> consultarTarea(@PathVariable Long idTarea) {
         TareaDTO tarea = communityServices.obtenerTarea(idTarea);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(tarea);
     }
 
     @GetMapping("evento/{idEvento}")
-    public ResponseEntity<?> consultarEvento(@PathVariable Long idEvento){
+    public ResponseEntity<?> consultarEvento(@PathVariable Long idEvento) {
         EventoDTO evento = communityServices.obtenerEvento(idEvento);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(evento);
     }
 
     @PatchMapping("tarea/modificarFecha/{idTarea}")
-    public ResponseEntity<?> modificarFecha(@PathVariable Long idTarea, @RequestBody FechaDTO fecha){
-        
-        try{
+    public ResponseEntity<?> modificarFecha(@PathVariable Long idTarea, @RequestBody FechaDTO fecha) {
+
+        try {
             communityServices.establecerFechaTarea(idTarea, fecha.getFecha());
             communityServices.marcarTareaProgreso(idTarea);
             return ResponseEntity.status(HttpStatus.OK).build();
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        
+
     }
 
     @PostMapping("/filterPorId")
@@ -238,7 +254,53 @@ public class CommunityController {
         try {
             List<CommunityDTO> comunidades = communityServices.obtenerComunidadesIds(idsComunidades);
             return ResponseEntity.status(HttpStatus.OK).body(comunidades);
-        } catch(Exception e) {
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/porcentajeTareasUsuario/{idUsuario}")
+    public ResponseEntity<?> obtenerPorcentajeTareasUsuario(@PathVariable Long idUsuario) {
+        try {
+            int porcentaje = communityServices.obtenerPorcentajeTareasRealizadasIndividual(idUsuario);
+            Map<String, Integer> respuesta = new HashMap<>();
+            respuesta.put("porcentaje", porcentaje);
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/porcentajeTareasComunidad/{idComunidad}")
+    public ResponseEntity<?> obtenerPorcentajeTareasComunidad(@PathVariable Long idComunidad) {
+        try {
+            int porcentaje = communityServices.obtenerPorcentajeTareasRealizadasGlobal(idComunidad);
+            Map<String, Integer> respuesta = new HashMap<>();
+            respuesta.put("porcentaje", porcentaje);
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/eliminarUsuario/{idUsuario}/{idComunidad}")
+    public ResponseEntity<?> abandonarComunidad(@PathVariable Long idUsuario,Long idComunidad){
+        try{
+            communityServices.eliminarMiembroComunidad(idUsuario,idComunidad);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/pruebaResumenSemanal")
+    public ResponseEntity<?> pruebaSemanal() {
+        try {
+            Community comunidad = communityServices.obtenerComunidades().get(0);
+
+            actividadesService.generarResumenSemanal(comunidad, LocalDate.now());
+            //actividadesService.repartirTareasSemanalmente();
+            return ResponseEntity.status(HttpStatus.OK).body(comunidad);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

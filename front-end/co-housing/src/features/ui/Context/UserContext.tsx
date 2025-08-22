@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { getUsernameFromToken, getRoleFromToken } from "../../authUtils";
 import { fetchUserByUsername } from "../../users/api/operations";
 import { UserProfile } from "../../users/api/types";
 
@@ -16,10 +15,39 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [username, setUsername] = useState<string | null>(getUsernameFromToken());
-  const [role, setRole] = useState<string | null>(getRoleFromToken());
+  const [username, _setUsername] = useState<string | null>(null);
+  const [role, _setRole] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Cargar username y role desde localStorage al montar
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    const storedRole = localStorage.getItem("role");
+
+    if (storedUsername) _setUsername(storedUsername);
+    if (storedRole) _setRole(storedRole);
+  }, []);
+
+  // Función para actualizar username y persistirlo
+  const setUsername = (username: string | null) => {
+    _setUsername(username);
+    if (username) {
+      localStorage.setItem("username", username);
+    } else {
+      localStorage.removeItem("username");
+    }
+  };
+
+  // Función para actualizar role y persistirlo
+  const setRole = (role: string | null) => {
+    _setRole(role);
+    if (role) {
+      localStorage.setItem("role", role);
+    } else {
+      localStorage.removeItem("role");
+    }
+  };
 
   const fetchUserProfile = async () => {
     if (!username) {
@@ -38,7 +66,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Aquí está el efecto que recarga el perfil cuando cambia username
   useEffect(() => {
     if (username) {
       fetchUserProfile();

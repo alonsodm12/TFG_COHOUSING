@@ -1,5 +1,6 @@
 .header {
     display: flex;
+    position: relative;
     justify-content: space-between;
     align-items: center;
     background-color: #ffffff; /* Gris oscuro */
@@ -13,7 +14,7 @@
   }
 
 .headerTitle {
-  font-size: 30px;
+  font-size: clamp(8px, 3vw, 30px);
   margin: 0;
   font-family: 'Lilita One', sans-serif;
 }
@@ -25,6 +26,9 @@
 }
 
 .nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 2rem;
   font-size: 1rem;
@@ -43,27 +47,28 @@
 }
 
 .profile {
+  margin-left: auto; /* para que se pegue a la derecha */
   position: relative;
 }
 
 .profile img {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1px solid #e0e0e0;
-  object-fit: cover;
+  cursor: pointer;
 }
 
 .menu {
   position: absolute;
+  top: 100%;
   right: 0;
-  margin-top: 0.5rem;
-  width: 11rem;
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.375rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 50;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin-top: 8px;
+  min-width: 140px;
+  z-index: 10;
 }
 
 .menu a {
