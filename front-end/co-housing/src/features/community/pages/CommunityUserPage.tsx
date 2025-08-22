@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  completarEvento,
-  completarTarea,
   deleteEliminarComunidad,
   deleteEliminarUsuario,
-  enProgresoTarea,
   fetchCommunityById,
   fetchEventosPorUsuario,
   fetchTareasPorUsuario,
@@ -578,8 +575,10 @@ export const CommunityUserPage = () => {
               Cancelar
             </button>
             <button
-              onClick={() =>
+              onClick={() => {
+                if( userProfile?.id && userProfile?.idComunidad)
                 deleteEliminarUsuario(userProfile?.id, userProfile?.idComunidad)
+              }
               }
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
             >
@@ -604,8 +603,11 @@ export const CommunityUserPage = () => {
               No
             </button>
             <button
-              onClick={() => deleteEliminarComunidad(userProfile?.idComunidad)}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+              onClick={() => {
+                if (userProfile?.idComunidad)
+                  deleteEliminarComunidad(userProfile?.idComunidad)}
+              }
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
             >
               Sí
             </button>

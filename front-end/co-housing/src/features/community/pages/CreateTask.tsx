@@ -26,7 +26,7 @@ const CreateTask = () => {
 
         try{
             const taskToSend = { ...task, idComunidad: Number(idComunidad) || 0 };
-            const response = await createTask(taskToSend);
+            await createTask(taskToSend);
             alert("Tarea creada con exito");
         } catch (error: any) {
             alert(`${error.message}`);

@@ -11,7 +11,7 @@ export const UserForm = ({ initialData = {}, onSubmit }: UserFormProps) => {
         username: initialData.username || '',
         email: initialData.email || '',
         password: '',
-        role: initialData.role || '',
+        role: initialData.role,
         lifestyleDTO: {
             tranquilidad: initialData.lifestyleDTO?.tranquilidad ?? 1,
             actividad: initialData.lifestyleDTO?.actividad ?? 1,

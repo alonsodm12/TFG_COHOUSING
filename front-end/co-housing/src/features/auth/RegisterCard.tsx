@@ -22,7 +22,7 @@ export const RegisterCard: React.FC = () => {
     direccion: "",
     latitud: 0,
     longitud: 0,
-    fotoUrl: null,
+    fotoUrl: "",
     lifestyleDTO: {
       tranquilidad: 5,
       actividad: 5,
@@ -31,6 +31,7 @@ export const RegisterCard: React.FC = () => {
       sociabilidad: 5,
     },
     idComunidad: null,
+    comunidadesGuardadas: [], 
     fotoFile: null, // nuevo campo para almacenar el archivo
   });
 

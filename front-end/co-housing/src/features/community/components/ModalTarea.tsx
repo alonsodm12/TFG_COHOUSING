@@ -9,7 +9,7 @@ interface TaskModalProps {
     descripcion: string;
     duracion: number;
     fechaTope: string;
-    participantes: number[];
+    usuariosParticipantes: number[];
     estado: string;
   };
 
