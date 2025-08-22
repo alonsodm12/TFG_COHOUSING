@@ -27,14 +27,19 @@ jobs:
 
       - name: Compilar micros a JAR (solo Java)
         run: |
-          for dir in microservicios/*/; do
-            echo "Compilando $dir"
-            if [ -f "$dir/demo/pom.xml" ]; then
-              cd "$dir/demo"
-              mvn clean package || exit 1
-              cd - > /dev/null
+          for dir in microservicios/*; do
+            demo_dir="$dir/demo"
+            if [ -d "$demo_dir" ]; then
+                if [ -f "$demo_dir/pom.xml" ]; then
+                    echo "Compilando $demo_dir"
+                    cd "$demo_dir"
+                    mvn clean package jacoco:prepare-agent test jacoco:report || exit 1
+                    cd - > /dev/null
+                else
+                    echo "No se encontró pom.xml en $demo_dir, saltando..."
+                fi
             else
-              echo "Saltando $dir, no es un microservicio Java"
+                echo "No existe $demo_dir, saltando..."
             fi
           done
 

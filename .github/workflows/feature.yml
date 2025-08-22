@@ -1,7 +1,6 @@
 # .github/workflows/feature.yml
 
 #Se va a ejecutar en la rama feature
-#Tiene como objetivo facilitar el desarrollo local de HUs
 
 name: Preparar entorno local en rama feature
 
