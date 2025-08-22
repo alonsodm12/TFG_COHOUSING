@@ -148,7 +148,7 @@ export const CommunityProfilePage = () => {
             {!usuariosLoading && !usuariosError && usuarios.length === 0 && (
               <p>No hay usuarios en esta comunidad</p>
             )}
-
+    
             <ul className="overflow-y-auto space-y-2 max-h-96">
               {usuarios.map((u) => (
                 <li key={u.id}>

@@ -8,6 +8,7 @@ import {
   fetchTareasPorUsuario,
   getPorcentajeTareasComunidad,
   getPorcentajeTareasUsuario,
+  obtenerUsuariosDeComunidad,
 } from "../api/operations";
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
@@ -20,7 +21,15 @@ import Modal from "../components/Modal";
 import TaskModal from "../components/ModalTarea";
 import EventoModal from "../components/ModalEvento";
 import { Spinner } from "../../users/components/Spinner";
-
+interface Usuario {
+  id: number;
+  nombre: string;
+  apellido: string;
+  username: string;
+  role: string;
+  email?: string;
+  fotoUrl?: string;
+}
 export const CommunityUserPage = () => {
   const { userProfile, isLoading: isUserLoading } = useUserContext();
   const username: string | undefined = userProfile?.username;
@@ -48,6 +57,8 @@ export const CommunityUserPage = () => {
   const [isModalTaskOpen, setIsModalTaskOpen] = useState(false);
   const [isModalEventOpen, setIsModalEventOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Evento | null>(null);
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+
 
   //FUNCIONES PARA ABRIR MODALES
   const openTaskModal = (tarea: Tarea) => {
@@ -94,6 +105,15 @@ export const CommunityUserPage = () => {
     }
 
     setLoading(true);
+
+
+    obtenerUsuariosDeComunidad(comunidadId)
+        .then((data) => {
+          setUsuarios(data);
+        })
+        .catch(() => {
+          setError("Error al cargar los usuarios de la comunidad");
+        })
     fetchCommunityById(comunidadId.toString())
       .then((data) => {
         setCommunity(data);
@@ -463,6 +483,7 @@ export const CommunityUserPage = () => {
                 isOpen={isModalTaskOpen}
                 onClose={() => setIsModalTaskOpen(false)}
                 tarea={selectedTask}
+                usuarios = {usuarios}
               />
             )}
           </section>
