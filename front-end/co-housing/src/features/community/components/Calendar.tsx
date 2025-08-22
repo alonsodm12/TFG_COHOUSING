@@ -30,13 +30,20 @@ export const Calendario: React.FC<CalendarioProps> = ({tareas = [], eventos = []
           backgroundColor: "#3b82f6", // azul para tareas
         };
       });
-
-      // Formatear eventos
+  
+      // Formatear eventos como tareas
       const eventosFormateados = eventos.map((evento) => {
-        // Convertir fecha y horas a Date
-        const start = new Date(evento.fechaTope);
-        const duracion = 2;     // si es string ISO
-        const end = addHours(start, duracion || 1);
+        // Combinar fechaTope con horaInicio y horaFinal
+        const [horaI, minI, segI] = evento.horaInicio.split(":").map(Number);
+        const [horaF, minF, segF] = evento.horaFinal.split(":").map(Number);
+  
+        const fecha = new Date(evento.fechaTope);
+        const start = new Date(fecha);
+        start.setHours(horaI, minI, segI);
+  
+        const end = new Date(fecha);
+        end.setHours(horaF, minF, segF);
+  
         return {
           title: evento.titulo,
           start,
@@ -44,14 +51,15 @@ export const Calendario: React.FC<CalendarioProps> = ({tareas = [], eventos = []
           backgroundColor: "#f59e0b", // naranja para eventos
         };
       });
-
+  
       // Unir ambos
       setActividades([...tareasFormateadas, ...eventosFormateados]);
     };
-
+  
     organizarActividades();
   }, [tareas, eventos]);
 
+  console.log(actividades);
   return (
     <div style={{ margin: "2rem" }}>
       <FullCalendar
