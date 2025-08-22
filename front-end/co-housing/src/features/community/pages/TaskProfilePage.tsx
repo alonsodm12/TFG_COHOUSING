@@ -7,7 +7,7 @@ import { Footer } from "../../ui/Footer/Footer";
 import { getTask } from "../api/operations";
 import { Tarea } from "../api/type";
 import ButtonFunction from "../../ui/Button/ButtonFunction";
-import { enProgresoTarea, completarTarea } from "../api/operations";
+import { completarTarea } from "../api/operations";
 
 export const TaskProfilePage = () => {
   const { taskId } = useParams();
@@ -31,16 +31,6 @@ export const TaskProfilePage = () => {
     };
     fetchTask();
   }, [taskId]);
-
-  const handleEnProgreso = async () => {
-    try {
-      await enProgresoTarea(Number(taskId));
-      const nuevaTarea = await getTask(Number(taskId));
-      setTask(nuevaTarea);
-    } catch (err) {
-      setError((err as Error).message);
-    }
-  };
 
   const handleCompletar = async () => {
     try {
@@ -93,10 +83,6 @@ export const TaskProfilePage = () => {
                 <strong>Estado:</strong> {task?.estado}
               </p>
               <div className="flex justify-center gap-4 mt-4">
-                <ButtonFunction
-                  label="Marcar En Progreso"
-                  onClick={handleEnProgreso}
-                />
                 <ButtonFunction
                   label="Marcar Completada"
                   onClick={handleCompletar}

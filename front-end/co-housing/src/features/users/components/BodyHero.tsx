@@ -58,7 +58,7 @@ const BodyHero: React.FC = () => {
   const radius = 180;
   const angleStep = (2 * Math.PI) / filtered.length;
   return (
-    <div className="pt-10 text-center">
+    <div className="text-center">
       <h1 className="text-5xl font-bold text-black mb-2">
         ¡Hola {userProfile.username}! 👋
       </h1>

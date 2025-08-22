@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  completarEvento,
   deleteEliminarComunidad,
   deleteEliminarUsuario,
   fetchCommunityById,
@@ -556,7 +557,13 @@ export const CommunityUserPage = () => {
                 isOpen={isModalEventOpen}
                 onClose={() => setIsModalEventOpen(false)}
                 evento={selectedEvent}
-                onComplete={() => setIsModalEventOpen(false)}
+                onComplete={async () => {
+                  setIsModalEventOpen(false)
+                  await completarEvento(selectedEvent.id);
+                  setEventos(prevEventos =>
+                    prevEventos.filter(e => e.id !== selectedEvent.id)
+                  );
+                }}
                 onProgress={() => setIsModalEventOpen(false)}
               />
             )}
