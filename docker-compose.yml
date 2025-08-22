@@ -14,6 +14,7 @@ services:
       - cohousing
     depends_on:
       - postgres-usuarios
+      - rabbitmq
     volumes:
       - ./uploads:/app/uploads
       - ./microservicios/GestionUsuarios/demo/target/demo-0.0.1-SNAPSHOT.jar:/app/app.jar
@@ -30,6 +31,7 @@ services:
       - cohousing
     depends_on:
       - postgres-comunidades
+      - rabbitmq
     volumes:
     - ./microservicios/GestionComunidades/demo/target/demo-0.0.1-SNAPSHOT.jar:/app/app.jar
     - ./uploads:/app/uploads
@@ -72,6 +74,7 @@ services:
       - ./microservicios/Solicitudes/demo/target/demo-0.0.1-SNAPSHOT.jar:/app/app.jar
     depends_on:
       - postgres-solicitudes
+      - rabbitmq
 
 
   frontend:

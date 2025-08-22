@@ -11,25 +11,25 @@ export const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('https://localhost:8084/user/logout', {
-        method: 'POST',
-        credentials: 'include', // para enviar cookies
+      const response = await fetch("https://localhost:8084/user/logout", {
+        method: "POST",
+        credentials: "include", // para enviar cookies
       });
       if (response.ok) {
         // Redirigir a landing page usando JS puro
-        window.location.href = '/';
+        window.location.href = "/";
       } else {
-        console.error('Error al cerrar sesión');
+        console.error("Error al cerrar sesión");
       }
     } catch (error) {
-      console.error('Error en logout:', error);
+      console.error("Error en logout:", error);
     }
   };
 
   return (
     <header className={styles.header}>
       {/* Logo */}
-      <div className={styles.headerTitle}>SHARE-HOUSE</div>
+      <div className={styles.headerTitle}>SHARE-SPACE</div>
 
       {/* Navegación */}
       <nav className={styles.nav}>
@@ -39,12 +39,15 @@ export const Header: React.FC = () => {
         >
           Home
         </Link>
-        <Link
-          to={"/busqueda"}
-          className="hover:text-blue-600 transition-colors"
-        >
-          Búsqueda
-        </Link>
+        {userProfile?.role === "buscador" && (
+          <Link
+            to={`/TFG_COHOUSING/recommendations/${userProfile?.id}`}
+            className="hover:text-blue-600 transition-colors"
+          >
+            Búsqueda
+          </Link>
+        )}
+
         <Link
           to={`/TFG_COHOUSING/CommunityUserPage/${userProfile?.id}`}
           className="hover:text-blue-600 transition-colors"
@@ -52,7 +55,7 @@ export const Header: React.FC = () => {
           Comunidad
         </Link>
         <Link
-          to="/notificaciones"
+          to={`/TFG_COHOUSING/solicitudes/${userProfile?.id}`}
           className="hover:text-blue-600 transition-colors"
         >
           Notificaciones

@@ -270,7 +270,7 @@ export const getPorcentajeTareasUsuario = async (idUsuario: number ) => {
 };
 
 export const getPorcentajeTareasComunidad = async (idComunidad: number ) => {
-  const response = await fetch(`${API_BASE}/porcentajeTareasUsuario/${idComunidad}`, {
+  const response = await fetch(`${API_BASE}/porcentajeTareasComunidad/${idComunidad}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json"

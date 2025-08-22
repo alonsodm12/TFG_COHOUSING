@@ -6,6 +6,7 @@ import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import { obtenerUsuariosDeComunidad } from "../api/operations";
 import { useUserContext } from "../../ui/Context/UserContext";
+import { Spinner } from "../../users/components/Spinner";
 
 interface Usuario {
   id: number;
@@ -18,7 +19,7 @@ interface Usuario {
 }
 
 export const CommunityProfilePage = () => {
-  const { username, role } = useUserContext();
+  const { username } = useUserContext();
   const { communityName } = useParams<{ communityName: string }>();
   const communityNameValid = communityName ?? null;
 
@@ -53,7 +54,7 @@ export const CommunityProfilePage = () => {
   if (!communityNameValid) {
     return <p>Error: No se pudo obtener el nombre de la comunidad desde la URL</p>;
   }
-  if (loading) return <p>Cargando datos...</p>;
+  if (loading) return <Spinner />;
   if (error) return <p>Error: {error}</p>;
 
   return (

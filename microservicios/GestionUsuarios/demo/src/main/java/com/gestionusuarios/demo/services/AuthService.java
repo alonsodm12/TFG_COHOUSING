@@ -79,7 +79,7 @@ public class AuthService implements UserDetailsService{
             return tokenService.generateToken(authentication);
 
         } catch (Exception e) {
-            logger.error("[USER] : Error while trying to login", e);
+            logger.error("[USER] : Error al realizar el login", e);
             throw new BadCredentialsException("Error al realizar el login");
         }
     }

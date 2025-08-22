@@ -6,7 +6,8 @@ import { Footer } from "../../ui/Footer/Footer";
 import { useUserContext } from "../../ui/Context/UserContext";
 import { CommunityRecommended } from "../../community/api/type";
 import { modificarDireccion } from "../../users/api/operations";
-import { getRecommendations } from "../api/operations";
+import { getRecomendacionesFiltradas, getRecommendations } from "../api/operations";
+import { Spinner } from "../../users/components/Spinner";
 
 const Recommendations: React.FC = () => {
   const { id } = useParams();
@@ -81,27 +82,13 @@ const Recommendations: React.FC = () => {
     fetchRecommendations();
   }, [id]);
 
-  const aplicarFiltros = () => {
+  const aplicarFiltros = async () => {
     if (!id) return;
 
     setIsLoading(true);
-    fetch(
-      `https://localhost:8084/recommendations-filtered/${id}?precio=${maxPrecio}&distancia=${maxDistancia}`
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Error en la respuesta del servidor");
-        return res.json();
-      })
-      .then((data) => {
-        setCommunities(data);
-      })
-      .catch((err) => {
-        console.error("Error fetching filtered recommendations:", err);
-        setCommunities([]);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    const response = await getRecomendacionesFiltradas(id,maxPrecio,maxDistancia);
+    setCommunities(response);
+    setIsLoading(false);
   };
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? communities.length - 1 : prev - 1));
@@ -227,7 +214,7 @@ const Recommendations: React.FC = () => {
           {/* Lista de comunidades */}
           {isLoading ? (
             <p className="text-center text-gray-500 text-lg">
-              Cargando recomendaciones...
+              <Spinner />
             </p>
           ) : communities.length > 0 ? (
             <div className="flex flex-col items-center gap-4">
