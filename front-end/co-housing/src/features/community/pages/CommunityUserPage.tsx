@@ -174,7 +174,7 @@ export const CommunityUserPage = () => {
     return (
       <div id="root">
         <Header />
-        <main className="page text-center py-12 px-4">
+        <main className="page">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">
             ¡Todavía no formas parte de ninguna comunidad!
           </h1>
