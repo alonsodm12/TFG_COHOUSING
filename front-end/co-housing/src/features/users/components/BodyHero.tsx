@@ -14,46 +14,49 @@ const BodyHero: React.FC = () => {
       role: null,
       label: "🏡",
       text: "Comunidad",
-      to: `/TFG_COHOUSING/CommunityUserPage/${userProfile.id}`,
-      angle: 0,
+      to: `/TFG_COHOUSING/CommunityUserPage/${userProfile.id}`
     },
     {
       role: null,
       label: "👤",
       text: "Mi Perfil",
-      to: "/TFG_COHOUSING/user/profile",
-      angle: 60,
+      to: "/TFG_COHOUSING/user/profile"
     },
     {
       role: "ofertante",
       label: "🏡",
       text: "Crear Comunidad",
-      to: `/TFG_COHOUSING/community/create/${userProfile.username}`,
-      angle: 120,
+      to: `/TFG_COHOUSING/community/create/${userProfile.username}`
     },
     {
       role: null,
       label: "📩",
       text: "Solicitudes",
-      to: `/TFG_COHOUSING/solicitudes/${userProfile.id}`,
-      angle: 180,
+      to: `/TFG_COHOUSING/solicitudes/${userProfile.id}`
     },
     {
       role: "buscador",
       label: "🔍",
       text: "Explorar",
-      to: `/TFG_COHOUSING/recommendations/${userProfile.id}`,
-      angle: 240,
+      to: `/TFG_COHOUSING/recommendations/${userProfile.id}`
     },
     {
       role: null,
       label: "❓",
       text: "Dudas",
-      to: "/TFG_COHOUSING/Dudas",
-      angle: 300,
+      to: "/TFG_COHOUSING/Dudas"
     },
   ];
+  // 1. Filtrar ítems según condiciones
+  const filtered = items.filter(
+    (item) =>
+      (!item.role || item.role === userProfile.role) &&
+      !(item.text === "Crear Comunidad" && userProfile.idComunidad)
+  );
 
+  // 2. Calcular ángulo dinámico
+  const radius = 180;
+  const angleStep = (2 * Math.PI) / filtered.length;
   return (
     <div className="pt-10 text-center">
       <h1 className="text-5xl font-bold text-black mb-2">
@@ -77,18 +80,10 @@ const BodyHero: React.FC = () => {
         ></div>
 
         {/* Ítems en círculo */}
-        {items.map((item, index) => {
-          if (
-            (item.role && item.role !== userProfile.role) ||
-            (item.text === "Crear Comunidad" && userProfile.idComunidad)
-          )
-            return null;
-
-          console.log(userProfile.idComunidad);
-          const radius = 180; // radio del círculo
-          const angleRad = (item.angle * Math.PI) / 180;
-          const x = radius * Math.cos(angleRad);
-          const y = radius * Math.sin(angleRad);
+        {filtered.map((item, index) => {
+          const angle = index * angleStep - Math.PI / 2; // empieza arriba
+          const x = radius * Math.cos(angle);
+          const y = radius * Math.sin(angle);
 
           const colors = [
             "bg-blue-200",

@@ -5,16 +5,16 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
-import { addHours, parseISO } from "date-fns";
+import { addHours } from "date-fns";
 import { Evento, Tarea } from "../api/type";
 
 interface CalendarioProps {
-  userId: string;
+  userId: number;
   tareas: Tarea[];
   eventos: Evento[];
 }
 
-export const Calendario: React.FC<CalendarioProps> = ({ userId, tareas = [], eventos = [] }) => {
+export const Calendario: React.FC<CalendarioProps> = ({tareas = [], eventos = [] }) => {
   const [actividades, setActividades] = useState<any[]>([]);
 
   useEffect(() => {
