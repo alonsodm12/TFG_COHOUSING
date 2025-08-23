@@ -17,6 +17,9 @@ RUN apt-get update && apt-get install -y \
 
 ENV JAVA_TOOL_OPTIONS="-Djava.awt.headless=true"
 
+# Copiamos el JAR generado por Maven
+COPY target/demo-0.0.1-SNAPSHOT.jar app.jar
+
 EXPOSE 8082
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

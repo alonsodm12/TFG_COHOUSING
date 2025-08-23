@@ -1,17 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
-
-# Cadena de conexión para la base de datos de usuarios
-SQLALCHEMY_DATABASE_URL_USERS = "postgresql://cohousing:cohousing123@postgres-usuarios:5432/cohousingdb"
-
-
-# Cadena de conexión para la base de datos de comunidades
-SQLALCHEMY_DATABASE_URL_COMMUNITIES = "postgresql://cohousing:cohousing123@postgres-comunidades:5432/comunidadesdb"
+from app.config import settings
 
 # Crear motores para ambas bases de datos
-engine_users = create_engine(SQLALCHEMY_DATABASE_URL_USERS, echo=True)
-engine_communities = create_engine(SQLALCHEMY_DATABASE_URL_COMMUNITIES, echo=True)
+engine_users = create_engine(settings.SQLALCHEMY_DATABASE_URL_USERS, echo=True)
+engine_communities = create_engine(settings.SQLALCHEMY_DATABASE_URL_COMMUNITIES, echo=True)
+
 
 # Crear las clases base para ambas bases de datos
 BaseUsers = declarative_base()
