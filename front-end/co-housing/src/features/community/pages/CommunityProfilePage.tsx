@@ -46,7 +46,6 @@ export const CommunityProfilePage = () => {
         });
     }
   }, [community]);
-
   // Render condicional después de todos los hooks
   if (!username) {
     return <p>Error: No se pudo obtener el nombre de usuario</p>;
