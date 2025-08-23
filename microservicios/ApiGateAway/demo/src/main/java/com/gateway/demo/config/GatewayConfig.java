@@ -1,5 +1,6 @@
 package com.gateway.demo.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,18 @@ import com.gateway.demo.filter.JwtAuthenticationFilter;
 public class GatewayConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Value("${users.service.url}")
+    private String usuarioUrl;
+    @Value("${communities.service.url}")
+    private String comunidadUrl;
+    @Value("${recomendador.service.url}")
+    private String recomendadorUrl;
+    @Value("${solicitudes.service.url}")
+    private String solicitudUrl;
+
+    @Value("${frontend.service.url}")
+    private String frontendUrl;
 
     public GatewayConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -27,7 +40,7 @@ public class GatewayConfig {
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/user/usuario/{username}")
-                        .uri("http://gestion-usuarios:8081"))
+                        .uri(usuarioUrl))
 
                 // Rutas protegidas para usuarios
                 .route("user-protected-routes", r -> r.path(
@@ -43,7 +56,7 @@ public class GatewayConfig {
                         "/user/addComunidadGuardada/**",
                         "/user/removeComunidadGuardada/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
-                        .uri("http://gestion-usuarios:8081"))
+                        .uri(usuarioUrl))
 
                 // Rutas protegidas para comunidades
                 .route("community-protected-routes", r -> r.path(
@@ -51,21 +64,21 @@ public class GatewayConfig {
                         "/community/**",
                         "/community/create")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
-                        .uri("http://gestion-comunidades:8082"))
+                        .uri(comunidadUrl))
 
                 // Rutas para solicitudes
                 .route("solicitudes-protected-routes", r -> r.path(
                         "/solicitudes/**",
                         "/solicitudes/{userId}")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
-                        .uri("http://solicitudes:8083"))
+                        .uri(solicitudUrl))
 
 
                 .route("recomendaciones-protected-routes", r -> r.path(
                         "/recommendations/**",
                         "/recommendations-filtered/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
-                        .uri("http://recomendador:8000"))
+                        .uri(recomendadorUrl))
 
                 .build();
     }
