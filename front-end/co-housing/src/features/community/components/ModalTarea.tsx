@@ -1,6 +1,8 @@
 import React from "react";
 import Modal from "./Modal"; // Tu componente modal base
 import { Link } from "react-router-dom";
+const API: String = import.meta.env.VITE_API_BASE;
+
 
 interface Usuario {
   id: number;
@@ -70,7 +72,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                       <img
                         src={
                           u.fotoUrl
-                            ? `https://localhost:8084/user${u.fotoUrl}`
+                            ? `${API}user${u.fotoUrl}`
                             : "/default-avatar.png"
                         }
                         alt={`Avatar de ${u.username}`}

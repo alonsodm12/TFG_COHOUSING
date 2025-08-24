@@ -2,7 +2,8 @@
 
 import { UpdateCommunityProfile, Tarea, Evento } from "./type";
 
-const API_BASE: String = "https://localhost:8084/comunidades";
+const API_BASE: String = import.meta.env.VITE_API_BASE + "comunidades";
+const API: String = import.meta.env.VITE_API_BASE;
 //Patch comunidad
 export const updateCommunity = async (data: UpdateCommunityProfile) => {
   const response = await fetch(`${API_BASE}/update`, {
@@ -83,7 +84,7 @@ export const deleteCommunity = async (communityname: string) => {
 
 
 export const fetchTareasPorUsuario = async (userId: number): Promise<Tarea[]> => {
-  const response = await fetch(`https://localhost:8084/comunidades/tareas/${userId}`,{
+  const response = await fetch(`${API_BASE}/tareas/${userId}`,{
     credentials: "include"
   });
   if (!response.ok) {
@@ -93,7 +94,7 @@ export const fetchTareasPorUsuario = async (userId: number): Promise<Tarea[]> =>
 };
 
 export const fetchEventosPorUsuario = async (userId:number): Promise<Evento[]> => {
-  const response = await fetch(`https://localhost:8084/comunidades/eventos/${userId}`,{
+  const response = await fetch(`${API_BASE}/eventos/${userId}`,{
     credentials: "include"
   });
   if(!response.ok)
@@ -126,7 +127,7 @@ export async function createEvent(evento: Evento) {
     horaFinal: evento.horaFinal,   // "HH:mm"
   };
 
-  const res = await fetch("https://localhost:8084/comunidades/evento", {
+  const res = await fetch(`${API_BASE}/evento`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -312,7 +313,7 @@ export const deleteEliminarComunidad = async (idComunidad: number ) => {
 
 
 export const obtenerUsuariosDeComunidad = async (idComunidad: number ) => {
-  const response = await fetch(`https://localhost:8084/user/obtenerUsuariosPorComunidad/${idComunidad}`, {
+  const response = await fetch(`${API}user/obtenerUsuariosPorComunidad/${idComunidad}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json"

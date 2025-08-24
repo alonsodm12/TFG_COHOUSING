@@ -1,8 +1,9 @@
 import { DatosPerfilDTO } from "./type";
 
+const API: String = import.meta.env.VITE_API_BASE;
 
 export const sendProfileData = async (datos: DatosPerfilDTO) => {
-  const res = await fetch('https://localhost:8084/user/completar-perfil', {
+  const res = await fetch(`${API}user/completar-perfil`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

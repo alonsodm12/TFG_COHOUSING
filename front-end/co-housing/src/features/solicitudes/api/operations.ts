@@ -1,4 +1,6 @@
-const API_BASE: String = "https://localhost:8084/solicitudes";
+
+const API_BASE: String = import.meta.env.VITE_API_BASE + "solicitudes";
+
 
 export const getSolicitudesUsuario = async (userId : string) => {
     const response = await fetch(`${API_BASE}/usuario/${userId}`,{

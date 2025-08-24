@@ -1,7 +1,9 @@
 //Inclusion de toda la lógica de llamadas a la API de Recomendador
 
-const API_BASE: String = "https://localhost:8084/recommendations";
-const API_COMMUNITY: String = "https://localhost:8084/comunidades";
+
+const API_BASE: String = import.meta.env.VITE_API_BASE + "recommendations";
+const API_COMMUNITY: String = import.meta.env.VITE_API_BASE + "comunidades";
+const API: String = import.meta.env.VITE_API_BASE;
 
 //Get recomendaciones para un usuario especifico
 export const getRecommendations = async (userId: string | null) => {
@@ -44,7 +46,7 @@ export const UnirseComuniadad = async (data: UnionRequestDTO) => {
 };
 
 export const addComunidad = async (userId: number,idComunidad: number) => {
-  const response = await fetch(`https://localhost:8084/user/addComunidadGuardada/${userId}/${idComunidad}`,{
+  const response = await fetch(`${API}user/addComunidadGuardada/${userId}/${idComunidad}`,{
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -60,7 +62,7 @@ export const addComunidad = async (userId: number,idComunidad: number) => {
 }
 
 export const removeComunidad = async (userId: number,idComunidad: number) => {
-  const response = await fetch(`https://localhost:8084/user/removeComunidadGuardada/${userId}/${idComunidad}`,{
+  const response = await fetch(`${API}user/removeComunidadGuardada/${userId}/${idComunidad}`,{
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -76,7 +78,7 @@ export const removeComunidad = async (userId: number,idComunidad: number) => {
 }
 
 export const getRecomendacionesFiltradas = async (userId: string, maxPrecio: number, maxDistancia: number) => {
-  const response = await fetch(`https://localhost:8084/recommendations-filtered/${userId}?precio=${maxPrecio}&distancia=${maxDistancia}`,{
+  const response = await fetch(`${API}recommendations-filtered/${userId}?precio=${maxPrecio}&distancia=${maxDistancia}`,{
     method: "GET",
     headers: {
       "Content-Type": "application/json"

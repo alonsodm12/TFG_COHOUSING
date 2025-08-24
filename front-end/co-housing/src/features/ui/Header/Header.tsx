@@ -3,6 +3,8 @@ import styles from "./HeaderLanding.module.css";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../../ui/Context/UserContext";
 
+const API_BASE: String = import.meta.env.VITE_API_BASE + "user";
+
 export const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { userProfile } = useUserContext();
@@ -11,7 +13,7 @@ export const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("https://localhost:8084/user/logout", {
+      const response = await fetch(`${API_BASE}/logout`, {
         method: "POST",
         credentials: "include", // para enviar cookies
       });

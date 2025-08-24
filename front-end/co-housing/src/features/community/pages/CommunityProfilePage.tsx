@@ -7,6 +7,7 @@ import { Footer } from "../../ui/Footer/Footer";
 import { obtenerUsuariosDeComunidad } from "../api/operations";
 import { useUserContext } from "../../ui/Context/UserContext";
 import { Spinner } from "../../users/components/Spinner";
+const API: String = import.meta.env.VITE_API_BASE;
 
 interface Usuario {
   id: number;
@@ -158,7 +159,7 @@ export const CommunityProfilePage = () => {
                     <img
                       src={
                         u.fotoUrl
-                          ? `https://localhost:8084/user${u.fotoUrl}`
+                          ? `${API}user${u.fotoUrl}`
                           : "/default-avatar.png"
                       }
                       alt={`Avatar de ${u.username}`}

@@ -1,6 +1,7 @@
 import { UpdateUserProfile, UserLogin } from "./types";
-const API_BASE: String = "https://localhost:8084/user";
 
+const API_BASE: String = import.meta.env.VITE_API_BASE + "user";
+const API: String = import.meta.env.VITE_API_BASE;
 // Patch usuario
 export const updateUser = async (username: string, data: UpdateUserProfile) => {
 
@@ -140,7 +141,7 @@ export const modificarDireccion = async (
 export const obtenerComunidadesGuardadas = async (comunidadesIds: number[]) => {
 
 
-  const response = await fetch("https://localhost:8084/comunidades/filterPorId", {
+  const response = await fetch(`${API}comunidades/filterPorId`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
