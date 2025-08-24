@@ -1,5 +1,5 @@
 // App.tsx
-import { HashRouter as Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import { LandingPage } from "./features/ui/Landing";
 import { RegisterPage } from "./features/auth";
