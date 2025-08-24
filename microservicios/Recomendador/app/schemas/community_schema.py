@@ -16,7 +16,7 @@ class CommunitySchema(BaseModel):
     fotoUrl: Optional[str] = None
     direccion: Optional[str] = None
     precio: Optional[float] = None
-    affinity: Optional[float] = None  # np.float64 también es compatible como float
+    affinity: Optional[float] = None
     latitud : Optional[float]
     longitud : Optional[float]
 

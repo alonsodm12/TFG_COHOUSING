@@ -23,6 +23,7 @@ import { TaskProfilePage } from "./features/community/pages/TaskProfilePage";
 import { AdministrarTareas } from "./features/community/pages/AdministrarTareas";
 import { UserComunidadesGuardadas } from "./features/users/pages/UserComunidadesGuardadas";
 import { UserProvider } from "./features/ui/Context/UserContext";
+import UserExternoPage from "./features/users/pages/UserExternoPage";
 
 export const App = () => {
   return (
@@ -51,6 +52,7 @@ export const App = () => {
       <Route path="/TFG_COHOUSING/Tarea/:taskId" element={<TaskProfilePage />} />
       <Route path="/TFG_COHOUSING/AdministrarTareas/:id" element={<AdministrarTareas />} />
       <Route path="/TFG_COHOUSING/user/comunidadesGuardadas" element={<UserComunidadesGuardadas />} />
+      <Route path="/TFG_COHOUSING/user/externo/:username" element={<UserExternoPage />} />
     </Routes>
   </UserProvider>
   );

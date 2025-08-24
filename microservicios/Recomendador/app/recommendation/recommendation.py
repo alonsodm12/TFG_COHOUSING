@@ -61,11 +61,17 @@ def recommend_communities_by_user(user, communities, n_recommendations=5):
     if max_distance == 0:
         max_distance = 1  # evitar división por cero
 
-    # Calcular afinidad normalizada y limitarla a 0-100
+    MIN_AFFINITY = 30
+
     affinities = []
     for i, dist in distances:
-        affinity = 100 * (1 - (dist / max_distance)) if math.isfinite(dist) else 0.0
-        affinities.append((i, round(max(min(affinity, 100), 0))))
+        if math.isfinite(dist):
+            affinity = 100 * (1 - (dist / max_distance))
+        else:
+            affinity = 0.0
+        # Limitar afinidad entre MIN_AFFINITY y 100
+        affinity = max(min(affinity, 100), MIN_AFFINITY)
+        affinities.append((i, round(affinity)))
 
     # Ordenar por mayor afinidad
     affinities.sort(key=lambda x: x[1], reverse=True)

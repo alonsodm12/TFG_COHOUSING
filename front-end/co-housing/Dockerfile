@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5173
 
 # Comando por defecto
-CMD ["npm", "run", "build", "--", "--host"]
+CMD ["npm", "run", "dev", "--", "--host"]

@@ -570,7 +570,7 @@ export const CommunityUserPage = () => {
           </section>
 
           {/* Calendario */}
-          <section className="bg-white/80 backdrop-blur-3xl rounded p-6 mb-6 text-gray-900 md:col-span-3">
+          <section className="bg-white/80 backdrop-blur-3xl rounded p-6 mb-6 text-gray-900 md:col-span-4">
             <h2 className="text-2xl font-semibold mb-4 text-black">
               Calendario
             </h2>

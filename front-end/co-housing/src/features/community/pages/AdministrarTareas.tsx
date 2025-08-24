@@ -104,18 +104,17 @@ export const AdministrarTareas = () => {
   };
 
   return (
-    <div
-      id="root"
-      className="min-h-screen flex flex-col bg-gradient-to-b from-pink-200 via-white to-blue-200"
-    >
+    <div id="root">
       <Header />
-      <main className="flex-grow container mx-auto px-6 md:px-12 py-12 flex flex-col">
+      <main className="flex-grow w-full px-6 md:px-12 py-12 flex flex-col"
+        style={{
+          background: 'linear-gradient(135deg, #cc95c0, #dbd4b4, #7aa1d2)',
+        }}>
         <h1 className="text-5xl font-bold mb-12 text-center text-gray-800">
           Administra tus Tareas
         </h1>
 
         <div className="flex gap-10 justify-center items-start">
-          {/* Tareas sin fecha */}
           <aside
             id="external-tasks"
             className="w-[280px] bg-gray-700 rounded-lg shadow-md p-4 text-gray-300 overflow-y-auto max-h-[70vh]"
