@@ -20,7 +20,7 @@ export const Header: React.FC = () => {
       });
       if (response.ok) {
         // Redirigir a landing page usando JS puro
-        navigate("/");
+        navigate("/TFG_COHOUSING/");
       } else {
         console.error("Error al cerrar sesión");
       }
