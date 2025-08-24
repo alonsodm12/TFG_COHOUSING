@@ -27,32 +27,42 @@ import UserExternoPage from "./features/users/pages/UserExternoPage";
 export const App = () => {
   return (
     <UserProvider>
-        <Routes>
-          {/* Rutas públicas */}
-          <Route path="/TFG_COHOUSING/" element={<LandingPage />} />
-          <Route path="/TFG_COHOUSING/registro" element={<RegisterPage />} />
-          <Route path="/TFG_COHOUSING/login" element={<LoginPage />} />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/registro" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
 
-          {/* Rutas protegidas */}
-          <Route path="/TFG_COHOUSING/home" element={<UserHomePage />} />
-          <Route path="/TFG_COHOUSING/community/profile/:communityName" element={<CommunityProfilePage />} />
-          <Route path="/TFG_COHOUSING/community/create/:username" element={<CreateCommunityPage />} />
-          <Route path="/TFG_COHOUSING/community/edit" element={<UpdateCommunityPage />} />
-          <Route path="/TFG_COHOUSING/user/profile" element={<UserProfilePage />} />
-          <Route path="/TFG_COHOUSING/user/profile/edit" element={<UpdateProfilePage />} />
-          <Route path="/TFG_COHOUSING/dudas" element={<Dudas />} />
-          <Route path="/TFG_COHOUSING/recommendations/:id" element={<Recommendations />} />
-          <Route path="/TFG_COHOUSING/solicitudes/:userId" element={<SolicitudesPage />} />
-          <Route path="/TFG_COHOUSING/CommunityUserPage/:userId" element={<CommunityUserPage />} />
-          <Route path="/TFG_COHOUSING/CreateTask/:idComunidad" element={<CreateTask />} />
-          <Route path="/TFG_COHOUSING/CreateEvent/:idComunidad" element={<CreateEvent />} />
-          <Route path="/TFG_COHOUSING/TaskListPage/:userId" element={<TaskListPage />} />
-          <Route path="/TFG_COHOUSING/EventoListPage/:userId" element={<EventoListPage />} />
-          <Route path="/TFG_COHOUSING/Tarea/:taskId" element={<TaskProfilePage />} />
-          <Route path="/TFG_COHOUSING/AdministrarTareas/:id" element={<AdministrarTareas />} />
-          <Route path="/TFG_COHOUSING/user/comunidadesGuardadas" element={<UserComunidadesGuardadas />} />
-          <Route path="/TFG_COHOUSING/user/externo/:username" element={<UserExternoPage />} />
-        </Routes>
+        <Route path="/home" element={<UserHomePage />} />
+        <Route
+          path="/community/profile/:communityName"
+          element={<CommunityProfilePage />}
+        />
+        <Route
+          path="/community/create/:username"
+          element={<CreateCommunityPage />}
+        />
+        <Route path="/community/edit" element={<UpdateCommunityPage />} />
+        <Route path="/user/profile" element={<UserProfilePage />} />
+        <Route path="/user/profile/edit" element={<UpdateProfilePage />} />
+        <Route path="/dudas" element={<Dudas />} />
+        <Route path="/recommendations/:id" element={<Recommendations />} />
+        <Route path="/solicitudes/:userId" element={<SolicitudesPage />} />
+        <Route
+          path="/CommunityUserPage/:userId"
+          element={<CommunityUserPage />}
+        />
+        <Route path="/CreateTask/:idComunidad" element={<CreateTask />} />
+        <Route path="/CreateEvent/:idComunidad" element={<CreateEvent />} />
+        <Route path="/TaskListPage/:userId" element={<TaskListPage />} />
+        <Route path="/EventoListPage/:userId" element={<EventoListPage />} />
+        <Route path="/Tarea/:taskId" element={<TaskProfilePage />} />
+        <Route path="/AdministrarTareas/:id" element={<AdministrarTareas />} />
+        <Route
+          path="/user/comunidadesGuardadas"
+          element={<UserComunidadesGuardadas />}
+        />
+        <Route path="/user/externo/:username" element={<UserExternoPage />} />
+      </Routes>
     </UserProvider>
   );
 };
