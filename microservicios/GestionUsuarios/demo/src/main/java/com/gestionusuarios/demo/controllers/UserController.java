@@ -74,6 +74,9 @@ public class UserController {
     @Value("${security.cookie.same-site}")
     private String sameSite;
 
+    @Value("${app.backend.url}")
+    private String backendUrl;
+
     public UserController(UserService userService, AuthService authService,TokenService tokenService) {
         this.userService = userService;
         this.authService = authService;
@@ -220,7 +223,7 @@ public class UserController {
                 UserDTO userDto = new UserDTO(usuario.get().getUsername(), usuario.get().getId(),
                         usuario.get().getPassword(), usuario.get().getRole(), usuario.get().getEmail(),
                         usuario.get().getDireccion(),
-                        usuario.get().getLatitud(), usuario.get().getLongitud(),"https://localhost:8084/user"+
+                        usuario.get().getLatitud(), usuario.get().getLongitud(),backendUrl + "/user"+
                         usuario.get().getFotoUrl(), lifestyleDTO, usuario.get().getIdComunidad(),usuario.get().getComunidadesGuardadas());
     
                 return ResponseEntity.status(HttpStatus.OK).body(userDto);
