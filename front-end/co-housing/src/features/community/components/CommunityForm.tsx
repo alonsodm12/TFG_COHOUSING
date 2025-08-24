@@ -55,36 +55,16 @@ export const CommunityForm = ({
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "precio" ? Number(value) : value,
+      [name]: name === "precio" || name === "num_integrantes" ? Number(value) : value,
     }));
   };
 
-  const handleDireccionChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleDireccionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const direccion = e.target.value;
     setFormData((prev) => ({
       ...prev,
-      direccion: direccion,
+      direccion,
     }));
-
-    // Usamos la API de geocodificación para obtener lat/lon
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}`
-      );
-      const data = await response.json();
-      if (data.length > 0) {
-        const { lat, lon } = data[0];
-        setFormData((prev) => ({
-          ...prev,
-          latitud: parseFloat(lat),
-          longitud: parseFloat(lon),
-        }));
-      }
-    } catch (error) {
-      console.error("Error obteniendo coordenadas:", error);
-    }
   };
 
   const handleSliderChange = (name: keyof LifestyleDTO, value: number) => {
@@ -102,12 +82,39 @@ export const CommunityForm = ({
     return trimmed ? trimmed.charAt(0).toUpperCase() + trimmed.slice(1) : "";
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let lat = 0;
+    let lon = 0;
+
+    if (formData.direccion) {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(formData.direccion)}`
+        );
+        const data = await response.json();
+        if (data.length > 0) {
+          lat = parseFloat(data[0].lat);
+          lon = parseFloat(data[0].lon);
+        } else {
+          alert("No se encontró la dirección.");
+          return;
+        }
+      } catch (error) {
+        console.error("Error al buscar coordenadas:", error);
+        alert("Error al buscar coordenadas.");
+        return;
+      }
+    }
+
     const formattedData = {
       ...formData,
       descripcion: formatDescripcion(formData.descripcion),
+      latitud: lat,
+      longitud: lon,
     };
+
     onSubmit(formattedData);
     navigate("/TFG_COHOUSING/home");
   };
@@ -122,9 +129,7 @@ export const CommunityForm = ({
       </h2>
 
       <div>
-        <label className="block text-gray-700 mb-1">
-          Nombre de la comunidad
-        </label>
+        <label className="block text-gray-700 mb-1">Nombre de la comunidad</label>
         <input
           name="name"
           value={formData.name}
@@ -147,6 +152,7 @@ export const CommunityForm = ({
           Describe brevemente el estilo de convivencia.
         </small>
       </div>
+
       <div>
         <label className="block text-gray-700 mb-1">Número de integrantes</label>
         <input
@@ -155,7 +161,7 @@ export const CommunityForm = ({
           value={formData.num_integrantes}
           onChange={handleChange}
           className="w-full border border-gray-300 rounded-lg px-4 py-2"
-          min="1" // opcional
+          min={1}
         />
         <small className="text-gray-500">
           Indica cuántas personas pueden vivir en la comunidad.
@@ -170,9 +176,7 @@ export const CommunityForm = ({
         { label: "Sociabilidad", name: "sociabilidad" },
       ].map((item) => (
         <div key={item.name}>
-          <label className="block text-gray-700 mb-1">
-            {item.label} (1 - 5)
-          </label>
+          <label className="block text-gray-700 mb-1">{item.label} (1 - 5)</label>
           <input
             type="range"
             min={1}
@@ -201,9 +205,7 @@ export const CommunityForm = ({
       </div>
 
       <div>
-        <label className="block text-gray-700 mb-1">
-          Precio por persona (€)
-        </label>
+        <label className="block text-gray-700 mb-1">Precio por persona (€)</label>
         <input
           type="number"
           name="precio"
@@ -212,6 +214,7 @@ export const CommunityForm = ({
           className="w-full border border-gray-300 rounded-lg px-4 py-2"
         />
       </div>
+
       <div>
         <label className="block text-gray-700 mb-1">Foto de la comunidad</label>
         <input
@@ -222,8 +225,8 @@ export const CommunityForm = ({
             if (file) {
               setFormData((prev) => ({
                 ...prev,
-                fotoFile: file, // archivo real para enviar
-                fotoUrl: URL.createObjectURL(file), // URL para vista previa
+                fotoFile: file,
+                fotoUrl: URL.createObjectURL(file),
               }));
             }
           }}
