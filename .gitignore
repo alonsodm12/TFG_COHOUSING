@@ -46,8 +46,7 @@ desktop.ini
 *.orig
 
 # Entornos
-.env
-.env.*
+
 
 # Docker
 **/target/
