@@ -1,5 +1,5 @@
 // App.tsx
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Routes, Route } from "react-router-dom";
 
 import { LandingPage } from "./features/ui/Landing";
 import { RegisterPage } from "./features/auth";
@@ -27,7 +27,6 @@ import UserExternoPage from "./features/users/pages/UserExternoPage";
 export const App = () => {
   return (
     <UserProvider>
-      <Router>
         <Routes>
           {/* Rutas públicas */}
           <Route path="/TFG_COHOUSING/" element={<LandingPage />} />
@@ -54,7 +53,6 @@ export const App = () => {
           <Route path="/TFG_COHOUSING/user/comunidadesGuardadas" element={<UserComunidadesGuardadas />} />
           <Route path="/TFG_COHOUSING/user/externo/:username" element={<UserExternoPage />} />
         </Routes>
-      </Router>
     </UserProvider>
   );
 };
