@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../ui/Context/UserContext";
 
 const BodyHero: React.FC = () => {
   const { userProfile, isLoading } = useUserContext();
+  const navigate = useNavigate();
+
   console.log(userProfile?.email);
   if (isLoading)
     return <p className="text-center text-gray-600">Cargando perfil...</p>;
@@ -107,7 +110,7 @@ const BodyHero: React.FC = () => {
             >
               <div className="animated-border rounded-full">
                 <button
-                  onClick={() => (window.location.href = item.to)}
+                  onClick={() => (navigate(item.to))}
                   className={`relative z-10 w-28 h-28 rounded-full ${bgColor} flex flex-col items-center justify-center text-black font-semibold shadow-md transition-all duration-300`}
                   aria-label={item.text}
                   title={item.text}

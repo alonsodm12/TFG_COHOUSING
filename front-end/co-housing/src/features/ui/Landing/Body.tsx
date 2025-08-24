@@ -60,12 +60,12 @@ export const Body: React.FC = () => {
           cohousing.
         </p>
         <div className="flex justify-center gap-4 flex-wrap">
-          <a href="/buscar" className="btn">
+          <button className="btn" type="button">
             🔍 Buscar Comunidad
-          </a>
-          <a href="/ofrecer" className="btn btn-outline">
+          </button>
+          <button className="btn btn-outline" type="button">
             📤 Publicar Comunidad
-          </a>
+          </button>
         </div>
       </section>
       <Button label="EMPEZAR YA" to="/TFG_COHOUSING/registro" />
@@ -110,7 +110,7 @@ export const Body: React.FC = () => {
 
       {/* Carrusel de imágenes estáticas */}
       <h2 className="font-bold text-5xl mt-14 mb-2 text-gray-800 dark:text-black">
-          Descubre todo lo que ofrece ShareSpace
+        Descubre todo lo que ofrece ShareSpace
       </h2>
       <div className={styles.carouselSection}>
         <div className={styles.carouselContainer}>

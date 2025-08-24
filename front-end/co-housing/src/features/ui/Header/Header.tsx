@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import styles from "./HeaderLanding.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUserContext } from "../../ui/Context/UserContext";
 
 const API_BASE: String = import.meta.env.VITE_API_BASE + "user";
 
 export const Header: React.FC = () => {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const { userProfile } = useUserContext();
 
@@ -19,7 +20,7 @@ export const Header: React.FC = () => {
       });
       if (response.ok) {
         // Redirigir a landing page usando JS puro
-        window.location.href = "/";
+        navigate("/");
       } else {
         console.error("Error al cerrar sesión");
       }

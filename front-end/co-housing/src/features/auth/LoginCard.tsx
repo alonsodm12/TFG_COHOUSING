@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../users/api/operations";
 import { useUserContext } from "../ui/Context/UserContext";
+import { Link } from "react-router-dom";
 
 export const LoginCard: React.FC = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -88,15 +89,11 @@ export const LoginCard: React.FC = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             ¿No tienes cuenta?{" "}
-            <a
-              href="/TFG_COHOUSING/registro"
-              className="text-blue-500 hover:underline"
-            >
+            <Link to="/registro" className="text-blue-500 hover:underline">
               Regístrate
-            </a>
+            </Link>
           </p>
         </div>
-
       </div>
     </div>
   );
