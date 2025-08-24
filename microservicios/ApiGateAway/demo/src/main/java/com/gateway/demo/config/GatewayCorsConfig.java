@@ -15,6 +15,7 @@ public class GatewayCorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("https://localhost:5173"); // Cambia según tu frontend
+        config.addAllowedOrigin("https://alonsodm12.github.io");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
