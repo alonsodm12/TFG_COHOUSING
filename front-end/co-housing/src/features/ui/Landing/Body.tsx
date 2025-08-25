@@ -7,8 +7,8 @@ import CardHorizontal from "../CardHorizontal";
 
 export const Body: React.FC = () => {
   const images = [
-    { src: "/TFG_COHOUSING/images/pruebilla.png", alt: "Gestión fácil" },
-    { src: "/TFG_COHOUSING/images/pruebon.png", alt: "Eventos compartidos" },
+    { src: "/images/pruebilla.png", alt: "Gestión fácil" },
+    { src: "/images/pruebon.png", alt: "Eventos compartidos" },
     {
       src: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=600&q=80",
       alt: "Comunicación fluida",
@@ -45,7 +45,7 @@ export const Body: React.FC = () => {
       <div className={styles.imagecontainer}>
         <div className={styles.imageWrapper}>
           <img
-            src="/TFG_COHOUSING/images/foto-landing2.png"
+            src="/images/foto-landing2.png"
             alt="Imagen 1"
             className={styles.image2}
           />
@@ -68,7 +68,7 @@ export const Body: React.FC = () => {
           </button>
         </div>
       </section>
-      <Button label="EMPEZAR YA" to="/TFG_COHOUSING/registro" />
+      <Button label="EMPEZAR YA" to="/registro" />
 
       <section className="tetxmax-w-5xl mx-auto py-20 px-8 text-center bg-white/40 dark:bg-white/10 backdrop-blur-2xl border border-white/30 rounded-2xl mt-20 shadow-2xl">
         <h2 className="font-bold text-5xl mb-14 text-gray-800 dark:text-black">

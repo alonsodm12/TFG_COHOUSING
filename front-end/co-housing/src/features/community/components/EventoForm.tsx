@@ -110,7 +110,7 @@ const EventoForm: React.FC = () => {
     console.log("Evento enviado:", evento);
     createEvent(evento);
     alert("Evento creado con exito");
-    navigate(`/TFG_COHOUSING/CommunityUserPage/${idComunidad}`);
+    navigate(`/CommunityUserPage/${idComunidad}`);
 
   };
 

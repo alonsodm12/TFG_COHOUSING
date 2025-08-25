@@ -17,37 +17,37 @@ const BodyHero: React.FC = () => {
       role: null,
       label: "🏡",
       text: "Comunidad",
-      to: `/TFG_COHOUSING/CommunityUserPage/${userProfile.id}`
+      to: `/CommunityUserPage/${userProfile.id}`
     },
     {
       role: null,
       label: "👤",
       text: "Mi Perfil",
-      to: "/TFG_COHOUSING/user/profile"
+      to: "/user/profile"
     },
     {
       role: "ofertante",
       label: "🏡",
       text: "Crear Comunidad",
-      to: `/TFG_COHOUSING/community/create/${userProfile.username}`
+      to: `/community/create/${userProfile.username}`
     },
     {
       role: null,
       label: "📩",
       text: "Solicitudes",
-      to: `/TFG_COHOUSING/solicitudes/${userProfile.id}`
+      to: `/solicitudes/${userProfile.id}`
     },
     {
       role: "buscador",
       label: "🔍",
       text: "Explorar",
-      to: `/TFG_COHOUSING/recommendations/${userProfile.id}`
+      to: `/recommendations/${userProfile.id}`
     },
     {
       role: null,
       label: "❓",
       text: "Dudas",
-      to: "/TFG_COHOUSING/Dudas"
+      to: "/Dudas"
     },
   ];
   // 1. Filtrar ítems según condiciones
@@ -74,7 +74,7 @@ const BodyHero: React.FC = () => {
         <div
           className="absolute top-1/2 left-1/2 w-52 h-52 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-2xl bg-white/30 dark:bg-white/10 backdrop-blur-md flex items-center justify-center z-10 cursor-default select-none"
           style={{
-            backgroundImage: "url('/TFG_COHOUSING/images/final2.png')",
+            backgroundImage: "url('/images/final2.png')",
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",

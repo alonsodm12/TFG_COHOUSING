@@ -20,7 +20,7 @@ export const Header: React.FC = () => {
       });
       if (response.ok) {
         // Redirigir a landing page usando JS puro
-        navigate("/TFG_COHOUSING/");
+        navigate("/");
       } else {
         console.error("Error al cerrar sesión");
       }
@@ -37,14 +37,14 @@ export const Header: React.FC = () => {
       {/* Navegación */}
       <nav className={styles.nav}>
         <Link
-          to="/TFG_COHOUSING/home"
+          to="/home"
           className="hover:text-blue-600 transition-colors"
         >
           Home
         </Link>
         {userProfile?.role === "buscador" && (
           <Link
-            to={`/TFG_COHOUSING/recommendations/${userProfile?.id}`}
+            to={`/recommendations/${userProfile?.id}`}
             className="hover:text-blue-600 transition-colors"
           >
             Búsqueda
@@ -52,13 +52,13 @@ export const Header: React.FC = () => {
         )}
 
         <Link
-          to={`/TFG_COHOUSING/CommunityUserPage/${userProfile?.id}`}
+          to={`/CommunityUserPage/${userProfile?.id}`}
           className="hover:text-blue-600 transition-colors"
         >
           Comunidad
         </Link>
         <Link
-          to={`/TFG_COHOUSING/solicitudes/${userProfile?.id}`}
+          to={`/solicitudes/${userProfile?.id}`}
           className="hover:text-blue-600 transition-colors"
         >
           Notificaciones
@@ -76,7 +76,7 @@ export const Header: React.FC = () => {
         {menuOpen && (
           <div className={styles.menu}>
             <a
-              href="/TFG_COHOUSING/user/profile"
+              href="/user/profile"
               className="block px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
             >
               Perfil

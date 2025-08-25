@@ -187,7 +187,7 @@ export const CommunityUserPage = () => {
               </p>
               <button
                 onClick={() =>
-                  navigate(`/TFG_COHOUSING/recommendations/${userProfile.id}`)
+                  navigate(`/recommendations/${userProfile.id}`)
                 }
                 className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
               >
@@ -203,7 +203,7 @@ export const CommunityUserPage = () => {
                 busca formar parte de ella.
               </p>
               <button
-                onClick={() => navigate(`/TFG_COHOUSING/home`)}
+                onClick={() => navigate(`/home`)}
                 className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
               >
                 Home
@@ -269,7 +269,7 @@ export const CommunityUserPage = () => {
                   onClick={() => {
                     setMenuOpen(false);
                     navigate(
-                      `/TFG_COHOUSING/CreateTask/${userProfile?.idComunidad}`
+                      `/CreateTask/${userProfile?.idComunidad}`
                     );
                   }}
                   className="w-full px-4 py-2 hover:bg-gray-600 text-white"
@@ -280,7 +280,7 @@ export const CommunityUserPage = () => {
                   onClick={() => {
                     setMenuOpen(false);
                     navigate(
-                      `/TFG_COHOUSING/CreateEvent/${userProfile?.idComunidad}`
+                      `/CreateEvent/${userProfile?.idComunidad}`
                     );
                   }}
                   className="w-full px-4 py-2 hover:bg-gray-600 text-white"
@@ -291,7 +291,7 @@ export const CommunityUserPage = () => {
                   onClick={() => {
                     setMenuOpen(false);
                     navigate(
-                      `/TFG_COHOUSING/AdministrarTareas/${userProfile?.id}`
+                      `/AdministrarTareas/${userProfile?.id}`
                     );
                   }}
                   className="w-full px-4 py-2 hover:bg-gray-600 text-white"
@@ -305,7 +305,7 @@ export const CommunityUserPage = () => {
                     onClick={() => {
                       setMenuOpen(false);
                       // Aquí pon la navegación o acción que quieras
-                      navigate(`/TFG_COHOUSING/community/edit`, {
+                      navigate(`/community/edit`, {
                         state: { community: community },
                       });
                     }}
@@ -384,7 +384,7 @@ export const CommunityUserPage = () => {
                         <li
                           key={tarea.id}
                           onClick={() =>
-                            navigate(`/TFG_COHOUSING/Tarea/${tarea.id}`)
+                            navigate(`/Tarea/${tarea.id}`)
                           }
                           className="cursor-pointer rounded px-4 py-3 hover:bg-green-300 transition bg-green-100 shadow-md"
                         >
@@ -424,7 +424,7 @@ export const CommunityUserPage = () => {
               </h2>
               <button
                 onClick={() =>
-                  navigate(`/TFG_COHOUSING/TaskListPage/${userProfile?.id}`)
+                  navigate(`/TaskListPage/${userProfile?.id}`)
                 }
                 className="text-blue-600 hover:underline text-white"
               >
@@ -497,7 +497,7 @@ export const CommunityUserPage = () => {
               </h2>
               <button
                 onClick={() =>
-                  navigate(`/TFG_COHOUSING/EventosListPage/${userProfile?.id}`)
+                  navigate(`/EventosListPage/${userProfile?.id}`)
                 }
                 className="text-blue-600 hover:underline text-white"
               >

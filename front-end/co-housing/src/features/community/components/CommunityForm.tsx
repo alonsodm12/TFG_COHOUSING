@@ -116,7 +116,7 @@ export const CommunityForm = ({
     };
 
     onSubmit(formattedData);
-    navigate("/TFG_COHOUSING/home");
+    navigate("/home");
   };
 
   return (

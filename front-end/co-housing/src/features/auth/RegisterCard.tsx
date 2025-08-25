@@ -123,7 +123,7 @@ export const RegisterCard: React.FC = () => {
       setUsername(username); // Al actualizar username, UserProvider carga el perfil
       setRole(role);
       setSuccess("Registro completado con éxito");
-      navigate("/TFG_COHOUSING/home");
+      navigate("/home");
     } catch (err: any) {
       console.error("Error:", err);
       setError(err.message || "Ocurrió un error en el registro.");

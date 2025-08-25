@@ -6,7 +6,7 @@ export const HeaderLanding: React.FC = () => {
   return (
     <header className={style.header}> {/* Cambié 'a' a 'header' para mayor claridad */}
       <h1 className={style.headerTitle}>SHARE-SPACE</h1>
-      <Button to="/TFG_COHOUSING/login" label="Iniciar Sesión" />
+      <Button to="/login" label="Iniciar Sesión" />
     
     </header>
   );

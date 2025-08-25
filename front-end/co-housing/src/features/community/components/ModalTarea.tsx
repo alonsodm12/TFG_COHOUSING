@@ -66,7 +66,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                 .map((u) => (
                   <li key={u.id}>
                     <Link
-                      to={`/TFG_COHOUSING/user/externo/${u.username}`}
+                      to={`/user/externo/${u.username}`}
                       className="flex items-center gap-3 p-2 rounded-lg"
                     >
                       <img

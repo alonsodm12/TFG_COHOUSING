@@ -43,7 +43,7 @@ const CommunityCard: React.FC<Props> = ({ community }) => {
         </p>
 
         <Link
-          to={`/TFG_COHOUSING/community/profile/${community.name}`}
+          to={`/community/profile/${community.name}`}
           className="inline-block bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200"
         >
           Ver perfil

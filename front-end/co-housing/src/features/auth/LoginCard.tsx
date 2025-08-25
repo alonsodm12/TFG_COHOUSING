@@ -32,7 +32,7 @@ export const LoginCard: React.FC = () => {
       setUsername(username); // Al actualizar username, UserProvider carga el perfil
       setRole(role);
       setSuccess("Inicio de sesión correcto");
-      navigate("/TFG_COHOUSING/home");
+      navigate("/home");
     } catch (err) {
       console.error(err);
       setError((err as Error).message);

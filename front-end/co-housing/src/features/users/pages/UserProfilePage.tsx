@@ -99,7 +99,7 @@ export const UserProfilePage = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-6">
             <Button
               label="Editar perfil"
-              to="/TFG_COHOUSING/user/profile/edit"
+              to="/user/profile/edit"
               state={userProfile}
             />
             <ButtonFunction
@@ -112,7 +112,7 @@ export const UserProfilePage = () => {
           <div className="mt-6 flex justify-center">
             <Button
               label="Comunidades Guardadas"
-              to="/TFG_COHOUSING/user/comunidadesGuardadas"
+              to="/user/comunidadesGuardadas"
             />
           </div>
 

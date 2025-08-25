@@ -164,7 +164,7 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
 
     <div className="flex flex-wrap gap-4 mt-6">
       <Button
-        to={`/TFG_COHOUSING/community/profile/${props.name}`}
+        to={`/community/profile/${props.name}`}
         label="Consultar Perfil"
       />
       {(props.idComunidad == 0 || props.idComunidad == null)&& 

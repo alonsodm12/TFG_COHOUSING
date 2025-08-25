@@ -83,7 +83,7 @@ export const UpdateUserForm = ({ user }: Props) => {
       await fetchUserProfile();
       setMessage(keys[0]);
       setTimeout(() => {
-        navigate("/TFG_COHOUSING/user/profile");
+        navigate("/user/profile");
       }, 500);
     } catch (err) {
       console.error(err);

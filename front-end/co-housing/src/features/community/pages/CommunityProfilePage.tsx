@@ -153,7 +153,7 @@ export const CommunityProfilePage = () => {
               {usuarios.map((u) => (
                 <li key={u.id}>
                   <Link
-                    to={`/TFG_COHOUSING/user/externo/${u.username}`}
+                    to={`/user/externo/${u.username}`}
                     className="flex items-center gap-3 p-2 rounded-md hover:bg-indigo-100 cursor-pointer transition"
                   >
                     <img
