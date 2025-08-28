@@ -1,0 +1,137 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment LaTeX Template Version 1.0 (5/5/12)
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author:  Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \documentclass[paper=a4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
+\documentclass[11pt, a4paper,oneside]{book}
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[utf8]{inputenc}
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage{listings} % para insertar código con formato similar al editor
+\usepackage[spanish, es-tabla]{babel} % Selecciona el español para palabras introducidas automáticamente, p.ej. "septiembre" en la fecha y especifica que se use la palabra Tabla en vez de Cuadro
+\usepackage{url} % ,href} %para incluir URLs e hipervínculos dentro del texto (aunque hay que instalar href)
+\usepackage{graphics,graphicx, float} %para incluir imágenes y colocarlas
+\usepackage[gen]{eurosym} %para incluir el símbolo del euro
+\usepackage{cite} %para incluir citas del archivo <nombre>.bib
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{listingsutf8}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{changepage}
+\usepackage{amsmath}
+\usepackage{eurosym}
+\usepackage[absolute,overlay]{textpos}
+% Para añadir checkbox
+\usepackage{enumitem,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\xcmark}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+
+\usepackage[table,xcdraw]{xcolor}
+\hypersetup{
+	colorlinks=true,	% false: boxed links; true: colored links
+	linkcolor=black,	% color of internal links
+	urlcolor=cyan		% color of external links
+}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead[L]{} % Empty left header
+\fancyhead[C]{} % Empty center header
+\fancyhead[R]{\nouppercase{\leftmark}} % My name
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+%\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+%Para darle estilo a las muestras de código
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+
+\usepackage{xcolor}
+\usepackage{listings}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  stringstyle=\color{teal},
+  commentstyle=\color{gray}\itshape,
+  identifierstyle=\color{black},
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  showstringspaces=false,
+}
+
+
+\usepackage{titlesec, blindtext, color}
+\definecolor{gray75}{gray}{0.75}
+\newcommand{\hsp}{\hspace{20pt}}
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
+\setcounter{secnumdepth}{4}
+\usepackage[Lenny]{fncychap}
+
+
+\begin{document}
+
+	% Plantilla portada UGR
+	\input{portada/portada}
+
+	% Plantilla prefacio UGR
+	\input{prefacios/prefacio}
+
+	% Índice de contenidos
+	\newpage
+	\tableofcontents
+
+	% Índice de imágenes y tablas
+	\newpage
+	\listoffigures
+
+	% Introducción 
+
+	% Descripción del problema y hasta donde se llega
+	
+
+	% Estado del arte
+	% 	1. Crítica al estado del arte
+	% 	2. Propuesta
+    \input{secciones/01_introduccion}
+    \input{secciones/03_estado_del_arte}
+    \input{secciones/04_Requisitos}
+    \input{secciones/05_Planificación}
+    \input{secciones/06_Análisis}
+    \input{secciones/07_Diseño}
+    \input{secciones/08_Implementacion}
+    \input{secciones/10_Pruebas}
+    \input{secciones/11_Despliegue}
+    \input{secciones/09_Conclusiones}
+    
+	\newpage
+	\bibliography{bibliografia}
+	\bibliographystyle{plain}
+
+	\newpage
+
+
+\end{document}
+

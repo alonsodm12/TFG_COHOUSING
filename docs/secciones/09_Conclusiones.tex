@@ -1,0 +1,45 @@
+\chapter{Conclusiones} \label{diseño}
+
+En este último capítulo se presenta un análisis de las conclusiones del proyecto realizado. Para ello, se realizará un balance general de los objetivos planteados y de su completitud durante el transcurso del proyecto. Además, se incluirá una reflexión sobre el impacto que este trabajo ha tenido en mi formación y sobre cómo las habilidades obtenidas se podrán aplicar en el desarrollo de una carrera como Ingeniero de Software. Finalmente, se comentarán posibles trabajos a futuro orientados a mejorar la aplicación desarrollada.
+
+\section{Balance general}
+Tras los meses de trabajo en el desarrollo del proyecto, \textbf{ShareSpace}, se ha logrado estructurar un sistema completo de \textbf{microservicios}, garantizando tanto la resiliencia frente a errores como la escalabilidad. Además, se ha diseñado un \textbf{frontend} que permite al usuario interactuar con la aplicación de manera intuitiva. Todo el desarrollo ha sido complementado con un \textbf{flujo completo de CI/CD} mediante \textbf{GitHub Actions}. Finalmente, se ha realizado un despliegue real utilizando las plataformas \textbf{GitHub Pages} y \textbf{Railway} \cite{Railway}. Todo ello ha permitido crear una solución al problema inicial planteado, asegurando la calidad y aplicando técnicas de desarrollo de software actuales.
+
+\subsection{Objetivos conseguidos}
+
+En primer lugar, se logró establecer una metodología de trabajo basada en Scrum, adaptada al carácter individual de un TFG. Se identificaron las tareas a implementar en la aplicación, se crearon historias de usuario a partir de ellas, se agruparon en iteraciones y se organizaron en un diagrama de Gantt. Todo ello quedó reflejado en \textbf{GitHub}, garantizando que el desarrollo del software estuviese estrechamente ligado a la planificación del proyecto.  
+
+Se ha conseguido integrar \textbf{GitHub} de forma central durante todo el desarrollo. No solo se reflejaron las historias de usuario junto a las iteraciones a las que pertenecen en GitHub Project, sino que las tres ramas principales del repositorio han guiado el flujo de desarrollo de la funcionalidad. Además, las \textbf{GitHub Actions}, como herramienta de \textbf{CI/CD}, han contribuido a mejorar la calidad y fiabilidad del código, siendo parte esencial del flujo completo del desarrollo.
+
+Tecnológicamente, se ha logrado profundizar en herramientas actuales presentes en entornos profesionales, como \textbf{Docker} y \textbf{Docker Compose} para la contenedorización, \textbf{Spring Boot} para el backend y \textbf{React} con \textbf{TypeScript} para el frontend. Asimismo, se ha comprendido el diseño completo de una arquitectura compleja basada en microservicios, identificando responsabilidades de cada servicio, implementado \textbf{comunicación asíncrona} entre microservicios mediante \textbf{Rabbitmq}, y desarrollando componentes esenciales como el \textbf{API Gateway}.
+
+A nivel de desarrollo, se ha conseguido asegurar la calidad del código, profundizando en el uso de patrones de diseño y arquitecturas limpias.
+
+Finalmente, se ha podido realizar un despliegue completo del sistema utilizando \textbf{Railway}, una herramienta que ha permitido desplegar el Dockerfile de cada microservicio subido a \textbf{Docker Hub}, así como el servicio de \textbf{Rabbitmq} y las bases de datos. Con esto se ha concluido el desarrollo completo del proyecto, desde la creación de las bases hasta su despliegue en la nube.
+
+\section{Valoración final}
+
+Tras la realización de este proyecto, se ha proporcionado una solución al problema identificado, creando una propuesta final que ofrece una experiencia completa al usuario.
+
+Desde el punto de vista académico, este trabajo ha supuesto una oportunidad para aplicar de forma práctica los conocimientos adquiridos a lo largo del grado, especialmente en asignaturas vinculadas a la mención de Ingeniería del Software. Asignaturas como \textit{Metodología de Desarrollo Ágil} (MDA) o \textit{Desarrollo y Gestión de Proyectos} (DGP) han resultado fundamentales para planificar y organizar el proyecto mediante la metodología ágil SCRUM, permitiendo estructurar adecuadamente las tareas, la planificación temporal y la entrega iterativa de versiones.
+
+Desde una perspectiva personal, me siento orgulloso del resultado obtenido. Este proyecto nació de una necesidad real que me afectaba personalmente y ha sido desarrollado desde cero con una visión profesional. No se ha tratado únicamente de programar, sino de diseñar y tomar decisiones técnicas justificadas, poniendo al usuario en el centro del proceso. Cada aspecto del desarrollo ha seguido principios sólidos de ingeniería del software, incorporando herramientas y prácticas comunes en el mundo profesional, como el uso de contenedores, GitHub, CI/CD y despliegue automatizado.
+
+Considero que todo lo aprendido y aplicado en este proyecto se puede trasladar al ámbito profesional, donde es imprescindible entender cómo estructurar la lógica de negocio de una propuesta y cómo aplicar una arquitectura en consecuencia. Al analizar ofertas de trabajo en el sector, se puede observar que muchas de las competencias demandadas por las empresas han sido puestas en práctica a lo largo de este trabajo.
+
+\section{Trabajos Futuros}
+
+Con el objetivo de ampliar y mejorar el proyecto desarrollado, se han identificado y analizado una serie de mejoras que podrían integrarse en la aplicación para optimizar la experiencia del usuario. A continuación, se exponen las más representativas:
+
+\begin{itemize}
+    \item \textbf{Integrar un sistema de chat}: Permitiría a los usuarios comunicarse directamente con los administradores antes de solicitar la unión a una comunidad, resolviendo dudas previas y acercando a los usuarios buscadores a los ofertantes.
+    \item \textbf{Desarrollar una versión móvil}: Ofrecer una versión adaptada para dispositivos móviles. Usando tecnologías como React Native, se podría adaptar gran parte del código actual del frontend a un formato móvil.
+    \item \textbf{Automatizar el despliegue móvil}: Implementar una GitHub Action que automatice el despliegue de la versión móvil. Una vez desarrollado, se podría incluir en el CI/CD para que la aplicación evolucione a medida que se desarrolla funcionalidad.
+    \item \textbf{Solicitudes en tiempo real}: Crear un sistema de notificaciones basado en WebSocket para permitir la actualización en tiempo real. Esto permitiría mostrar las solicitudes que tiene pendiente el usuario en tiempo real, pudiendo añadir un indicador que muestre el número actualizado de pendientes.
+    \item \textbf{Pruebas de rendimiento}: Realizar pruebas de rendimiento para evaluar cómo responde cada microservicio bajo distintas cargas en escenarios reales de uso, comprobando la eficiencia y respuesta del sistema.
+    \item \textbf{Refuerzo de la seguridad}: Mejorar la seguridad en el almacenamiento de datos para proteger la información de los usuarios.
+    \item \textbf{Publicar en plataformas oficiales}: Desplegar la aplicación móvil en plataformas oficiales, como App Store, permitiendo su acceso a un mayor volumen de usuarios.
+\end{itemize}
+
+\vspace{0.5em}
+Las mejoras propuestas se centran principalmente en ofrecer una solución móvil que permita a los usuarios disfrutar de una experiencia de calidad. Para ello, será necesario adaptar el código a React Native o alguna plataforma similar. Además, la implementación de WebSocket para las solicitudes supondría una mejora significativa en la interacción y usabilidad para el usuario. Personalmente, me gustaría continuar con las mejoras de la aplicación, ya que su implementación podría suponer un gran aprendizaje.

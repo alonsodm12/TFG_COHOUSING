@@ -15,19 +15,32 @@ la relación que existe entre ellos.
 
 ## Generación de la documentación
 
-Para generar el PDF de la documentación, necesitas tener instalado **TeXLive** en tu sistema.  
+La documentación de este proyecto está realizada con **LaTeX**. Para generar el archivo PDF, será necesario tener instalado **TeXLive** en tu sistema.
 
-Pasos para compilar la documentación:
+Una vez instalada, tan solo deberemos situarnos en el directorio doc y ejecutar:
 
-Situarse en el directorio `doc`:
----
+`$ pdflatex proyecto.tex`
+
+### Pasos para generar el PDF
+
+Seguido por
+
+`bibtex proyecto`
+
+y de nuevo
+
+`pdflatex proyecto.tex`
+
+O directamente
+
+`make`
 
 ## Flujo a seguir en el desarrollo del proyecto
-main             ← producción estable, despliegue en github pages del frontend , y dockerfile de los micros en Docker Hub. Se despliegan iteraciones completadas
+main             ← producción estable, despliegue en github pages del frontend y dockerfile de los micros en Docker Hub. Se despliegan iteraciones completas.
 
-develop          ← integración y pruebas. Se suben resultados a codecov para generar informe de cobertura, se compilan los micros y se ejecuta npm run dev en el frontend transpilando y arrancando un servidor de desarrollo. Se suben historias de usuario terminadas.
+develop          ← integración y pruebas. Se suben resultados a codecov para generar informe de cobertura, se compilan los micros y se ejecuta npm run dev en el frontend. Se suben historias de usuario terminadas.
 
-Crea ramas feature/* para desarrollar cada historia de usuario.  ← se compilan los micros y se ejecuta npm run dev en el frontend transpilando y arrancando un servidor de desarrollo, se arranca el servidor del microservicio en FastAPI.
+Crea ramas feature/* para desarrollar cada historia de usuario.  ← se compilan los micros y se ejecuta npm run dev en el frontend. Se arranca el servidor del microservicio en FastAPI.
 
 Cuando termines una historia de usuario, haz PR a develop.
 
@@ -39,7 +52,7 @@ Si todo va bien, mergeas develop a main para desplegar a producción.
 
 | Rama | CI/CD Status | Cobertura |
 |------|--------------|-----------|
-| `main` | [![Main CI](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml) | [![codecov](https://codecov.io/gh/alonsodm12/TFG_COHOUSING/branch/main/graph/badge.svg?token=BEeK9qXuVn)](https://codecov.io/gh/alonsodm12/TFG_COHOUSING) |
+| `main` | [![Main CI](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/main.yml) | [![codecov](https://codecov.io/gh/alonsodm12/TFG_COHOUSING/branch/main/graph/badge.svg?token=BEeK9qXuVn)](https://codecov.io/gh/alonsodm12/TFG_COHOUSING) |
 
 ---
 
