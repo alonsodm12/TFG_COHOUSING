@@ -326,3 +326,18 @@ export const obtenerUsuariosDeComunidad = async (idComunidad: number ) => {
 
   return await response.json();
 }
+
+export const activarRepartoSemanal = async() => {
+  const response = await fetch(`${API_BASE}/pruebaResumenSemanal`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include"
+  });
+  if (!response.ok) {
+    throw new Error("Error al obtener los usuarios de una comunidad");
+  }
+
+  return await response.json();
+}

@@ -18,7 +18,8 @@ interface CommunityCardProps extends CommunityRecommended {
 }
 
 const CommunityCard: React.FC<CommunityCardProps> = (props) => {
-
+  
+  const API: String = import.meta.env.VITE_API_BASE;
   const [hasRequestedJoin, setHasRequestedJoin] = useState(false);
   const isFavoriteInitial =
     props.comunidadesGuardadas?.includes(props.id) || false;
@@ -106,7 +107,7 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
   {/* Imagen destacada */}
   {props.fotoUrl ? (
     <img
-      src={`http://localhost:8082${props?.fotoUrl}`}
+      src={`${API}comunidades${props?.fotoUrl}`}
       alt={`Imagen de ${props.name}`}
       className="w-full h-64 object-cover"
     />
@@ -141,17 +142,14 @@ const CommunityCard: React.FC<CommunityCardProps> = (props) => {
       <div>
         <strong>Sociabilidad:</strong> {props.sociabilidad}
       </div>
-    </div>
-
-    <div className="mt-6 text-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <strong>Precio:</strong> {props.precio} €
       </div>
       <div>
-        <strong>Admin ID:</strong> {props.admin}
+        <strong></strong>
       </div>
     </div>
-
+    <hr className="border-t border-white mb-4" />
     {props?.latitud && props?.longitud ? (
       <CommunityMap
         latitude={props.latitud}

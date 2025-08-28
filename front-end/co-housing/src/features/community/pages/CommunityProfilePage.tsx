@@ -20,6 +20,7 @@ interface Usuario {
 }
 
 export const CommunityProfilePage = () => {
+  const API: String = import.meta.env.VITE_API_BASE;
   const { username } = useUserContext();
   const { communityName } = useParams<{ communityName: string }>();
   const communityNameValid = communityName ?? null;
@@ -68,7 +69,7 @@ export const CommunityProfilePage = () => {
         <div className="max-w-4xl mx-auto px-4 mb-10">
           {community?.fotoUrl ? (
             <img
-              src={`http://localhost:8082${community.fotoUrl}`}
+              src={`${API}comunidades${community.fotoUrl}`}
               alt={`Foto de ${community.name}`}
               className="w-full h-72 object-cover rounded-lg shadow-md border border-gray-300"
             />

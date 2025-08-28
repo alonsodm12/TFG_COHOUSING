@@ -1,5 +1,9 @@
 package com.gestioncomunidades.demo.controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -270,7 +274,20 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping(value = "/uploads/{filename}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getImage(@PathVariable String filename) {
+        try {
+            Path imagePath = Paths.get("uploads").resolve(filename).normalize();
+            byte[] imageBytes = Files.readAllBytes(imagePath);
 
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG)
+                    .body(imageBytes);
+
+        } catch (IOException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @GetMapping("/porcentajeTareasComunidad/{idComunidad}")
     public ResponseEntity<?> obtenerPorcentajeTareasComunidad(@PathVariable Long idComunidad) {
         try {

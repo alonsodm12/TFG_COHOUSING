@@ -10,7 +10,9 @@ Este proyecto consiste en el desarrollo de una plataforma de búsqueda y gestió
 
 La arquitectura general del proyecto se muestra en el siguiente diagrama, donde se reflejan los distintos microservicios y
 la relación que existe entre ellos.
+
 ![Diagrama de arquitectura](./docs/arquitectura-frontend.png)
+
 ## Generación de la documentación
 
 Para generar el PDF de la documentación, necesitas tener instalado **TeXLive** en tu sistema.  
@@ -21,32 +23,23 @@ Situarse en el directorio `doc`:
 ---
 
 ## Flujo a seguir en el desarrollo del proyecto
-main             ← producción estable
+main             ← producción estable, despliegue en github pages del frontend , y dockerfile de los micros en Docker Hub. Se despliegan iteraciones completadas
 
-develop          ← integración y pruebas
+develop          ← integración y pruebas. Se suben resultados a codecov para generar informe de cobertura, se compilan los micros y se ejecuta npm run dev en el frontend transpilando y arrancando un servidor de desarrollo. Se suben historias de usuario terminadas.
 
-feature/frontend ← desarrollo del frontend
+Crea ramas feature/* para desarrollar cada historia de usuario.  ← se compilan los micros y se ejecuta npm run dev en el frontend transpilando y arrancando un servidor de desarrollo, se arranca el servidor del microservicio en FastAPI.
 
-feature/usuarios ← desarrollo del microservicio "usuarios"
-
-Crea ramas feature/* para trabajar cosas aisladas (uno por microservicio o pantalla).
-
-Cuando termines una parte, haz PR a develop.
+Cuando termines una historia de usuario, haz PR a develop.
 
 En develop se hacen pruebas e integración de los servicios.
 
 Si todo va bien, mergeas develop a main para desplegar a producción.
 
-## 🚧 Estado de Workflows y Cobertura
-
-### CI/CD por rama
+## 🚧 Covertura Actual en Producción
 
 | Rama | CI/CD Status | Cobertura |
 |------|--------------|-----------|
 | `main` | [![Main CI](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml) | [![codecov](https://codecov.io/gh/alonsodm12/TFG_COHOUSING/branch/main/graph/badge.svg?token=BEeK9qXuVn)](https://codecov.io/gh/alonsodm12/TFG_COHOUSING) |
-| `GestionUsuarios` | [![Usuarios CI](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml/badge.svg?branch=GestionUsuarios)](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml) | |
-| `front-end` | [![Frontend CI](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml/badge.svg?branch=front-end)](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml) | |
-| `ci-cd` | [![CI Infra](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml/badge.svg?branch=ci-cd)](https://github.com/alonsodm12/TFG_COHOUSING/actions/workflows/ci-cd.yml) | |
 
 ---
 
@@ -59,7 +52,8 @@ Si todo va bien, mergeas develop a main para desplegar a producción.
 - 🛠️ **CI/CD**: GitHub Actions, Docker Hub  
 - 🔐 **Seguridad**: Spring Security + JWT
 - 📡 **Comunicación**: REST API, RabbitMQ  
-- 🗃️ **BBDD**: PostgreSQL  
+- 🗃️ **BBDD**: PostgreSQL
+- ☁️ **DESPLIEGUE**: Railway
 
 ---
 
@@ -68,15 +62,16 @@ Si todo va bien, mergeas develop a main para desplegar a producción.
 ```plaintext
 TFG_COHOUSING/
 ├── .github/workflows/       # Workflows de CI/CD
-├── ci-cd/                   # Configuraciones de despliegue, Docker, Jenkins, etc.
-├── docker/                  # Dockerfiles por microservicio
-├── front-end/               # Aplicación React
+├── docs/                    # Memoria del proyecto e imagenes para el Readme.md.
+├── front-end/               # Aplicación React + TypeScript
+│   ├── features/            # Lógica encapsulada en el Frontend
+│       │── users/           # Lógica y Views relacionadas con la entidad Usuarios
 ├── microservicios/          # Carpeta principal de microservicios
 │   ├── GestionUsuarios/     # Microservicio de usuarios
-│   ├── GestionMaterial/     # Peticiones y gestión de material
-│   ├── GestionEspacios/     # Gestión de espacios comunes
+│   ├── GestionComunidades/  # Microservicio de comunidades
+│   ├── Recomendador/        # Microservicio de recomendaciones
 │   └── ...
-├── docs/                    # Documentación técnica
+├── docker-compose.yml       # Archivo para el despliegue en local de la infraestructura completa (5 micros + 3 BBDD + front-end + Rabbitmq)
 ├── README.md
 └── .gitignore
 ```
@@ -98,10 +93,7 @@ Todos los microservicios están integrados con **Jacoco** para generar cobertura
 
 Con cada **push** o **pull request** se ejecuta automáticamente el siguiente flujo:
 
-- 🧪 **Tests** con Maven y Jacoco  
-- 📈 **Subida de cobertura** a Codecov  
-- 🐳 **Build de imágenes Docker**  
-- ✅ **Validaciones y checks automáticos**  
+![Flujo de los workflows](./docs/actions.png) 
 
 🔧 Archivos del workflow: `.github/workflows/`
 
@@ -109,4 +101,6 @@ Con cada **push** o **pull request** se ejecuta automáticamente el siguiente fl
 ## 🧠 Metodología
 - Diseño Basado en Domain-Driven Desing (DDD)
 - Metodología ágil (Scrum)
+- Scream Architecture (Front-End)
+- Arquitectura en Capas (Back-End)
 

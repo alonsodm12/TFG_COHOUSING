@@ -106,7 +106,6 @@ public class CommunityServices {
         if (comunidad.isPresent()) {
             Community community = comunidad.get();
 
-            // Convertimos manualmente la entidad Community a CommunityDTO
             LifestyleDTO lifestyleDTO = new LifestyleDTO(
                     community.getSociabilidad(),
                     community.getTranquilidad(),
@@ -114,7 +113,6 @@ public class CommunityServices {
                     community.getLimpieza(),
                     community.getActividad());
 
-            // Convertir Community a CommunityDTO manualmente
             CommunityDTO communityDTO = new CommunityDTO(
                     community.getId(),
                     community.getName(),
@@ -128,7 +126,6 @@ public class CommunityServices {
                     community.getDireccion(),
                     community.getPrecio(),community.getNumeroIntegrantes());
 
-            // Devuelve el DTO envuelto en un Optional
             return Optional.of(communityDTO);
         } else {
             return Optional.empty();
@@ -148,7 +145,6 @@ public class CommunityServices {
         if (comunidad.isPresent()) {
             Community community = comunidad.get();
 
-            // Convertimos manualmente la entidad Community a CommunityDTO
             LifestyleDTO lifestyleDTO = new LifestyleDTO(
                     community.getSociabilidad(),
                     community.getTranquilidad(),
@@ -156,7 +152,6 @@ public class CommunityServices {
                     community.getLimpieza(),
                     community.getActividad());
 
-            // Convertir Community a CommunityDTO manualmente
             CommunityDTO communityDTO = new CommunityDTO(
                     community.getId(),
                     community.getName(),
@@ -170,7 +165,6 @@ public class CommunityServices {
                     community.getDireccion(),
                     community.getPrecio(),community.getNumeroIntegrantes());
 
-            // Devuelve el DTO envuelto en un Optional
             return Optional.of(communityDTO);
         } else {
             return Optional.empty();
@@ -178,20 +172,17 @@ public class CommunityServices {
     }
 
     public String guardarFoto(MultipartFile foto) {
-        // Construimos un nombre único para evitar colisiones
+
         String filename = System.currentTimeMillis() + "_" + foto.getOriginalFilename();
 
-        // Usamos la carpeta 'uploads' en el directorio home del usuario para evitar
-        // problemas de permisos
         Path uploadsDir = Paths.get("/app/uploads/");
 
-        // Ruta completa al archivo
+
         Path ruta = uploadsDir.resolve(filename);
 
         try {
             System.out.println("Guardando foto en: " + ruta.toAbsolutePath());
 
-            // Creamos la carpeta uploads si no existe
             if (!Files.exists(uploadsDir)) {
                 Files.createDirectories(uploadsDir);
                 System.out.println("Carpeta uploads creada en: " + uploadsDir.toAbsolutePath());
@@ -202,7 +193,6 @@ public class CommunityServices {
             // Guardamos el archivo
             foto.transferTo(ruta.toFile());
 
-            // Devolvemos la ruta relativa para que puedas guardar en DB
             return "/uploads/" + filename;
 
         } catch (IOException e) {

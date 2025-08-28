@@ -44,7 +44,6 @@ import com.gestioncomunidades.demo.models.EstadoTarea;
 import com.gestioncomunidades.demo.models.Tarea;
 import com.gestioncomunidades.demo.repository.CommunityRepository;
 import com.gestioncomunidades.demo.repository.TareaRepository;
-import com.itextpdf.io.image.ImageData;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 
@@ -76,7 +75,7 @@ public class ActividadesService {
 
         if (usuarios.isEmpty()) return;
 
-        usuarios.sort(Comparator.naturalOrder()); // Asegura orden consistente
+        usuarios.sort(Comparator.naturalOrder());
 
         List<Tarea> tareas = tareaRepository.findByidComunidad(idComunidad);
         if (tareas.isEmpty()) return;
@@ -107,7 +106,7 @@ public class ActividadesService {
     }
 
 
-    @Scheduled(cron = "0 */3 * * * *")
+    @Scheduled(cron = "0 0 23 * * SUN")
     @Transactional
     public void repartirTareasSemanalmente() {
         List<Community> comunidades = communityRepository.findAll();
@@ -115,7 +114,7 @@ public class ActividadesService {
 
         for (Community comunidad : comunidades) {
             repartirTareasCiclico(comunidad.getId());
-            //generarResumenSemanal(comunidad, hoy);
+            generarResumenSemanal(comunidad, hoy);
 
             List<Long> idUsuarios = new ArrayList<>(comunidad.getIntegrantes());
 

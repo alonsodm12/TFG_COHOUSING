@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { CommunityProfile, LifestyleDTO } from "../api/type";
 import { useUserContext } from "../../ui/Context/UserContext";
-import { useNavigate } from "react-router-dom";
 
 export type CommunityFormProps = {
   onSubmit: (data: CommunityProfile) => void;
@@ -38,7 +37,7 @@ export const CommunityForm = ({
   onSubmit,
   initialData,
 }: CommunityFormProps) => {
-  const navigate = useNavigate();
+
   const { userProfile } = useUserContext();
 
   const [formData, setFormData] = useState<CommunityProfile>(
@@ -116,7 +115,7 @@ export const CommunityForm = ({
     };
 
     onSubmit(formattedData);
-    navigate("/home");
+
   };
 
   return (

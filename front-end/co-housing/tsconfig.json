@@ -15,7 +15,8 @@
     "resolveJsonModule": true,                    // Permite importar archivos JSON como módulos
     "isolatedModules": true,                      // Asegura que cada archivo pueda ser compilado independientemente
     "noEmit": true,                               // No generes código JavaScript, solo verifica tipos
-    "baseUrl": ".",                               // La raíz de los imports (puedes cambiarla si usas alias)
+    "baseUrl": ".",
+    "types": ["vitest/globals","@testing-library/jest-dom"],                               // La raíz de los imports (puedes cambiarla si usas alias)
     "paths": {
       "@/*": ["src/*"]                            // Alias para importar archivos dentro de la carpeta src
     }

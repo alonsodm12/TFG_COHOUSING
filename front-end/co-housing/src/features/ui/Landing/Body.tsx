@@ -7,8 +7,8 @@ import CardHorizontal from "../CardHorizontal";
 
 export const Body: React.FC = () => {
   const images = [
-    { src: "/images/pruebilla.png", alt: "Gestión fácil" },
-    { src: "/images/pruebon.png", alt: "Eventos compartidos" },
+    { src: "/TFG_COHOUSING/images/pruebilla.png", alt: "Gestión fácil" },
+    { src: "/TFG_COHOUSING/images/pruebon.png", alt: "Eventos compartidos" },
     {
       src: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=600&q=80",
       alt: "Comunicación fluida",
@@ -45,7 +45,7 @@ export const Body: React.FC = () => {
       <div className={styles.imagecontainer}>
         <div className={styles.imageWrapper}>
           <img
-            src="/images/foto-landing2.png"
+            src="/TFG_COHOUSING/images/foto-landing2.png"
             alt="Imagen 1"
             className={styles.image2}
           />

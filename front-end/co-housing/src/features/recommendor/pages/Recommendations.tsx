@@ -210,9 +210,9 @@ const Recommendations: React.FC = () => {
           </button>
           {/* Lista de comunidades */}
           {isLoading ? (
-            <p className="text-center text-gray-500 text-lg">
+            <div className="text-center text-gray-500 text-lg">
               <Spinner />
-            </p>
+            </div>
           ) : communities.length > 0 ? (
             <div className="flex flex-col items-center gap-4">
               <div className="w-full max-w-3xl transition-all duration-300 ease-in-out">

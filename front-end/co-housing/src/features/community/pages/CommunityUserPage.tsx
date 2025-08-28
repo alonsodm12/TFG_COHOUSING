@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  activarRepartoSemanal,
   completarEvento,
   deleteEliminarComunidad,
   deleteEliminarUsuario,
@@ -32,6 +33,7 @@ interface Usuario {
   fotoUrl?: string;
 }
 export const CommunityUserPage = () => {
+  const API: String = import.meta.env.VITE_API_BASE;
   const { userProfile, isLoading: isUserLoading } = useUserContext();
   const username: string | undefined = userProfile?.username;
   const navigate = useNavigate();
@@ -59,7 +61,6 @@ export const CommunityUserPage = () => {
   const [isModalEventOpen, setIsModalEventOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Evento | null>(null);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-
 
   //FUNCIONES PARA ABRIR MODALES
   const openTaskModal = (tarea: Tarea) => {
@@ -107,14 +108,13 @@ export const CommunityUserPage = () => {
 
     setLoading(true);
 
-
     obtenerUsuariosDeComunidad(comunidadId)
-        .then((data) => {
-          setUsuarios(data);
-        })
-        .catch(() => {
-          setError("Error al cargar los usuarios de la comunidad");
-        })
+      .then((data) => {
+        setUsuarios(data);
+      })
+      .catch(() => {
+        setError("Error al cargar los usuarios de la comunidad");
+      });
     fetchCommunityById(comunidadId.toString())
       .then((data) => {
         setCommunity(data);
@@ -186,9 +186,7 @@ export const CommunityUserPage = () => {
                 estés listo.
               </p>
               <button
-                onClick={() =>
-                  navigate(`/recommendations/${userProfile.id}`)
-                }
+                onClick={() => navigate(`/recommendations/${userProfile.id}`)}
                 className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
               >
                 Buscar comunidad
@@ -232,7 +230,7 @@ export const CommunityUserPage = () => {
             <div className="bg-white/50 backdrop-blur-3xl p-6 rounded-2xl shadow-xl max-w-3xl mx-auto">
               <div className="relative w-full h-72 mb-6 rounded-xl overflow-hidden shadow-2xl">
                 <img
-                  src={`http://localhost:8082${community?.fotoUrl}`}
+                  src={`${API}comunidades${community?.fotoUrl}`}
                   alt={`Imagen de ${community?.name}`}
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 />
@@ -268,9 +266,7 @@ export const CommunityUserPage = () => {
                 <button
                   onClick={() => {
                     setMenuOpen(false);
-                    navigate(
-                      `/CreateTask/${userProfile?.idComunidad}`
-                    );
+                    navigate(`/CreateTask/${userProfile?.idComunidad}`);
                   }}
                   className="w-full px-4 py-2 hover:bg-gray-600 text-white"
                 >
@@ -279,9 +275,7 @@ export const CommunityUserPage = () => {
                 <button
                   onClick={() => {
                     setMenuOpen(false);
-                    navigate(
-                      `/CreateEvent/${userProfile?.idComunidad}`
-                    );
+                    navigate(`/CreateEvent/${userProfile?.idComunidad}`);
                   }}
                   className="w-full px-4 py-2 hover:bg-gray-600 text-white"
                 >
@@ -290,9 +284,7 @@ export const CommunityUserPage = () => {
                 <button
                   onClick={() => {
                     setMenuOpen(false);
-                    navigate(
-                      `/AdministrarTareas/${userProfile?.id}`
-                    );
+                    navigate(`/AdministrarTareas/${userProfile?.id}`);
                   }}
                   className="w-full px-4 py-2 hover:bg-gray-600 text-white"
                 >
@@ -330,6 +322,21 @@ export const CommunityUserPage = () => {
                     Abandonar Comunidad
                   </button>
                 )}
+                <button
+                  onClick={async () => {
+                    try {
+                      const data = await activarRepartoSemanal();
+                      console.log("Reparto semanal activado:", data);
+                      alert("Reparto semanal activado correctamente");
+                    } catch (error) {
+                      console.error(error);
+                      alert("Error al activar el reparto semanal");
+                    }
+                  }}
+                  className="w-full px-4 py-2 hover:bg-gray-600 text-white"
+                >
+                  Reparto Semanal
+                </button>
               </div>
             )}
           </section>
@@ -383,9 +390,7 @@ export const CommunityUserPage = () => {
                       {tareasHoy.map((tarea) => (
                         <li
                           key={tarea.id}
-                          onClick={() =>
-                            navigate(`/Tarea/${tarea.id}`)
-                          }
+                          onClick={() => navigate(`/Tarea/${tarea.id}`)}
                           className="cursor-pointer rounded px-4 py-3 hover:bg-green-300 transition bg-green-100 shadow-md"
                         >
                           <p className="font-semibold text-green-700">
@@ -423,9 +428,7 @@ export const CommunityUserPage = () => {
                 Tareas asignadas
               </h2>
               <button
-                onClick={() =>
-                  navigate(`/TaskListPage/${userProfile?.id}`)
-                }
+                onClick={() => navigate(`/TaskListPage/${userProfile?.id}`)}
                 className="text-blue-600 hover:underline text-white"
               >
                 Ver todas
@@ -484,7 +487,7 @@ export const CommunityUserPage = () => {
                 isOpen={isModalTaskOpen}
                 onClose={() => setIsModalTaskOpen(false)}
                 tarea={selectedTask}
-                usuarios = {usuarios}
+                usuarios={usuarios}
               />
             )}
           </section>
@@ -496,9 +499,7 @@ export const CommunityUserPage = () => {
                 Eventos asignados
               </h2>
               <button
-                onClick={() =>
-                  navigate(`/EventosListPage/${userProfile?.id}`)
-                }
+                onClick={() => navigate(`/EventosListPage/${userProfile?.id}`)}
                 className="text-blue-600 hover:underline text-white"
               >
                 Ver todos
@@ -558,10 +559,10 @@ export const CommunityUserPage = () => {
                 onClose={() => setIsModalEventOpen(false)}
                 evento={selectedEvent}
                 onComplete={async () => {
-                  setIsModalEventOpen(false)
+                  setIsModalEventOpen(false);
                   await completarEvento(selectedEvent.id);
-                  setEventos(prevEventos =>
-                    prevEventos.filter(e => e.id !== selectedEvent.id)
+                  setEventos((prevEventos) =>
+                    prevEventos.filter((e) => e.id !== selectedEvent.id)
                   );
                 }}
                 onProgress={() => setIsModalEventOpen(false)}
@@ -574,8 +575,11 @@ export const CommunityUserPage = () => {
             <h2 className="text-2xl font-semibold mb-4 text-black">
               Calendario
             </h2>
-            <Calendario userId={userProfile?.id!} tareas={tasks} 
-            eventos={eventos} />
+            <Calendario
+              userId={userProfile?.id!}
+              tareas={tasks}
+              eventos={eventos}
+            />
           </section>
 
           {/* Mensaje respuesta */}
@@ -587,7 +591,6 @@ export const CommunityUserPage = () => {
         </div>
       </main>
       <Footer />
-
 
       {/*   MODALES    */}
       <Modal
@@ -604,10 +607,12 @@ export const CommunityUserPage = () => {
             </button>
             <button
               onClick={() => {
-                if( userProfile?.id && userProfile?.idComunidad)
-                deleteEliminarUsuario(userProfile?.id, userProfile?.idComunidad)
-              }
-              }
+                if (userProfile?.id && userProfile?.idComunidad)
+                  deleteEliminarUsuario(
+                    userProfile?.id,
+                    userProfile?.idComunidad
+                  );
+              }}
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
             >
               Abandonar
@@ -633,9 +638,9 @@ export const CommunityUserPage = () => {
             <button
               onClick={() => {
                 if (userProfile?.idComunidad)
-                  deleteEliminarComunidad(userProfile?.idComunidad)}
-              }
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                  deleteEliminarComunidad(userProfile?.idComunidad);
+              }}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
             >
               Sí
             </button>
@@ -647,4 +652,3 @@ export const CommunityUserPage = () => {
     </div>
   );
 };
-

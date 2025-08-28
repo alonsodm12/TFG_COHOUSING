@@ -5,8 +5,12 @@ import { updateAdmin } from "../../users/api/operations"
 import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../../ui/Context/UserContext";
 
 const CreateCommunityPage = () => {
+    const { fetchUserProfile } = useUserContext();
+    const navigate = useNavigate();
     const { username } = useParams<{ username: string }>();
     const handleCreateCommunity = async (formData: CommunityProfile) => {
 
@@ -50,6 +54,8 @@ const CreateCommunityPage = () => {
             console.log('Respuesta del servidor al crear comunidad:', response);
 
             alert('Comunidad creada con éxito!');
+            await fetchUserProfile();
+            navigate("/home");
         } catch (error: unknown) {
             if (error instanceof Error) {
                 alert('Hubo un error creando la comunidad: ' + error.message);

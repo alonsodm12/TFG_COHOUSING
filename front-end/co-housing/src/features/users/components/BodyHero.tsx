@@ -5,7 +5,6 @@ const BodyHero: React.FC = () => {
   const { userProfile, isLoading } = useUserContext();
   const navigate = useNavigate();
 
-  console.log(userProfile?.email);
   if (isLoading)
     return <p className="text-center text-gray-600">Cargando perfil...</p>;
   if (!userProfile)
@@ -74,7 +73,7 @@ const BodyHero: React.FC = () => {
         <div
           className="absolute top-1/2 left-1/2 w-52 h-52 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-2xl bg-white/30 dark:bg-white/10 backdrop-blur-md flex items-center justify-center z-10 cursor-default select-none"
           style={{
-            backgroundImage: "url('/images/final2.png')",
+            backgroundImage: "url('/TFG_COHOUSING/images/final2.png')",
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
