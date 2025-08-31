@@ -1,9 +1,11 @@
 package com.gestioncomunidades.demo.services;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -68,41 +70,40 @@ public class ActividadesService {
 
     @Transactional
     public void repartirTareasCiclico(Long idComunidad) {
-        
-        Community comunidad = communityRepository.findById(idComunidad).get();
-
+        Community comunidad = communityRepository.findById(idComunidad).orElseThrow();
+    
         List<Long> usuarios = comunidad.getIntegrantes();
-
         if (usuarios.isEmpty()) return;
-
-        usuarios.sort(Comparator.naturalOrder());
-
+    
         List<Tarea> tareas = tareaRepository.findByidComunidad(idComunidad);
         if (tareas.isEmpty()) return;
-
+    
         int totalUsuarios = usuarios.size();
-
-        int indiceRotacion = comunidad.getIndiceRotacion();
-        int indiceActual = indiceRotacion;
-
+        int indiceActual = comunidad.getIndiceRotacion();
+    
         for (Tarea tarea : tareas) {
             int numParticipantes = Math.min(tarea.getNumParticipantes(), totalUsuarios);
             List<Long> nuevosAsignados = new ArrayList<>();
-
+    
+            // Asignamos participantes en orden cíclico
             for (int i = 0; i < numParticipantes; i++) {
                 int idx = (indiceActual + i) % totalUsuarios;
                 nuevosAsignados.add(usuarios.get(idx));
             }
-
+    
+            // Actualizamos índice para la siguiente tarea
             indiceActual = (indiceActual + numParticipantes) % totalUsuarios;
-
+    
             tarea.setUsuariosParticipantes(nuevosAsignados);
             tarea.setEstado(EstadoTarea.PENDIENTE);
             tarea.setFechaTope(null);
-            tareaRepository.save(tarea);
         }
-
-        comunidad.setIndiceRotacion(indiceRotacion);
+    
+        // Guardamos todas las tareas al final
+        tareaRepository.saveAll(tareas);
+    
+        // Actualizamos índice de rotación en la comunidad
+        comunidad.setIndiceRotacion(indiceActual);
     }
 
 
@@ -168,7 +169,11 @@ public class ActividadesService {
             doc.add(new Paragraph("Resumen semanal").setFontSize(22).setBold().setTextAlignment(TextAlignment.CENTER));
     
             // Imagen logo
-            String imagePath = "/app/uploads/final2.png";
+            InputStream is = getClass().getResourceAsStream("/images/final2.png");
+            Path tempFile = Files.createTempFile("final2", ".png");
+            Files.copy(is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+
+            String imagePath = tempFile.toString();
             Image image = new Image(ImageDataFactory.create(imagePath));
             image.scaleToFit(200, 200);
             image.setHorizontalAlignment(HorizontalAlignment.CENTER);

@@ -4,8 +4,6 @@
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  /* Degradado oscuro azul/gris */
-  background: url("/images/Background.jpg") repeat-y;
   color: #ddd; /* texto claro pero suave */
 }
 

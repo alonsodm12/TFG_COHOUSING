@@ -75,12 +75,12 @@ export const Header: React.FC = () => {
 
         {menuOpen && (
           <div className={styles.menu}>
-            <a
-              href="/user/profile"
-              className="block px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
+            <Link
+              to={`/user/profile`}
+              className="hover:text-blue-600 transition-colors"
             >
               Perfil
-            </a>
+            </Link>
             {/* Cambio aquí a button */}
             <button
               onClick={handleLogout}
