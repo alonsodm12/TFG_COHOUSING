@@ -260,7 +260,7 @@ public class ActividadesService {
             helper.setTo("alonsodmx@gmail.com");
             helper.setSubject("Resumen semanal de la comunidad " + comunidad.getName());
             helper.setText("Archivo con el resumen semanal de la comunidad.");
-            helper.setFrom("alonsodmx@gmail.com");
+            helper.setFrom("sharespacemail@gmail.com");
             helper.addAttachment("ResumenSemanal_" + semana + ".pdf", file);
             javaMailSender.send(message);
             
