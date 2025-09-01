@@ -7,15 +7,13 @@ import CardHorizontal from "../CardHorizontal";
 
 export const Body: React.FC = () => {
   const images = [
-    { src: "/TFG_COHOUSING/images/pruebilla.png", alt: "Gestión fácil" },
-    { src: "/TFG_COHOUSING/images/pruebon.png", alt: "Eventos compartidos" },
+    { src: "/TFG_COHOUSING/images/comunidad-memoria.png", alt: "Comunidad" },
+    { src: "/TFG_COHOUSING/images/frontend-recomendador.png", alt: "Recomendaciones" },
     {
-      src: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=600&q=80",
-      alt: "Comunicación fluida",
+      src: "/TFG_COHOUSING/images/menuOpciones-memoria.png", alt: "Home",
     },
     {
-      src: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=600&q=80",
-      alt: "Soporte 24/7",
+      src: "/TFG_COHOUSING/images/solicitudes-memoria.png", alt: "Solicitudes",
     },
   ];
 
