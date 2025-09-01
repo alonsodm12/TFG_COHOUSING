@@ -7,10 +7,10 @@ import CardHorizontal from "../CardHorizontal";
 
 export const Body: React.FC = () => {
   const images = [
-    { src: "/TFG_COHOUSING/images/comunidad-memoria.png", alt: "Comunidad" },
-    { src: "/TFG_COHOUSING/images/frontend-recomendador.png", alt: "Recomendaciones" },
+    { src: "/TFG_COHOUSING/images/a.png", alt: "Comunidad" },
+    { src: "/TFG_COHOUSING/images/b.png", alt: "Recomendaciones" },
     {
-      src: "/TFG_COHOUSING/images/menuOpciones-memoria.png", alt: "Home",
+      src: "/TFG_COHOUSING/images/c.png", alt: "Home",
     },
     {
       src: "/TFG_COHOUSING/images/solicitudes-memoria.png", alt: "Solicitudes",
@@ -81,8 +81,7 @@ export const Body: React.FC = () => {
             description={
               <ul className="list-disc ml-6 text-left text-black space-y-2">
                 <li>Buscar comunidades activas.</li>
-                <li>Filtrar por ubicación, tamaño y servicios.</li>
-                <li>Contactar con creadores y miembros.</li>
+                <li>Filtrar por ubicación, tamaño y precio.</li>
                 <li>Guardar comunidades favoritas.</li>
               </ul>
             }
@@ -98,8 +97,8 @@ export const Body: React.FC = () => {
               <ul className="list-disc ml-6 text-left text-black space-y-2">
                 <li>Publicar nuevas comunidades.</li>
                 <li>Gestionar solicitudes y miembros.</li>
-                <li>Organizar eventos y actividades.</li>
-                <li>Actualizar información y servicios.</li>
+                <li>Organizar eventos y tareas.</li>
+                <li>Actualizar información.</li>
               </ul>
             }
           />
