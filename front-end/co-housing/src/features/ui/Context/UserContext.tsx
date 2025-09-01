@@ -66,12 +66,24 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // 🔁 Fetch inicial cuando cambia el username
   useEffect(() => {
     if (username) {
       fetchUserProfile();
     } else {
       setUserProfile(null);
     }
+  }, [username]);
+
+  // 🔁 Actualizar perfil de usuario cada 30 segundos
+  useEffect(() => {
+    if (!username) return;
+
+    const interval = setInterval(() => {
+      fetchUserProfile();
+    }, 30000); // 30s
+
+    return () => clearInterval(interval);
   }, [username]);
 
   return (
