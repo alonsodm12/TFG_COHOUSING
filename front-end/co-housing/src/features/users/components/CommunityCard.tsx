@@ -17,11 +17,13 @@ interface Props {
 }
 
 const CommunityCard: React.FC<Props> = ({ community }) => {
+  const API: String = import.meta.env.VITE_API_BASE;
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {community.fotoUrl ? (
         <img
-          src={`http://localhost:8082${community.fotoUrl}`}
+          src={`${API}comunidades${community.fotoUrl}`}
           alt={`Foto de ${community.name}`}
           className="w-full h-48 object-cover"
         />
