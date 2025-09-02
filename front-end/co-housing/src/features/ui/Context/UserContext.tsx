@@ -8,7 +8,7 @@ interface UserContextType {
   userProfile: UserProfile | null;
   setUsername: (username: string | null) => void;
   setRole: (role: string | null) => void;
-  fetchUserProfile: () => Promise<void>;
+  fetchUserProfile: (showLoading?: boolean) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -49,29 +49,51 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const fetchUserProfile = async () => {
+  // ✅ Fetch user profile con control de loading y actualización condicional
+  const fetchUserProfile = async (showLoading = false) => {
     if (!username) {
       setUserProfile(null);
       return;
     }
-    setIsLoading(true);
+
+    if (showLoading) setIsLoading(true);
+
     try {
       const profile = await fetchUserByUsername(username);
-      setUserProfile(profile);
+
+      setUserProfile((prev) => {
+        // Evitar actualizar si los datos son iguales
+        if (JSON.stringify(prev) === JSON.stringify(profile)) {
+          return prev;
+        }
+        return profile;
+      });
     } catch (error) {
       console.error("Error al obtener el perfil del usuario:", error);
       setUserProfile(null);
     } finally {
-      setIsLoading(false);
+      if (showLoading) setIsLoading(false);
     }
   };
 
+  // 🔁 Fetch inicial cuando cambia el username
   useEffect(() => {
     if (username) {
-      fetchUserProfile();
+      fetchUserProfile(true); // spinner solo la primera vez
     } else {
       setUserProfile(null);
     }
+  }, [username]);
+
+  // 🔁 Actualizar perfil de usuario cada 30 segundos (sin spinner)
+  useEffect(() => {
+    if (!username) return;
+
+    const interval = setInterval(() => {
+      fetchUserProfile(false); // refresco silencioso
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, [username]);
 
   return (

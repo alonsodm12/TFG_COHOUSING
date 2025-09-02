@@ -180,7 +180,6 @@ export const RegisterCard: React.FC = () => {
         <>
           <h3 className="text-lg font-semibold">Ubicación</h3>
           <input name="direccion" value={formData.direccion} onChange={handleChange} placeholder="Introduce la ciudad donde quieras buscar" className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <ButtonFunction label="Buscar Ciudad" onClick={handleGeocode} />
         </>
       )}
 
@@ -222,8 +221,13 @@ export const RegisterCard: React.FC = () => {
 
       <div className="flex justify-between mt-6">
         {step > 0 && <ButtonFunction label="Atrás" onClick={prevStep} />}
+
         {step < 6 ? (
-          step !== 4 && <ButtonFunction label="Siguiente" onClick={nextStep} />
+          step === 4 ? (
+            <ButtonFunction label="Buscar Ciudad" onClick={handleGeocode} />
+          ) : (
+            <ButtonFunction label="Siguiente" onClick={nextStep} />
+          )
         ) : (
           <ButtonFunction label="Registrarse" onClick={handleSubmit} />
         )}

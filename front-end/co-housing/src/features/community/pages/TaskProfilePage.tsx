@@ -67,18 +67,6 @@ export const TaskProfilePage = () => {
               <p>
                 <strong>Fecha Límite:</strong> {task?.fechaTope}
               </p>
-              {task?.usuariosParticipantes &&
-                task.usuariosParticipantes.length > 0 && (
-                  <div>
-                    <strong>Participantes:</strong>
-                    <ul className="list-disc list-inside mt-2 text-gray-700">
-                      {task.usuariosParticipantes.map((id: number) => (
-                        <li key={id}>ID: {id}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
               <p>
                 <strong>Estado:</strong> {task?.estado}
               </p>

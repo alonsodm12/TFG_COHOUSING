@@ -48,7 +48,7 @@ export const CommunityForm = ({
     if (userProfile?.id && !initialData) {
       setFormData(buildInitialFormData(userProfile.id));
     }
-  }, [userProfile, initialData]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
