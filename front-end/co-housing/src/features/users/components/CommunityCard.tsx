@@ -37,13 +37,6 @@ const CommunityCard: React.FC<Props> = ({ community }) => {
         <h2 className="text-xl font-bold text-indigo-700 mb-2">
           {community.name}
         </h2>
-        <p className="text-sm text-gray-600 mb-1">
-          <span className="font-semibold">Ubicación:</span> {community.direccion}
-        </p>
-        <p className="text-sm text-gray-600 mb-4">
-          <span className="font-semibold">Admin:</span> {community.idAdmin}
-        </p>
-
         <Link
           to={`/community/profile/${community.name}`}
           className="inline-block bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200"
