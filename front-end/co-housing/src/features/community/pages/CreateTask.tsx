@@ -5,6 +5,7 @@ import { Tarea } from "../api/type";
 import { createTask } from "../api/operations";
 import TaskForm from "../components/TaskForm";
 import { useParams } from 'react-router-dom';
+import { AlertModal } from "../../ui/AlertModal/AlertModal";
 
 const CreateTask = () => {
     const { idComunidad } = useParams();
@@ -18,18 +19,27 @@ const CreateTask = () => {
         numParticipantes: 0,
         estado: 'PENDIENTE',
         duracion: 0,
-        asignacion: ""
+        asignacion: "AHORA"
     });
+
+    // Estados para el modal de alerta
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
 
     const handleTaskSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        try{
+        try {
             const taskToSend = { ...task, idComunidad: Number(idComunidad) || 0 };
             await createTask(taskToSend);
-            alert("Tarea creada con exito");
+
+            setAlertMessage("Tarea creada con éxito");
+            setAlertOpen(true);
+
         } catch (error: any) {
-            alert(`${error.message}`);
+
+            setAlertMessage(`Error: ${error.message}`);
+            setAlertOpen(true);
         }
     }
 
@@ -40,6 +50,12 @@ const CreateTask = () => {
                 <TaskForm task={task} setTask={setTask} onSubmit={handleTaskSubmit}/>
             </main>
             <Footer/>
+
+            <AlertModal
+                open={alertOpen}
+                onClose={() => setAlertOpen(false)}
+                message={alertMessage}
+            />
         </div>
     );
 };

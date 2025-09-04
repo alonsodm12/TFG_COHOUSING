@@ -6,10 +6,11 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-
 import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,30 +19,30 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
+
 import com.gestioncomunidades.demo.DemoApplication;
 import com.gestioncomunidades.demo.DTOs.TareaDTO;
 import com.gestioncomunidades.demo.DTOs.UnionRequestDTO;
 import com.gestioncomunidades.demo.models.EstadoTarea;
 import com.gestioncomunidades.demo.services.CommunityServices;
+import com.sendgrid.SendGrid;
 
 @SpringBootTest(classes = DemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class CommunityControllerTest {
-    
+
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private CommunityServices communityServices;
 
-
+    @MockBean
+    private SendGrid sendGrid;
 
     @Test
     void unirseAComunidad_exito() throws Exception {
-        UnionRequestDTO request = new UnionRequestDTO(100L, "Alonso",2L,5L);
-
-        // Mock del servicio para que no haga nada (simula éxito)
         doNothing().when(communityServices).procesarUnion(any(UnionRequestDTO.class));
 
         mockMvc.perform(post("/comunidades/unirse")
@@ -53,9 +54,6 @@ public class CommunityControllerTest {
 
     @Test
     void unirseAComunidad_error() throws Exception {
-        UnionRequestDTO request = new UnionRequestDTO(100L, "Alonso",2L,5L);
-
-        // Mock del servicio para que lance excepción (simula fallo)
         doThrow(new RuntimeException("Error")).when(communityServices).procesarUnion(any(UnionRequestDTO.class));
 
         mockMvc.perform(post("/comunidades/unirse")
@@ -68,16 +66,16 @@ public class CommunityControllerTest {
     @Test
     void testObtenerTareas() throws Exception {
         TareaDTO task = new TareaDTO(
-            1L,
-            "TareaFalsa",
-            "Tarea de prueba",
-            List.of(2L,5L),
-            LocalDateTime.now().plusDays(7),
-            EstadoTarea.EN_PROGRESO,
-            2.5,
-            4L,
-            2,
-            "AHORA");
+                1L,
+                "TareaFalsa",
+                "Tarea de prueba",
+                List.of(2L, 5L),
+                LocalDateTime.now().plusDays(7),
+                EstadoTarea.EN_PROGRESO,
+                2.5,
+                4L,
+                2,
+                "AHORA");
 
         when(communityServices.obtenerTareasComunidad(1L)).thenReturn(List.of(task));
 
@@ -85,7 +83,4 @@ public class CommunityControllerTest {
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$[0].titulo").value("TareaFalsa"));
     }
-
-
-
 }

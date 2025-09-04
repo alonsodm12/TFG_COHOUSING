@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { CommunityProfile, LifestyleDTO } from "../api/type";
 import { useUserContext } from "../../ui/Context/UserContext";
+import { AlertModal } from "../../ui/AlertModal/AlertModal";
+
 
 export type CommunityFormProps = {
   onSubmit: (data: CommunityProfile) => void;
@@ -40,6 +42,9 @@ export const CommunityForm = ({
 
   const { userProfile } = useUserContext();
 
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  
   const [formData, setFormData] = useState<CommunityProfile>(
     buildInitialFormData(userProfile?.id ?? null, initialData)
   );
@@ -97,12 +102,13 @@ export const CommunityForm = ({
           lat = parseFloat(data[0].lat);
           lon = parseFloat(data[0].lon);
         } else {
-          alert("No se encontró la dirección.");
+          setAlertMessage("No se encontró la dirección.");
+          setAlertOpen(true);
           return;
         }
       } catch (error) {
-        console.error("Error al buscar coordenadas:", error);
-        alert("Error al buscar coordenadas.");
+        setAlertMessage("Error al buscar coordenadas.");
+        setAlertOpen(true);
         return;
       }
     }
@@ -119,6 +125,7 @@ export const CommunityForm = ({
   };
 
   return (
+    <>
     <form
       onSubmit={handleSubmit}
       className="max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-md space-y-6"
@@ -247,5 +254,11 @@ export const CommunityForm = ({
         {initialData ? "Guardar cambios" : "Crear comunidad"}
       </button>
     </form>
+    <AlertModal
+      open={alertOpen}
+      onClose={() => setAlertOpen(false)}
+      message={alertMessage}
+    />
+    </>
   );
 };
