@@ -18,6 +18,8 @@ import { useUserContext } from "../../ui/Context/UserContext";
 import { CommunityProfile, Evento, Tarea } from "../api/type";
 import { Calendario } from "../components/Calendar";
 
+import { AlertModal } from "../../ui/AlertModal/AlertModal";
+
 import BarraProgreso from "../components/BarraProgreso";
 import Modal from "../components/Modal";
 import TaskModal from "../components/ModalTarea";
@@ -37,7 +39,12 @@ export const CommunityUserPage = () => {
   const { userProfile, isLoading: isUserLoading } = useUserContext();
   const username: string | undefined = userProfile?.username;
   const navigate = useNavigate();
-
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const showAlert = (message: string) => {
+    setAlertMessage(message);
+    setAlertOpen(true);
+  };
   const [community, setCommunity] = useState<CommunityProfile>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -327,10 +334,12 @@ export const CommunityUserPage = () => {
                     try {
                       const data = await activarRepartoSemanal();
                       console.log("Reparto semanal activado:", data);
-                      alert("Reparto semanal activado correctamente");
+                      console.log(alertOpen);
+                      console.log(alertMessage);
+                      showAlert("Reparto semanal activado correctamente");
                     } catch (error) {
                       console.error(error);
-                      alert("Error al activar el reparto semanal");
+                      showAlert("Error al activar el reparto semanal");
                     }
                   }}
                   className="w-full px-4 py-2 hover:bg-gray-600 text-white"
@@ -649,6 +658,11 @@ export const CommunityUserPage = () => {
       >
         <p>¿Estás seguro de que quieres eliminar la comunidad?</p>
       </Modal>
+      <AlertModal
+        open={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        message={alertMessage}
+      />
     </div>
   );
 };

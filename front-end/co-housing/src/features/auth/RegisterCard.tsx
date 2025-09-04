@@ -32,7 +32,7 @@ export const RegisterCard: React.FC = () => {
     },
     idComunidad: null,
     comunidadesGuardadas: [], 
-    fotoFile: null, // nuevo campo para almacenar el archivo
+    fotoFile: null,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,9 +58,63 @@ export const RegisterCard: React.FC = () => {
     setFormData(prev => ({ ...prev, role }));
   };
 
+  const validateStep = () => {
+    switch (step) {
+      case 0:
+        if (!formData.username.trim()) {
+          setError("El nombre de usuario es obligatorio");
+          return false;
+        }
+        break;
+      case 1:
+        if (!formData.email.trim()) {
+          setError("El correo electrónico es obligatorio");
+          return false;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+          setError("Introduce un correo válido");
+          return false;
+        }
+        break;
+      case 2:
+        if (!formData.password.trim()) {
+          setError("La contraseña es obligatoria");
+          return false;
+        }
+        if (formData.password.length < 6) {
+          setError("La contraseña debe tener al menos 6 caracteres");
+          return false;
+        }
+        break;
+      case 3:
+        if (!formData.role) {
+          setError("Debes seleccionar un rol");
+          return false;
+        }
+        break;
+      case 4:
+        if (!formData.direccion.trim()) {
+          setError("Introduce una dirección");
+          return false;
+        }
+        break;
+      case 5:
+        if (!formData.fotoFile) {
+          setError("Sube una foto de perfil");
+          return false;
+        }
+        break;
+      default:
+        break;
+    }
+    setError("");
+    return true;
+  };
+
   const nextStep = () => {
-    if (step < 6) {
-      setStep(step + 1);
+    if (validateStep()) {
+      setStep(prev => prev + 1);
     }
   };
 
@@ -69,23 +123,27 @@ export const RegisterCard: React.FC = () => {
   };
 
   const handleGeocode = async () => {
+    if (!validateStep()) return;
+
     try {
       const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(formData.direccion)}&format=json`);
       const data = await response.json();
       if (data.length > 0) {
         setLatitud(data[0].lat);
         setLongitud(data[0].lon);
-        setStep(step + 1); // Avanza al paso 5
+        setStep(step + 1); 
       } else {
-        alert("No se encontró la dirección.");
+        setError("No se encontró la dirección.");
       }
     } catch (error) {
       console.error("Error al buscar coordenadas:", error);
-      alert("Error al buscar coordenadas.");
+      setError("Error al buscar coordenadas.");
     }
   };
 
   const handleSubmit = async () => {
+    if (!validateStep()) return;
+
     const dataToSend = new FormData();
 
     const userWithoutFile = {
@@ -120,7 +178,7 @@ export const RegisterCard: React.FC = () => {
       if (!username || !role) {
         throw new Error("Token inválido");
       }
-      setUsername(username); // Al actualizar username, UserProvider carga el perfil
+      setUsername(username); 
       setRole(role);
       setSuccess("Registro completado con éxito");
       navigate("/home");

@@ -8,6 +8,7 @@ import { getTask } from "../api/operations";
 import { Tarea } from "../api/type";
 import ButtonFunction from "../../ui/Button/ButtonFunction";
 import { completarTarea } from "../api/operations";
+import { Spinner } from "../../users/components/Spinner";
 
 export const TaskProfilePage = () => {
   const { taskId } = useParams();
@@ -42,7 +43,7 @@ export const TaskProfilePage = () => {
     }
   };
 
-  if (isLoading) return "Cargando...";
+  if (isLoading) return <Spinner/>;
 
   if (error) return <p className="text-red-600 text-center mt-10">{error}</p>;
 

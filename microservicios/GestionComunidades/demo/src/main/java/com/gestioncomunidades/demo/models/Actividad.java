@@ -3,7 +3,7 @@ package com.gestioncomunidades.demo.models;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +24,7 @@ public abstract class Actividad {
         joinColumns = @JoinColumn(name = "tarea_id")
     )
     @Column(name = "usuario_id")
-    private List<Long> usuariosParticipantes;
+    private List<Long> usuariosParticipantes = new ArrayList<>();
 
     private LocalDateTime fechaTope;
 

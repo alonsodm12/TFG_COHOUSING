@@ -7,6 +7,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import { addHours } from "date-fns";
 import { Evento, Tarea } from "../api/type";
+import { AlertModal } from "../../ui/AlertModal/AlertModal";
+
 
 interface CalendarioProps {
   userId: number;
@@ -16,6 +18,8 @@ interface CalendarioProps {
 
 export const Calendario: React.FC<CalendarioProps> = ({tareas = [], eventos = [] }) => {
   const [actividades, setActividades] = useState<any[]>([]);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const organizarActividades = () => {
@@ -77,8 +81,14 @@ export const Calendario: React.FC<CalendarioProps> = ({tareas = [], eventos = []
         slotMinTime="07:00:00"
         slotMaxTime="22:00:00"
         eventClick={(info) => {
-          alert(`Actividad: ${info.event.title}`);
+          setMessage(`Actividad: ${info.event.title}`);
+          setOpen(true);
         }}
+      />
+      <AlertModal
+        open={open}
+        onClose={() => setOpen(false)}
+        message={message}
       />
     </div>
   );

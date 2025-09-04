@@ -31,7 +31,7 @@ const EventoModal: React.FC<EventModalProps> = ({ isOpen, onClose, evento, onCom
             onClick={onComplete}
             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
           >
-            Marcar como completada
+            Completada
           </button>
         </>
       }
@@ -40,7 +40,7 @@ const EventoModal: React.FC<EventModalProps> = ({ isOpen, onClose, evento, onCom
         <p><strong>Descripción:</strong> {evento.descripcion}</p>
         <p><strong>Hora inicio:</strong> {evento.horaInicio}</p>
         <p><strong>Hora final:</strong> {evento.horaFinal}</p>
-        <p><strong>Fecha:</strong> {new Date(evento.fechaTope).toLocaleString()}</p>
+        <p><strong>Fecha:</strong> {new Date(evento.fechaTope).toLocaleDateString()}</p>
         <p><strong>Lugar:</strong> {evento.lugar}</p>
         <p><strong>Numero de participantes:</strong> {evento.numParticipantes}</p>
 

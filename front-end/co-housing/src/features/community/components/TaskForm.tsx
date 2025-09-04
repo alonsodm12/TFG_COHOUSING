@@ -107,8 +107,8 @@ const TaskForm: React.FC<Props> = ({ task, setTask, onSubmit }) => {
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
-          <option value="ahora">Asignar ahora</option>
-          <option value="proxima">Asignar la próxima semana</option>
+          <option value="AHORA">Asignar ahora</option>
+          <option value="PROXIMA">Asignar la próxima semana</option>
         </select>
       </div>
 

@@ -340,20 +340,21 @@ public class CommunityServices {
         nuevaTarea.setIdComunidad(tareaDTO.idComunidad());
         nuevaTarea.setNumParticipantes(tareaDTO.numParticipantes());
 
-        if (tareaDTO.usuariosParticipantes() != null && !tareaDTO.usuariosParticipantes().isEmpty()) {
-            List<Long> participantes = new ArrayList<>();
-            for (Long id : tareaDTO.usuariosParticipantes()) {
-                participantes.add(id);
-            }
-            nuevaTarea.setUsuariosParticipantes(participantes);
-        }
 
-        if (tareaDTO.asignacion().equals("ahora")){
+
+        if ("AHORA".equalsIgnoreCase(tareaDTO.asignacion())) {
             List<Long> participantes = new ArrayList<>();
-            for(int i =0;i<tareaDTO.numParticipantes();i++){
+            for (int i = 0; i < tareaDTO.numParticipantes(); i++) {
                 Long user = this.usuarioMenosTareas(tareaDTO.idComunidad());
                 participantes.add(user);
             }
+            nuevaTarea.setUsuariosParticipantes(participantes);
+        }
+        else{
+            List<Long> participantes = new ArrayList<>();
+            participantes.add(4L);
+            nuevaTarea.setUsuariosParticipantes(participantes);
+               
         }
 
         return this.tareaRepository.save(nuevaTarea);
@@ -380,21 +381,29 @@ public class CommunityServices {
     // de tareas asignadas
 
     public Long usuarioMenosTareas(Long communityId) throws Exception {
-        Community comunidad = communityRepository.findById(communityId).get();
-
+        Community comunidad = communityRepository.findById(communityId)
+            .orElseThrow(() -> new Exception("Comunidad no encontrada"));
+    
         List<Long> usuarios = comunidad.getIntegrantes();
-        Long usuarioAasignar = 0L;
-        int usuarioMinTareas = 0;
-        int usuarioTareas = 0;
+        if (usuarios.isEmpty()) throw new Exception("No hay usuarios en la comunidad");
+    
+        Long usuarioAAsignar = null;
+        int minTareas = Integer.MAX_VALUE;
+    
         for (Long usuario : usuarios) {
-            usuarioTareas = tareaRepository.findByUsuariosParticipantes(usuario).size();
-            if (usuarioTareas <= usuarioMinTareas)
-                usuarioAasignar = usuario;
+            int tareasUsuario = tareaRepository.findByUsuariosParticipantes(usuario).size();
+    
+            if (tareasUsuario < minTareas) {
+                minTareas = tareasUsuario;
+                usuarioAAsignar = usuario;
+            }
         }
-
-        return usuarioAasignar;
-
+    
+        if (usuarioAAsignar == null) throw new Exception("No se pudo asignar usuario");
+        return usuarioAAsignar;
     }
+    
+    
 
     // Funcion para registrar un nuevo evento en el sistema
 
