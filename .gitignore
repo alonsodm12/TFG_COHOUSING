@@ -66,3 +66,7 @@ sql/
 
 # Carpeta donde se almacenan los resumenes mensuales
 resumenes/
+
+# Ignorar archivo con secrets
+microservicios/GestionComunidades/demo/src/main/resources/application-local.properties
+
