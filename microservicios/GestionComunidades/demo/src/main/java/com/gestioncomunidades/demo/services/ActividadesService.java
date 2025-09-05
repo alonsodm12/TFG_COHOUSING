@@ -205,7 +205,7 @@ public class ActividadesService {
             doc.add(new Paragraph("Resumen Total").setFontSize(18).setBold().setMarginTop(20));
             doc.add(new Paragraph("Tareas completadas: " + totalTareasCompletadas));
             doc.add(new Paragraph("Tareas sin completar: " + totalTareasSinCompletar));
-            doc.add(new Paragraph("Tiempo invertido total: " + totalTiempoInvertido + " minutos"));
+            doc.add(new Paragraph("Tiempo invertido total: " + totalTiempoInvertido + " horas"));
 
             // Gráfico
             JFreeChart barChart = ChartFactory.createBarChart(
