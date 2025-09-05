@@ -327,8 +327,8 @@ export const obtenerUsuariosDeComunidad = async (idComunidad: number ) => {
   return await response.json();
 }
 
-export const activarRepartoSemanal = async() => {
-  const response = await fetch(`${API_BASE}/pruebaResumenSemanal`, {
+export const activarRepartoSemanal = async(idComunidad: number) => {
+  const response = await fetch(`${API_BASE}/pruebaResumenSemanal/${idComunidad}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json"

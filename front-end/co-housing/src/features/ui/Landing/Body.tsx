@@ -72,7 +72,6 @@ export const Body: React.FC = () => {
         <h2 className="font-bold text-5xl mb-14 text-gray-800 dark:text-black">
           Conoce las características de cada rol
         </h2>
-        text-black
         <div className="flex flex-col gap-12 items-center">
           {/* Tarjeta Usuario Buscador */}
           <CardHorizontal
