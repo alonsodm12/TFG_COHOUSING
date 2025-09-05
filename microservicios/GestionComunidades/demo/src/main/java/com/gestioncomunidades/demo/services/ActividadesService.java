@@ -242,7 +242,7 @@ public class ActividadesService {
             for (UserDTO u : usuarios) {
                 personalization.addTo(new Email(u.email()));
             }
-            personalization.addTo(new Email("alonsodmx@gmail.com"));
+            //personalization.addTo(new Email("alonsodmx@gmail.com"));
             mail.addPersonalization(personalization);
 
             mail.addAttachments(attachments);

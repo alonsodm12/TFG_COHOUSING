@@ -4,6 +4,7 @@ import { Header } from "../../ui/Header/Header";
 import { Footer } from "../../ui/Footer/Footer";
 import { fetchUserByUsername } from "../api/operations";
 import { UserProfile } from "../../users/api/types";
+import { Spinner } from "../components/Spinner";
 
 const UserExternoPage = () => {
   const { username } = useParams<{ username: string }>();
@@ -28,7 +29,7 @@ const UserExternoPage = () => {
     fetchUserData();
   }, [username]);
 
-  if (loading) return <p>Cargando usuario...</p>;
+  if (loading) return <Spinner />;
   if (error) return <p>{error}</p>;
   if (!user) return <p>Usuario no encontrado</p>;
 

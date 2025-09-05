@@ -332,11 +332,14 @@ export const CommunityUserPage = () => {
                 <button
                   onClick={async () => {
                     try {
-                      const data = await activarRepartoSemanal();
-                      console.log("Reparto semanal activado:", data);
-                      console.log(alertOpen);
-                      console.log(alertMessage);
-                      showAlert("Reparto semanal activado correctamente");
+                      if (userProfile?.id && userProfile?.idComunidad){
+                        const data = await activarRepartoSemanal(userProfile?.idComunidad);
+                        console.log("Reparto semanal activado:", data);
+                        console.log(alertOpen);
+                        console.log(alertMessage);
+                        showAlert("Reparto semanal activado correctamente");
+                      }
+                      
                     } catch (error) {
                       console.error(error);
                       showAlert("Error al activar el reparto semanal");

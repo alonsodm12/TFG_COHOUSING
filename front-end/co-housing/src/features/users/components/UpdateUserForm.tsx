@@ -94,7 +94,7 @@ export const UpdateUserForm = ({ user }: Props) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-2xl w-full p-6 bg-white rounded-xl shadow-md border border-gray-200 space-y-6"
+      className="max-w-2xl w-full mb-4 p-6 bg-white rounded-xl shadow-md border border-gray-200 space-y-6"
     >
       <h2 className="text-2xl font-bold mb-4 text-center">
         Editar perfil del usuario
