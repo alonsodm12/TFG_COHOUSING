@@ -186,7 +186,7 @@ public class ActividadesService {
 
                 doc.add(new Paragraph(" - Tareas completadas: " + tareasCompletadas));
                 doc.add(new Paragraph(" - Tareas sin completar: " + tareasSinCompletar));
-                doc.add(new Paragraph(" - Tiempo invertido: " + tiempoInvertido + " minutos"));
+                doc.add(new Paragraph(" - Tiempo invertido: " + tiempoInvertido + " horas"));
                 doc.add(new Paragraph(" "));
 
                 dataset.addValue(tareasCompletadas, "Completadas", integrante.username());
@@ -239,9 +239,9 @@ public class ActividadesService {
             attachments.setDisposition("attachment");
 
             Personalization personalization = new Personalization();
-            //for (UserDTO u : usuarios) {
-              //  personalization.addTo(new Email(u.email()));
-            //}
+            for (UserDTO u : usuarios) {
+                personalization.addTo(new Email(u.email()));
+            }
             personalization.addTo(new Email("alonsodmx@gmail.com"));
             mail.addPersonalization(personalization);
 
