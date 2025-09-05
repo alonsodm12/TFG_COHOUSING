@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.gestioncomunidades.demo.DTOs.CommunityDTO;
 import com.gestioncomunidades.demo.DTOs.NotificacionRepartoDTO;
 import com.gestioncomunidades.demo.DTOs.UserDTO;
 import com.gestioncomunidades.demo.config.RabbitMQConfig;
@@ -59,16 +60,18 @@ public class ActividadesService {
     private final RabbitTemplate rabbitTemplate;
     private final WebClient usuarioWebClient;
     private final SendGrid sendGrid;
+    private CommunityServices communityServices;
 
     @Autowired
     public ActividadesService(TareaRepository tareaRepository, WebClient usuarioWebClient,
                               CommunityRepository communityRepository, RabbitTemplate rabbitTemplate,
-                              SendGrid sendGrid) {
+                              SendGrid sendGrid,CommunityServices communityServices) {
         this.tareaRepository = tareaRepository;
         this.communityRepository = communityRepository;
         this.rabbitTemplate = rabbitTemplate;
         this.usuarioWebClient = usuarioWebClient;
         this.sendGrid = sendGrid;
+        this.communityServices=communityServices;
     }
 
     @Transactional
@@ -106,12 +109,14 @@ public class ActividadesService {
     @Scheduled(cron = "0 0 23 * * SUN")
     @Transactional
     public void repartirTareasSemanalmente() {
+        
         List<Community> comunidades = communityRepository.findAll();
+        
         LocalDate hoy = LocalDate.now();
 
         for (Community comunidad : comunidades) {
             repartirTareasCiclico(comunidad.getId());
-            generarResumenSemanal(comunidad, hoy);
+            generarResumenSemanal(comunidad, hoy,comunidad.getId());
 
             NotificacionRepartoDTO payload = new NotificacionRepartoDTO(
                 comunidad.getId(),
@@ -137,8 +142,8 @@ public class ActividadesService {
                 .block();
     }
 
-    public void generarResumenSemanal(Community comunidad, LocalDate semana) {
-        String nombreArchivo = "/app/resumenes/" + comunidad.getId() + "/" + semana + ".pdf";
+    public void generarResumenSemanal(Community comunidad, LocalDate semana,Long idComunidad) {
+        String nombreArchivo = "/app/resumenes/" + idComunidad + "/" + semana + ".pdf";
         Path ruta = Paths.get(nombreArchivo);
 
         try {
@@ -164,7 +169,7 @@ public class ActividadesService {
 
             doc.add(new Paragraph("Comunidad: " + comunidad.getName()).setFontSize(16).setMarginBottom(10));
 
-            List<UserDTO> usuarios = obtenerUsuariosPorComunidad(comunidad.getId());
+            List<UserDTO> usuarios = obtenerUsuariosPorComunidad(idComunidad);
 
             int totalTareasCompletadas = 0;
             int totalTareasSinCompletar = 0;

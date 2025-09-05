@@ -312,17 +312,18 @@ public class CommunityController {
     @GetMapping("/pruebaResumenSemanal/{idComunidad}")
     public ResponseEntity<?> pruebaSemanal(@PathVariable Long idComunidad) {
         try {
-            CommunityDTO comunidadDto = communityServices.obtenerComunidadId(idComunidad).get();
-
+           CommunityDTO comunidadDto = communityServices.obtenerComunidadId(idComunidad).get();
+  
             Community comunidad = new Community(comunidadDto.name(),comunidadDto.descripcion(),
             comunidadDto.idAdmin(),comunidadDto.lifestyleDTO().sociabilidad(),comunidadDto.lifestyleDTO().tranquilidad(),
             comunidadDto.lifestyleDTO().compartirEspacios(),comunidadDto.lifestyleDTO().limpieza(),
             comunidadDto.lifestyleDTO().actividad(),comunidadDto.fotoUrl(),comunidadDto.latitud(),comunidadDto.longitud(),
             comunidadDto.direccion(),comunidadDto.precio(),comunidadDto.num_integrantes());
 
-            actividadesService.generarResumenSemanal(comunidad, LocalDate.now());
+            //Community comunidad = communityServices.obtenerComunidades().get(0);
+            actividadesService.generarResumenSemanal(comunidad, LocalDate.now(),comunidadDto.id());
             //actividadesService.repartirTareasSemanalmente();
-            return ResponseEntity.status(HttpStatus.OK).body(comunidad);
+            return ResponseEntity.status(HttpStatus.OK).body(comunidadDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
