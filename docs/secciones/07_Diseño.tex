@@ -18,7 +18,7 @@ El back-end del sistema estará basado en una \textbf{arquitectura de microservi
 \begin{itemize}
     \item \textbf{Microservicios Independientes:} Cada microservicio es responsable de un conjunto de funcionalidades relacionadas, que constituyen una parte lógica del sistema.
     \item \textbf{Base de Datos Independiente:} Cada microservicio tiene su propia base de datos, lo que permite un aislamiento completo de sus datos y mejora la resiliencia del sistema.
-    \item \textbf{Comunicación Asíncrona:} La comunicación entre microservicios se realiza a través de un broker de mensajería \textbf{RabbitMQ} \cite{rabbitmq}, basado en eventos. Esto permite mantener la asincronía en las operaciones, lo cual mejora la eficiencia y la escalabilidad.
+    \item \textbf{Comunicación Asíncrona:} La comunicación entre microservicios se realiza a través de un broker de mensajería \textbf{RabbitMQ} \cite{RabbitMQ}, basado en eventos. Esto permite mantener la asincronía en las operaciones, lo cual mejora la eficiencia y la escalabilidad.
     \item \textbf{API Gateway:} Para facilitar la comunicación entre el frontend y los microservicios, se implementará una \textbf{API Gateway}. Este componente será responsable de verificar los tokens de autenticación y enrutará las solicitudes al microservicio adecuado. Además, la API Gateway proporcionará un punto único de entrada para el frontend, simplificando el acceso a los servicios backend.
 \end{itemize}
 

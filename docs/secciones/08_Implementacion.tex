@@ -198,6 +198,15 @@ En el frontend simplemente se rellena el formulario de inicio de sesión, mostra
   \label{fig:loginFront}
 \end{figure}
 
+Tras iniciar sesión correctamente se accede a la pantalla de inicio, imagen \ref{fig:home}, donde el usuario podrá acceder a toda la funcionalidad desarrollada.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{fotos/menuOpciones-memoria.png}
+  \caption{Pantalla de inicio de la aplicación}
+  \label{fig:home}
+\end{figure}
+
+
 
 \subsection{Comunicación Asíncrona entre Microservicios}
 
@@ -226,13 +235,13 @@ La lógica general de funcionamiento se basa en los siguientes pasos:
     \item Cuando el mensaje llega a la cola correspondiente, el \textit{listener} lo recibe, extrae los datos y ejecuta una lógica específica en respuesta al evento.
 \end{enumerate}
 
-Este patrón de comunicación mostrado en la figura \ref{fig:rabbitmqexpl} favorece un diseño desacoplado, reactivo y preparado para entornos distribuidos y de alta disponibilidad.
+Este patrón de comunicación mostrado en la figura \ref{fig:RabbitMQexpl} favorece un diseño desacoplado, reactivo y preparado para entornos distribuidos y de alta disponibilidad.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=1\textwidth]{fotos/rabbitmqexpl.png}
+  \includegraphics[width=1\textwidth]{fotos/RabbitMQexpl.png}
   \caption{Flujo de eventos y comunicación entre microservicios usando RabbitMQ}
-  \label{fig:rabbitmqexpl}
+  \label{fig:RabbitMQexpl}
 \end{figure}
 \subsection{Recomendación de Comunidades}
 
@@ -380,7 +389,7 @@ Finalmente, tal como se observa en la figura \ref{fig:frontend-recomendador}, el
 \subsection{Proceso de Unión a una Comunidad}
 
 El proceso de unión de un usuario a una comunidad involucra la interacción de varios de los microservicios que componen el sistema, entre ellos los microservicios de \textit{Comunidad}, \textit{Solicitudes} y \textit{GestionUsuarios}.
-Para la comunicación entre dichos microservicios se usará como broker RabittMQ \cite{rabbitmq}. El flujo para realizar esta operación dentro del sistema es el siguiente:
+Para la comunicación entre dichos microservicios se usará como broker RabittMQ \cite{RabbitMQ}. El flujo para realizar esta operación dentro del sistema es el siguiente:
 
 \vspace{0.5em}
 \begin{enumerate}
@@ -422,7 +431,14 @@ Entre las funcionalidades más relevantes implementadas en este servicio, destac
   \item \textbf{Administración de tareas por parte del usuario:}  
   Los usuarios tienen la posibilidad de consultar y reorganizar sus tareas mediante una interfaz de calendario interactivo. Esta herramienta permite una gestión más intuitiva y visual de sus responsabilidades.
 \end{itemize}
+Estas funcionalidades se ofrecen al usuario a través de la interfaz de la comunidad, como se muestra en la figura \ref{fig:comunidad-memoria}.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{fotos/comunidad-memoria.png}
+  \caption{Vista de la comunidad del usuario}
+  \label{fig:comunidad-memoria}
+\end{figure}
 \subsection*{Reparto Automático de Tareas}
 
 El reparto automático de tareas tiene como objetivo asegurar una distribución equitativa del trabajo entre los miembros de cada comunidad. Para ello, se sigue un algoritmo cíclico que asigna las tareas disponibles a los usuarios de manera rotativa.
@@ -484,6 +500,8 @@ def void repartirTareasSemanalmente():
         )
 
 \end{lstlisting}
+
+
 \subsection*{Notificación y visualización}
 
 Para asegurar que los usuarios estén al tanto de sus tareas, el sistema emite notificaciones cuando se realiza el reparto semanal:
@@ -492,6 +510,14 @@ Para asegurar que los usuarios estén al tanto de sus tareas, el sistema emite n
     \item De manera semanal se emite una \textbf{notificación automática a todos los integrantes de la comunidad} de forma que se les avise del nuevo reparto. Esto se implementa con la definición de un evento dentro de la función de reparto semanal que es gestionada por RabbitMQ. 
 \end{itemize}
 
+Esta notificación es mostrada en la plataforma dentro de la sección de Solicitudes, como se puede ver en la imagen
+\ref{fig:solicitudes}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{fotos/solicitudes-memoria.png}
+  \caption{Vista de las solicitudes}
+  \label{fig:solicitudes}
+\end{figure}
 
 A continuación pasamos a comentar la Administración de tareas por parte del usuario.
 \vspace{0.5em}

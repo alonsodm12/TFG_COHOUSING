@@ -48,7 +48,7 @@ Este microservicio contiene la lógica central del sistema, especialmente en cua
     \item \texttt{encontrarPorNombre(String name)} y \texttt{encontrarPorId(Long id)}: Verificación de la recuperación correcta de comunidades por nombre o ID.
     \item \texttt{crearComunidad(CommunityDTO dto)}: Se prueba la creación de comunidades, validando que no exista ya una con el mismo nombre.
     \item \texttt{asignarTareasSemanales()}: Se comprueba que el algoritmo de reparto automático semanal de tareas se ejecuta de forma correcta y equilibrada.
-    \item \texttt{addTareaAComunidad(Long communityId, TaskDTO dto)} y \texttt{addEventoAComunidad(Long communityId, EventDTO dto)}: Validación de la correcta asociación de tareas y eventos a una comunidad.
+    \item \texttt{addTareaAComunidad(Long communityId, TaskDTO dto)} y \newline \texttt{addEventoAComunidad(Long communityId, EventDTO dto)}: Validación de la correcta asociación de tareas y eventos a una comunidad.
 \end{itemize}
 
 \begin{lstlisting}[language=Java, caption={Pseudocódigo del test crearComunidad}]
@@ -105,18 +105,16 @@ Este microservicio ha sido implementado con Flask y probado mediante \texttt{pyt
 \end{itemize}
 
 
-\begin{lstlisting}[language=Python, caption={Pseudocódigo del test recomendacionesFiltradas}]
+\begin{lstlisting}[language=Java, caption={Pseudocódigo del test recomendacionesFiltradas}]
 test "recomendaciones filtradas" {
     // Se carga el usuario falso creado para las pruebas
     usuario = test_user
     user_id = usuario.id
-    
     // Se define parametros de precio y distancia para el filtro
     parametros = {
         "precio": 400,
         "distancia": 5   # 5 km de radio
     }
-
     // Mock: get_usuario_por_id devuelve el usuario de prueba
     // Mock: get_comunidades_incompletas devuelve comunidades de prueba
     mock get_usuario_por_id -> usuario
